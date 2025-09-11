@@ -1,0 +1,122 @@
+/* src/App.css */
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+:root {
+  --primary-color: #009ee3;
+  --secondary-color: #212529;
+  --text-color: #495057;
+  --bg-color: #f8f9fa;
+  --card-bg-color: #ffffff;
+  --border-color: #ced4da;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: var(--bg-color);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: var(--text-color);
+}
+
+.container {
+  width: 100%;
+  max-width: 450px;
+  background-color: var(--card-bg-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+  margin: 0;
+}
+
+.balance-card {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.balance-card h2 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+  opacity: 0.8;
+}
+
+.balance-card p {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.input-group span {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+  color: var(--secondary-color);
+}
+
+.input-amount {
+  width: 100%;
+  max-width: 200px;
+  padding: 0.75rem 1rem;
+  font-size: 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.input-amount:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 158, 227, 0.2);
+}
+
+.button-pay {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.button-pay:hover:not(:disabled) {
+  background-color: #007bb5;
+}
+
+.button-pay:active:not(:disabled) {
+  transform: translateY(2px);
+}
+
+.button-pay:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
