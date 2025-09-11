@@ -11,7 +11,9 @@ function App() {
   // Função para buscar o saldo do back-end
   const fetchBalance = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/user/balance");
+      const response = await fetch(
+        "https://back-end-pagamento.vercel.app/api/user/balance"
+      );
       const data = await response.json();
       if (response.ok) {
         setBalance(data.balance);
@@ -38,7 +40,7 @@ function App() {
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/payments/create",
+        "https://back-end-pagamento.vercel.app/api/payments/create",
         {
           method: "POST",
           headers: {
