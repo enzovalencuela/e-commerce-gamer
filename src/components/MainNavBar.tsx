@@ -1,0 +1,39 @@
+// src/components/MainNavbar.tsx
+
+import React from "react";
+import SearchBar from "./SearchBar";
+
+interface MainNavbarProps {
+  onSearch: (query: string) => void;
+  onMenuClick: () => void;
+}
+
+const MainNavbar: React.FC<MainNavbarProps> = ({ onSearch, onMenuClick }) => {
+  return (
+    <div className="div-search">
+      <img
+        id="img-menu"
+        src="./img/menu.svg"
+        alt="Menu"
+        onClick={onMenuClick}
+      />
+      <img src="./img/logo.svg" alt="Logo" className="logo" />
+      <SearchBar onSearch={onSearch} />
+      <div className="div-user">
+        <img
+          id="icon_person"
+          src="./img/icon_person.svg"
+          alt="Ícone de perfil"
+        />
+        <p>
+          Olá,
+          <br />
+          Nome do cliente!
+        </p>
+        <img src="./img/car.svg" alt="Ícone de carrinho" />
+      </div>
+    </div>
+  );
+};
+
+export default MainNavbar;

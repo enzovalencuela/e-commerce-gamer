@@ -1,0 +1,522 @@
+@media screen and (max-width: 728px) {
+  /*?NAV DA PÁGINA -------------------------------------------------------------------------------------*/
+  nav {
+    position: absolute;
+  }
+
+  .div-span {
+    height: 52px;
+    padding-inline: 20px;
+
+    p {
+      text-align: center;
+    }
+  }
+
+  .div-nav {
+    gap: 20px;
+    padding: 25px 20px;
+  }
+
+  .div-search {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 24px;
+
+    img {
+      height: 20px;
+    }
+  }
+
+  #img-menu {
+    display: block;
+    z-index: 4000;
+  }
+
+  .form-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90vw;
+    height: 40px;
+    position: relative;
+    order: 3;
+    width: 100%;
+
+    input {
+      width: 100%;
+      height: 40px;
+      padding: 18px 24px;
+      border: 1px solid #dddddd;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: transparent;
+      width: 18.7px;
+      height: 18.7px;
+      cursor: pointer;
+      position: absolute;
+      top: 25%;
+      right: 9px;
+      border: none;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  .div-user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin: 0;
+
+    #icon_person {
+      display: none;
+    }
+
+    p {
+      display: none;
+    }
+  }
+
+  .div-ul {
+    background-color: #ffffff;
+    position: absolute;
+    top: 70px;
+    padding: 60px 20px;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: repeat(2, 1fr);
+    height: 220px;
+  }
+
+  .li-departamento {
+    text-align: center;
+  }
+
+  #todasCategorias {
+    display: none;
+    img {
+      display: none;
+    }
+  }
+
+  /*!PRA CIMA JÁ FOI ESTILIZADO -------------------------------------------------------------------------------------*/
+
+  #menu-categorias {
+    width: 100vw;
+    height: auto;
+    top: 152px;
+    left: -20px;
+  }
+
+  .menu-conteudo {
+    padding: 15px;
+  }
+
+  .departamentos {
+    width: 100%;
+  }
+
+  .categorias-colunas {
+    gap: 10px;
+    flex-direction: row;
+    align-items: start;
+  }
+
+  .coluna {
+    width: 100px;
+  }
+
+  .coluna li a {
+    font-size: 12px;
+  }
+
+  .coluna li a:hover {
+    font-size: 12px;
+  }
+
+  .img-categorias {
+    display: none;
+  }
+
+  #categorias-exibidas {
+    width: 100vw;
+    height: auto;
+    top: 158px;
+    left: 0px;
+    padding: 15px;
+    flex-direction: row;
+  }
+
+  /*?SECTION DE OUTDOOR -------------------------------------------------------------------------------------*/
+
+  .section-outdoor {
+    background-color: #e7e7ea;
+    height: 306px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 24px 0 0;
+    margin-top: 187px;
+
+    img {
+      width: 225px;
+      height: 100%;
+      mix-blend-mode: Darken;
+      object-fit: cover;
+      object-position: right;
+    }
+  }
+
+  .div-outdoor__text {
+    align-items: start;
+
+    h2 {
+      font-family: Nunito;
+      font-weight: 700;
+      font-size: 40px;
+      line-height: 40px;
+      text-align: center;
+      text-transform: uppercase;
+
+      b {
+        font-family: Nunito;
+        font-weight: 300;
+        font-size: 40px;
+        line-height: 40px;
+        text-align: center;
+        text-transform: uppercase;
+      }
+    }
+
+    p {
+      font-family: Nunito;
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 100%;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      font-family: Nunito;
+      font-weight: 700;
+      font-size: 32px;
+      line-height: 100%;
+      text-transform: uppercase;
+    }
+  }
+
+  /*?SECTION DE PRODUTOS -------------------------------------------------------------------------------------*/
+  .section-produtos {
+    padding: 60px 0px;
+    width: 92vw;
+  }
+
+  .div-produtos__title {
+    h2 {
+      font-size: 16px;
+    }
+
+    button {
+      color: #303030;
+      text-decoration: underline;
+    }
+  }
+
+  .produto__text {
+    h3 {
+      font-size: 14px;
+      color: #303030;
+    }
+
+    p {
+      color: #303030;
+    }
+
+    .parcelamento-span {
+      color: #303030;
+
+      b {
+        color: #303030;
+      }
+    }
+  }
+
+  .off {
+    width: 68px;
+    top: 60px;
+    left: 70px;
+    text-decoration: none;
+  }
+
+  .card-item {
+    display: block;
+    border-radius: 10px;
+    border: 1px solid #dddddd;
+
+    padding: 10px;
+    position: relative;
+
+    img {
+      width: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .card-wrapper {
+    margin: 0 10px 25px;
+  }
+
+  .swiper-button {
+    display: none;
+  }
+
+  /*?SECTION DE FOTO E TEXTO----------------------------------------------------------------------------------------*/
+
+  .section-foto {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px 0px 20px 0px;
+    height: auto;
+  }
+
+  .div-foto__img {
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    background-color: #c2c2c2;
+
+    img {
+      width: 391px;
+      height: 100%;
+    }
+  }
+
+  .div-foto__text {
+    height: 100%;
+    padding: 20px 25px;
+
+    h2 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+
+  /*?SEGUNDA SECTION DE FOTO E TEXTO----------------------------------------------------------------------------------------*/
+
+  .section-foto2 {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    height: auto;
+    gap: 0;
+  }
+
+  .div-foto__img2 {
+    img {
+      width: 349px;
+      height: 349px;
+      object-fit: cover;
+    }
+  }
+
+  .div-foto__text2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    padding-top: 20px;
+    height: 100%;
+
+    h2 {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 12px;
+    }
+  }
+
+  .div-text-location {
+    img {
+      width: 60px;
+      height: 60px;
+    }
+  }
+
+  /*?SEGUNDA SECTION DE PRODUTOS----------------------------------------------------------------------------------------*/
+
+  #section-produtos2 {
+    display: none;
+  }
+
+  /*?SECTION DE BANNER----------------------------------------------------------------------------------------*/
+
+  .section-banner {
+    background-image: url(./img/quartoBanner.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 449px;
+    margin: 0;
+
+    div {
+      height: 75px;
+
+      p {
+        font-family: Nunito;
+        font-weight: 600;
+        font-size: 16px;
+      }
+    }
+  }
+
+  /*?SECTION DE CADASTO----------------------------------------------------------------------------------------*/
+
+  .section-cadastro {
+    padding: 0px 20px;
+    margin-block: 70px;
+    height: auto;
+    gap: 25px;
+  }
+
+  .cadastro-text {
+    padding: 0;
+    margin-top: 0px;
+
+    p {
+      font-size: 16px;
+    }
+  }
+
+  .div-cadastro {
+    background-color: #f5f5f5;
+    flex-direction: column;
+    height: auto;
+    padding: 25px;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  /*?FOOTER--------------------------------------------------------------------------------------------------*/
+
+  footer {
+    height: auto;
+  }
+
+  .footer1 {
+    height: auto;
+    padding: 64px 0px;
+    gap: 65px;
+  }
+
+  .div-footer {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .div-logo-social {
+    display: flex;
+    align-items: center;
+    padding: 30px;
+  }
+
+  #div-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .div-links p {
+    display: none;
+    padding-inline: 16px;
+  }
+
+  #div-links h3 {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    display: flex;
+    cursor: pointer;
+    text-align: start;
+    padding-block: 16px;
+    border: 1px solid #dddddd;
+    width: 100vw;
+  }
+
+  #div-links h3 img {
+    display: block;
+  }
+
+  .aberto.div-links p {
+    display: flex;
+    text-align: start;
+  }
+
+  .meios-pagamento {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0 30px;
+  }
+
+  /*!PRA CIMA JÁ FOI ESTILIZADO------------------------------------------------------------*/
+
+  .div-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 10px;
+  }
+
+  /*SEGUNDA PARTE DO FOOTER---------------------------------------------------*/
+  .div-footer2 {
+    height: auto;
+    padding: 40px 20px 20px 20px;
+    gap: 30px;
+  }
+
+  .parceiros {
+    gap: 30px;
+  }
+
+  /*?RESPOSTA DA PESQUISA--------------------------------------------------------------------------------------------------*/
+
+  .resposta {
+    position: absolute;
+    top: 180px;
+    left: 40px;
+  }
+
+  .resposta-vazia {
+    position: absolute;
+    top: 180px;
+    left: 35px;
+  }
+}
