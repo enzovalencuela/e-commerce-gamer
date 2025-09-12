@@ -8,7 +8,7 @@ const StatusPage = () => {
   const [paymentStatus, setPaymentStatus] = useState("Pendente...");
   const [balance, setBalance] = useState<number | null>(null);
 
-  const API_BASE_URL = "https://sua-api.vercel.app"; // URL da sua API na Vercel
+  const API_BASE_URL = "https://back-end-pagamento.vercel.app";
 
   const fetchPaymentStatus = async (id: string) => {
     try {

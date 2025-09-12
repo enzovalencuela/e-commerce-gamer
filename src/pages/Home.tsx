@@ -48,7 +48,6 @@ const Home: React.FC = () => {
 
   const handleBuyProduct = async (productId: number) => {
     try {
-      // 1. Encontre o produto pelo ID
       const productToBuy = products.find((p) => p.id === productId);
 
       if (!productToBuy) {
@@ -56,7 +55,12 @@ const Home: React.FC = () => {
         return;
       }
 
-      // 2. Chama a API do back-end para criar a preferência de pagamento
+      const productData = {
+        title: productToBuy.titulo,
+        unit_price: parseFloat(productToBuy.preco.replace(",", ".")),
+        quantity: 1,
+      };
+
       const response = await fetch(
         "https://back-end-pagamento.vercel.app/api/payments/create",
         {
@@ -64,12 +68,7 @@ const Home: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            id: productToBuy.id,
-            title: productToBuy.titulo,
-            price: parseFloat(productToBuy.preco.replace(",", ".")),
-            quantity: 1,
-          }),
+          body: JSON.stringify(productData),
         }
       );
 
@@ -78,10 +77,7 @@ const Home: React.FC = () => {
       }
 
       const data = await response.json();
-      const preferenceId = data.id; // Supondo que a API retorna o ID da preferência
-
-      // 3. Redireciona o usuário para a URL de pagamento do Mercado Pago
-      window.location.href = `https://www.mercadopago.com.br/checkout/v1/redirect?preference-id=${preferenceId}`;
+      window.location.href = data.init_point;
     } catch (error) {
       console.error("Erro na compra:", error);
       alert("Ocorreu um erro ao processar seu pagamento. Tente novamente.");
