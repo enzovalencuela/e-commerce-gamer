@@ -1,7 +1,7 @@
 function Outdoor() {
   return (
     <section className="section-outdoor">
-      <img src="./img/cadeira.svg" alt="" />
+      <img src="/fundo_pc_gamer.png" alt="" />
       <div className="div-outdoor__text">
         <h2>
           <b>SUPER</b> SALE

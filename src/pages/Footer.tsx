@@ -4,22 +4,18 @@ function Footer() {
       <div className="footer1">
         <div className="div-footer">
           <div className="div-logo-social">
-            <img src="./img/logo.svg" alt="" />
+            <img className="logo_marca" src="/LOGO_MARCA.png" alt="" />
             <div className="social-media">
               <a href="">
-                {" "}
                 <img src="./img/instagram.svg" alt="" />
               </a>
               <a href="">
-                {" "}
                 <img src="./img/facebook.svg" alt="" />
               </a>
               <a href="">
-                {" "}
                 <img src="./img/youtube.svg" alt="" />{" "}
               </a>
               <a href="">
-                {" "}
                 <img src="./img/tiktok.svg" alt="" />{" "}
               </a>
             </div>
@@ -48,10 +44,10 @@ function Footer() {
               Atendimento <img src="./img/arrow-more.svg" />
             </h3>
             <p>
-              <b>Telefone:</b> (00) 1234-5678
+              <b>Telefone:</b> (67) 99846-8831
             </p>
             <p>
-              <b>E-mail:</b> exemplo@exemplo.com.br
+              <b>E-mail:</b> esilvavalencuela@gmail.com
             </p>
             <p>
               <b>Horário de atendimento:</b>
@@ -86,7 +82,7 @@ function Footer() {
         <div className="parceiros">
           <img className="lets-encrypt" src="./img/lets-encrypt.svg" alt="" />
           <img className="vtex-pci" src="./img/vtex-pci.svg" alt="" />
-          <img className="logo" src="./img/logo.svg" alt="" />
+          <img className="logo" src="/LOGO_MARCA.png" alt="" />
           <img className="vtex-logo" src="./img/VTEX_Logo.svg" alt="" />
         </div>
       </div>

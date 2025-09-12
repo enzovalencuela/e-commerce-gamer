@@ -1,9 +1,13 @@
+import Foto from "../assets/jogos.jpg";
+import Foto2 from "../assets/pc_gamer.png";
+import Foto3 from "../assets/fundo_pc.jpg";
+
 function About() {
   return (
     <>
       <section className="section-foto">
         <div className="div-foto__img">
-          <img src="./img/caneca.svg" alt="" />
+          <img src={Foto} alt="" />
         </div>
         <div className="div-foto__text">
           <h2>Lorem ipsum</h2>
@@ -56,12 +60,12 @@ function About() {
           </div>
         </div>
         <div className="div-foto__img2">
-          <img src="./img/segundaCaneca.svg" alt="" />
+          <img src={Foto2} alt="" />
         </div>
       </section>
       <section className="section-foto">
         <div className="div-foto__img">
-          <img src="./img/caneca.svg" alt="" />
+          <img src={Foto3} alt="" />
         </div>
         <div className="div-foto__text">
           <h2>Lorem ipsum</h2>

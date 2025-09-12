@@ -12,6 +12,7 @@ const products = [
     preco: "99,90",
     precoOriginal: "110,00",
     parcelamento: "3x de R$ 33,30",
+    img: "https://cdn.awsli.com.br/2500x2500/1307/1307157/produto/138258516/cd9356d94a.jpg",
   },
   {
     id: 2,
@@ -19,6 +20,7 @@ const products = [
     preco: "149,99",
     precoOriginal: "160,00",
     parcelamento: "5x de R$ 30,00",
+    img: "https://img.terabyteshop.com.br/produto/g/mouse-gamer-razer-cobra-rgb-6-botoes-programaveis-8500-dpi-black-rz0104650100r3u_180092.jpg",
   },
   {
     id: 3,
@@ -26,6 +28,7 @@ const products = [
     preco: "250,00",
     precoOriginal: "280,00",
     parcelamento: "6x de R$ 41,67",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT7v4_hBRpFke1LOCdKc_wpQk8rkIifTQiNw&s",
   },
   {
     id: 4,
@@ -33,6 +36,7 @@ const products = [
     preco: "1.500,00",
     precoOriginal: "1.700,00",
     parcelamento: "10x de R$ 150,00",
+    img: "https://images.kabum.com.br/produtos/fotos/525503/monitor-gamer-aoc-23-8-full-hd-100hz-1ms-ips-displayport-e-hdmi-adaptive-sync-24g2e1_1710771975_gg.jpg",
   },
   {
     id: 5,
@@ -40,6 +44,7 @@ const products = [
     preco: "89,90",
     precoOriginal: "100,00",
     parcelamento: "3x de R$ 30,00",
+    img: "https://m.media-amazon.com/images/I/61-K2lXmHQL._UF894,1000_QL80_.jpg",
   },
 ];
 
@@ -98,6 +103,7 @@ const Home: React.FC = () => {
               preco={product.preco}
               precoOriginal={product.precoOriginal}
               parcelamento={product.parcelamento}
+              img={product.img}
               handleBuy={() => handleBuyProduct(product.id)}
             />
           </div>

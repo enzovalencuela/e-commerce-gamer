@@ -89,6 +89,10 @@
     }
   }
 
+  .logo_marca {
+    width: 60px;
+  }
+
   .div-ul {
     background-color: #ffffff;
     position: absolute;
@@ -115,7 +119,7 @@
 
   /*!PRA CIMA JÁ FOI ESTILIZADO -------------------------------------------------------------------------------------*/
 
-  #menu-categorias {
+  .menu-categorias {
     width: 100vw;
     height: auto;
     top: 152px;
@@ -170,7 +174,6 @@
     justify-content: center;
     align-items: center;
     padding: 0 24px 0 0;
-    margin-top: 187px;
 
     img {
       width: 225px;
@@ -182,7 +185,7 @@
   }
 
   .div-outdoor__text {
-    align-items: start;
+    align-items: center;
 
     h2 {
       font-family: Nunito;
@@ -208,6 +211,7 @@
       font-size: 12px;
       line-height: 100%;
       text-transform: uppercase;
+      text-align: center;
     }
 
     h3 {

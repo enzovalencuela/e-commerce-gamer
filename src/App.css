@@ -14,6 +14,19 @@
   letter-spacing: 0%;
 }
 
+#root {
+  --primary: #0a9800;
+  --lightprimary: #22b724;
+  --secondary: #005cff;
+  --terciary: #6220c1;
+}
+
+button,
+a,
+li {
+  cursor: pointer;
+}
+
 /*?NAV DA PÁGINA -------------------------------------------------------------------------------------*/
 
 nav {
@@ -28,7 +41,7 @@ nav {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #005cff;
+  background-color: var(--secondary);
   height: 30px;
 
   p {
@@ -38,7 +51,7 @@ nav {
     line-height: 22px;
 
     b {
-      background-color: #6220c1;
+      background-color: var(--terciary);
       border-radius: 4px;
       padding-inline: 2px;
     }
@@ -58,19 +71,26 @@ nav {
   justify-content: space-around;
   align-items: center;
   gap: 24px;
+  width: 100vw;
   padding: 22px 180px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 15px;
 }
 
 .div-search {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 
-  img {
+  .div-user img {
     height: 27px;
   }
+}
+
+.logo_marca {
+  width: 120px;
+  object-fit: cover;
 }
 
 #img-menu {
@@ -112,6 +132,29 @@ nav {
   }
 }
 
+.search-response {
+  position: absolute;
+  display: flex;
+  gap: 20px;
+  background-color: #e8e8e8;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 580px;
+  font-size: 14px;
+  z-index: 10;
+
+  button {
+    background: none;
+    border: none;
+    font-weight: 900;
+    color: red;
+    cursor: pointer;
+  }
+  button:hover {
+    color: rgb(253, 14, 14);
+  }
+}
+
 .div-user {
   display: flex;
   justify-content: center;
@@ -127,6 +170,7 @@ nav {
 
 .div-ul {
   width: 100%;
+  gap: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -148,7 +192,7 @@ nav {
   font-weight: 700;
   font-size: 14px;
   line-height: 22px;
-  color: #005cff;
+  color: var(--primary);
   position: relative;
 }
 
@@ -189,22 +233,18 @@ nav {
   font-size: 14px;
   line-height: 22px;
   gap: 10px;
-  padding-left: 25px;
 }
 
-#menu-categorias {
+.menu-categorias {
   position: absolute;
   background-color: #ffffff;
-  display: none;
+  display: block;
   width: 1191px;
   height: 329px;
+  padding: 40px;
   top: 22px;
   left: -5px;
   box-shadow: -1px 4px 13px -5px rgba(0, 0, 0, 0.1);
-}
-
-#menu-categorias.mostrar {
-  display: block;
 }
 
 .menu-conteudo {
@@ -229,149 +269,55 @@ nav {
   padding: 10px;
   cursor: pointer;
   font-family: Nunito Sans;
-  font-weight: 400;
   font-size: 14px;
-  line-height: 100%;
 }
 .active,
 .departamento:hover {
-  font-family: Nunito Sans;
   font-weight: 700;
-  font-size: 14px;
-  line-height: 100%;
-  color: #005cff;
+  color: var(--primary);
 }
 
-.categorias-container {
-  flex: 1;
-  padding: 5px;
-  width: 100%;
-}
-
-.categorias-colunas {
-  display: flex;
-  gap: 30px;
-  display: flex;
-}
-
-.coluna {
+.departamentos-list {
   display: flex;
   flex-direction: column;
-  list-style: none;
-  width: 160px;
-  gap: 10px;
+  gap: 5px;
 }
 
-.coluna li a {
-  display: block;
-  padding: 5px;
-  text-decoration: none;
-  color: #656565;
-  font-family: Nunito Sans;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 100%;
-}
-
-.coluna li a:hover {
-  font-family: Nunito Sans;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 100%;
-  color: #005cff;
-}
-
-.img-categorias {
+.categorias-container-right {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: start;
-  background-image: linear-gradient(
-      to left,
-      rgba(0, 0, 0, 0.75),
-      rgba(0, 0, 0, 0)
-    ),
-    url(./img/segundaCaneca.svg);
-  background-size: cover;
-  width: 236px;
-  height: 298px;
-  border-radius: 10px;
-  padding: 40px 60px 40px 44px;
-  gap: 35px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  gap: 20px;
 
   h3 {
-    font-family: Nunito Sans;
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 27px;
-    letter-spacing: -0.5%;
-    color: #ffffff;
-
-    b {
-      font-family: Nunito Sans;
-      font-weight: 700;
-      font-size: 24px;
-      line-height: 27px;
-    }
+    font-size: 16px;
   }
 
   button {
-    background-color: transparent;
-    width: 116px;
-    height: 38px;
-    border: 1px solid #ffffff;
-    border-radius: 10px;
+    background-color: var(--primary);
+    border-radius: 6px;
+    border: none;
+    padding: 8px 12px;
     color: #ffffff;
-    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
   }
 }
-
-#categorias-exibidas {
-  position: absolute;
-  background-color: #ffffff;
-  display: none;
-  width: 1191px;
-  height: 329px;
-  top: 44px;
-  left: -5px;
-  box-shadow: -1px 4px 13px -5px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  padding: 15px 25px 15px 15px;
-  flex-direction: row;
-}
-
-#categorias-exibidas.mostrar {
-  display: flex;
-}
-
-#categorias-exibidas .categorias-container-left {
-  flex: 1; /* Ocupa o espaço restante */
-  display: flex;
-  flex-direction: column; /* Posiciona o título e as categorias em coluna */
-}
-
-#categorias-exibidas .departamento-titulo {
-  padding: 0px 5px 10px;
-}
-
-#categorias-exibidas .categorias-colunas {
-  display: flex;
-  flex-wrap: wrap; /* Permite que as categorias quebrem para a próxima linha */
-}
-
 /*?SECTION DE OUTDOOR -------------------------------------------------------------------------------------*/
 
 .section-outdoor {
-  background-color: #e7e7ea;
+  background-color: #d7d7d7;
   height: 510px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  padding: 0 170px;
   margin-block: 0px 40px;
+  padding: 10px 100px;
 
   img {
-    height: 100%;
+    height: 120%;
+    object-fit: cover;
   }
 }
 
@@ -397,7 +343,7 @@ nav {
 
   p {
     font-family: Nunito;
-    color: #005cff;
+    color: var(--secondary);
     font-weight: 700;
     font-size: 25px;
     line-height: 100%;
@@ -407,7 +353,7 @@ nav {
 
   h3 {
     font-family: Nunito;
-    color: #005cff;
+    color: var(--secondary);
     font-weight: 700;
     font-size: 60px;
     line-height: 100%;
@@ -460,7 +406,6 @@ nav {
 }
 
 .card-item {
-  user-select: none;
   display: block;
   gap: 10px;
   width: 238px;
@@ -470,6 +415,12 @@ nav {
   padding: 10px;
   transition: 0.2s ease;
   position: relative;
+
+  img {
+    width: 228px;
+    height: auto;
+    object-fit: cover;
+  }
 
   .span-new {
     background-color: #00264e;
@@ -489,7 +440,7 @@ nav {
   }
 
   button {
-    background-color: #005cff;
+    background-color: var(--primary);
     width: 100%;
     height: 40px;
     border: none;
@@ -500,6 +451,10 @@ nav {
     font-weight: 700;
     font-size: 14px;
     line-height: 20px;
+  }
+
+  button:hover {
+    background-color: var(--lightprimary);
   }
 }
 
@@ -559,7 +514,7 @@ nav {
   background-color: #5ec0be;
   width: 70px;
   height: 20px;
-  top: 40px;
+  top: 37px;
   left: 80px;
   gap: 10px;
   border-radius: 4px;
@@ -623,6 +578,7 @@ nav {
   img {
     width: 652px;
     height: 747px;
+    object-fit: cover;
   }
 }
 
@@ -713,7 +669,7 @@ nav {
 /*?SECTION DE BANNER----------------------------------------------------------------------------------------*/
 
 .section-banner {
-  background-image: url(./img/banner.svg);
+  background-image: url(./assets//tech_gamers.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -725,7 +681,7 @@ nav {
   position: relative;
 
   div {
-    background-color: #005cff;
+    background-color: var(--primary);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -776,7 +732,7 @@ nav {
     line-height: 100%;
 
     b {
-      color: #005cff;
+      color: var(--primary);
     }
   }
 }
@@ -803,7 +759,7 @@ nav {
   }
 
   button {
-    background-color: #005cff;
+    background-color: var(--primary);
     width: 121px;
     height: 48px;
     gap: 10px;
@@ -820,7 +776,7 @@ nav {
   }
 
   button:hover {
-    background-color: #0049c8;
+    background-color: var(--primary);
   }
 }
 
@@ -954,7 +910,7 @@ footer {
 }
 
 .logo {
-  height: 10px;
+  height: 30px;
 }
 
 .vtex-logo {
@@ -965,7 +921,7 @@ footer {
 
 .resposta {
   background-color: #f5f5f5;
-  border: 1px solid #152fa3;
+  border: 1px solid var(--primary);
   border-radius: 16px;
   display: flex;
   flex-direction: column;

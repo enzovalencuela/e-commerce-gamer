@@ -26,7 +26,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ children }) => {
           prevEl: ".swiper-button-prev",
         },
         breakpoints: {
-          0: { slidesPerView: 2 },
+          0: { slidesPerView: 1 },
           768: { slidesPerView: 3 },
           1024: { slidesPerView: 5 },
         },

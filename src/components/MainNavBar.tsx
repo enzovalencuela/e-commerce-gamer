@@ -17,7 +17,7 @@ const MainNavbar: React.FC<MainNavbarProps> = ({ onSearch, onMenuClick }) => {
         alt="Menu"
         onClick={onMenuClick}
       />
-      <img src="./img/logo.svg" alt="Logo" className="logo" />
+      <img src="/LOGO_MARCA.png" alt="Logo" className="logo_marca" />
       <SearchBar onSearch={onSearch} />
       <div className="div-user">
         <img

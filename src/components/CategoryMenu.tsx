@@ -1,43 +1,6 @@
 // src/components/CategoryMenu.tsx
 
 import React, { useState } from "react";
-import CategoryList from "./CategoryList";
-
-// Dados de exemplo (tipados)
-const categoriesData: Record<string, { nome: string; link: string }[]> = {
-  "1": Array.from({ length: 24 }, (_, i) => ({
-    nome: `Categoria 1.${i + 1}`,
-    link: "#",
-  })),
-  "2": Array.from({ length: 24 }, (_, i) => ({
-    nome: `Categoria 2.${i + 1}`,
-    link: "#",
-  })),
-  "3": Array.from({ length: 24 }, (_, i) => ({
-    nome: `Categoria 3.${i + 1}`,
-    link: "#",
-  })),
-  "4": Array.from({ length: 24 }, (_, i) => ({
-    nome: `Categoria 4.${i + 1}`,
-    link: "#",
-  })),
-  "5": Array.from({ length: 24 }, (_, i) => ({
-    nome: `Categoria 5.${i + 1}`,
-    link: "#",
-  })),
-  "6": Array.from({ length: 24 }, (_, i) => ({
-    nome: `Categoria 6.${i + 1}`,
-    link: "#",
-  })),
-  "7": Array.from({ length: 24 }, (_, i) => ({
-    nome: `Categoria 7.${i + 1}`,
-    link: "#",
-  })),
-  "8": Array.from({ length: 24 }, (_, i) => ({
-    nome: `Categoria 8.${i + 1}`,
-    link: "#",
-  })),
-};
 
 const departments = [
   { id: "1", name: "Eletrônicos" },
@@ -78,10 +41,9 @@ const CategoryMenu: React.FC = () => {
           <div className="categorias-exibidas">
             {selectedDept && (
               <div className="categorias-content">
-                <CategoryList categories={categoriesData[selectedDept] || []} />
                 <div className="categorias-container-right">
                   <h3>
-                    Confira os Produtos<b>Que acabaram de chegar</b>
+                    Confira os Produtos<b> Que acabaram de chegar</b>
                   </h3>
                   <button>Ver todos</button>
                 </div>

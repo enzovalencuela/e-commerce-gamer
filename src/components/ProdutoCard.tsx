@@ -8,6 +8,7 @@ interface ProdutoCardProps {
   preco: string;
   precoOriginal: string;
   parcelamento: string;
+  img: string;
   // O handleBuy agora é uma função que recebe um número (ID) e não retorna nada.
   handleBuy: (productId: number) => void;
 }
@@ -18,12 +19,13 @@ const ProdutoCard: React.FC<ProdutoCardProps> = ({
   preco,
   precoOriginal,
   parcelamento,
+  img,
   handleBuy,
 }) => {
   return (
     <li className="card-item swiper-slide">
       <span className="span-new">novo</span>
-      <img src="./img/modelo.svg" alt="" />
+      <img src={img} alt="" />
       <div className="produto__text">
         <span className="off">10% off</span>
         <h3>{titulo}</h3>
