@@ -57,18 +57,21 @@ const Home: React.FC = () => {
       }
 
       // 2. Chama a API do back-end para criar a preferência de pagamento
-      const response = await fetch("http://localhost:3001/create_preference", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: productToBuy.id,
-          title: productToBuy.titulo,
-          price: parseFloat(productToBuy.preco.replace(",", ".")),
-          quantity: 1,
-        }),
-      });
+      const response = await fetch(
+        "https://back-end-pagamento.vercel.app/api/payments/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: productToBuy.id,
+            title: productToBuy.titulo,
+            price: parseFloat(productToBuy.preco.replace(",", ".")),
+            quantity: 1,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Erro ao criar a preferência de pagamento.");
