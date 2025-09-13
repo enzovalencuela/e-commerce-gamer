@@ -102,7 +102,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
         spaceBetween={20}
       >
         {products.map((product, index) => (
-          <SwiperSlide key={index}>
+          <SwiperSlide key={index} className="product">
             <div>
               <span className="span-new">novo</span>
               <img src={product.img} alt="" />

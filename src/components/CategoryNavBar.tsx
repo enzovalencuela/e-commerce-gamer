@@ -1,9 +1,8 @@
 // src/components/CategoryNavbar.tsx
 
 import React, { useState } from "react";
-import CategoryMenu from "./CategoryMenu"; // Importando o componente que já criamos
+import CategoryMenu from "./CategoryMenu";
 
-// Dados de exemplo para os departamentos da navegação
 const navDepartments = [
   { id: "1", name: "PC Gamer" },
   { id: "2", name: "Notebooks" },

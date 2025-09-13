@@ -1,6 +1,7 @@
 // src/App.tsx
 
 import "./App.css";
+import "./AppTablet.css";
 import "./AppMobile.css";
 import About from "./pages/About.tsx";
 import Footer from "./pages/Footer.tsx";
@@ -13,6 +14,7 @@ function App() {
   const handleSearch = (query: string) => {
     console.log(`Buscando por: "${query}"`);
   };
+
   return (
     <>
       <Header onSearch={handleSearch} />

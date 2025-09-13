@@ -1,27 +1,24 @@
 // src/components/MobileMenu.tsx
-/*
-import React, { useState } from "react";
 
-// Crie a interface para as props
+import React from "react";
+
 interface MobileMenuProps {
   onClose: () => void;
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({ onClose }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-}
   return (
-    <div className="mobile-menu-container">
-      <img
-        id="img-menu"
-        src="./img/menu-icon.svg" // Substitua pelo caminho real do ícone
-        alt="Menu"
-        onClick={() => setIsOpen(!isOpen)}
-      />
-      <div className={`div-ul ${isOpen ? "open" : ""}`}>
+    <div className="mobile-menu-container open">
+      <button className="close-button" onClick={onClose}>
+        X
+      </button>
+      <div className="div-ul-mobile">
         <ul>
           <li>Link 1</li>
+          <li>Link 2</li>
+          <li>Link 2</li>
+          <li>Link 2</li>
+          <li>Link 2</li>
           <li>Link 2</li>
         </ul>
       </div>
@@ -30,5 +27,3 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onClose }) => {
 };
 
 export default MobileMenu;
-
-*/

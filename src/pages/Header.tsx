@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import TopBar from "../components/TopBar";
 import MainNavbar from "../components/MainNavBar";
 import CategoryNavbar from "../components/CategoryNavBar";
+import MobileMenu from "../components/MobileMenu";
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -22,8 +23,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
         />
         <CategoryNavbar />
       </div>
-      {/* O MobileMenu é renderizado condicionalmente */}
-      {isMobileMenuOpen && <></>}
+      {isMobileMenuOpen && (
+        <MobileMenu onClose={() => setIsMobileMenuOpen(false)} />
+      )}
     </header>
   );
 };

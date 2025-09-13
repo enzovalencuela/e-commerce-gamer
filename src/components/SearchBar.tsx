@@ -38,7 +38,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       {message && (
         <div className="search-response">
           <p className="message">{message}</p>
-          <button onClick={() => setMessage("")}>X</button>
+          <button className="close-button" onClick={() => setMessage("")}>
+            X
+          </button>
         </div>
       )}
     </div>
