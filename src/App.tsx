@@ -11,9 +11,7 @@ import Banner from "./pages/Banner.tsx";
 
 function App() {
   const handleSearch = (query: string) => {
-    // Esta função será passada para o Header e executada quando a busca for acionada
     console.log(`Buscando por: "${query}"`);
-    // Lógica para filtrar produtos ou redirecionar para uma página de resultados
   };
   return (
     <>

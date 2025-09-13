@@ -1,4 +1,4 @@
-@media screen and (max-width: 728px) {
+@media screen and (max-width: 1028px) {
   /*?NAV DA PÁGINA -------------------------------------------------------------------------------------*/
   nav {
     position: absolute;
@@ -90,7 +90,7 @@
   }
 
   .logo_marca {
-    width: 60px;
+    display: none;
   }
 
   .div-ul {
@@ -116,8 +116,6 @@
       display: none;
     }
   }
-
-  /*!PRA CIMA JÁ FOI ESTILIZADO -------------------------------------------------------------------------------------*/
 
   .menu-categorias {
     width: 100vw;
@@ -226,7 +224,6 @@
   /*?SECTION DE PRODUTOS -------------------------------------------------------------------------------------*/
   .section-produtos {
     padding: 60px 0px;
-    width: 92vw;
   }
 
   .div-produtos__title {
@@ -261,31 +258,13 @@
 
   .off {
     width: 68px;
-    top: 60px;
-    left: 70px;
+    top: 35px;
+    left: 75px;
     text-decoration: none;
   }
 
-  .card-item {
-    display: block;
-    border-radius: 10px;
-    border: 1px solid #dddddd;
-
+  .swiper-slide {
     padding: 10px;
-    position: relative;
-
-    img {
-      width: 100%;
-      object-fit: cover;
-    }
-  }
-
-  .card-wrapper {
-    margin: 0 10px 25px;
-  }
-
-  .swiper-button {
-    display: none;
   }
 
   /*?SECTION DE FOTO E TEXTO----------------------------------------------------------------------------------------*/
@@ -371,14 +350,9 @@
 
   /*?SEGUNDA SECTION DE PRODUTOS----------------------------------------------------------------------------------------*/
 
-  #section-produtos2 {
-    display: none;
-  }
-
   /*?SECTION DE BANNER----------------------------------------------------------------------------------------*/
 
   .section-banner {
-    background-image: url(./img/quartoBanner.svg);
     background-size: cover;
     background-repeat: no-repeat;
     height: 449px;

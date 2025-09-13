@@ -2,7 +2,6 @@ import React from "react";
 
 // Importando os componentes
 import ProductCarousel from "../components/ProductCarousel";
-import ProdutoCard from "../components/ProdutoCard";
 
 // Dados de produtos de exemplo para o carrossel (pode vir de uma API no futuro)
 const products = [
@@ -45,6 +44,22 @@ const products = [
     precoOriginal: "100,00",
     parcelamento: "3x de R$ 30,00",
     img: "https://m.media-amazon.com/images/I/61-K2lXmHQL._UF894,1000_QL80_.jpg",
+  },
+  {
+    id: 6,
+    titulo: "PlayStation 5",
+    preco: "3189,90",
+    precoOriginal: "3500,00",
+    parcelamento: "10x de R$ 320,00",
+    img: "https://m.media-amazon.com/images/I/41bsdF9lMPL._UF1000,1000_QL80_.jpg",
+  },
+  {
+    id: 7,
+    titulo: "Óculos VR Quest",
+    preco: "4950,90",
+    precoOriginal: "5500,00",
+    parcelamento: "12x de R$ 480,00",
+    img: "https://m.media-amazon.com/images/I/51pdPTbbjzL._UF894,1000_QL80_.jpg",
   },
 ];
 
@@ -90,25 +105,12 @@ const Home: React.FC = () => {
   };
 
   return (
-    <section className="section-produtos swiper" id="section-produtos2">
+    <section className="section-produtos">
       <div className="div-produtos__title">
         <h2>Lançamentos</h2>
         <button>Ver mais</button>
       </div>
-      <ProductCarousel>
-        {products.map((product) => (
-          <div key={product.id}>
-            <ProdutoCard
-              titulo={product.titulo}
-              preco={product.preco}
-              precoOriginal={product.precoOriginal}
-              parcelamento={product.parcelamento}
-              img={product.img}
-              handleBuy={() => handleBuyProduct(product.id)}
-            />
-          </div>
-        ))}
-      </ProductCarousel>
+      <ProductCarousel handleBuyProduct={handleBuyProduct} />
     </section>
   );
 };

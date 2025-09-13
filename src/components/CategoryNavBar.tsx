@@ -5,14 +5,14 @@ import CategoryMenu from "./CategoryMenu"; // Importando o componente que já cr
 
 // Dados de exemplo para os departamentos da navegação
 const navDepartments = [
-  { id: "1", name: "Departamento" },
-  { id: "2", name: "Departamento" },
-  { id: "3", name: "Departamento" },
-  { id: "4", name: "Departamento" },
-  { id: "5", name: "Departamento" },
-  { id: "6", name: "Departamento" },
-  { id: "7", name: "Departamento" },
-  { id: "8", name: "Departamento" },
+  { id: "1", name: "PC Gamer" },
+  { id: "2", name: "Notebooks" },
+  { id: "3", name: "Periféricos" },
+  { id: "4", name: "Consoles" },
+  { id: "5", name: "Componentes" },
+  { id: "6", name: "Monitores" },
+  { id: "7", name: "Realidade VR" },
+  { id: "8", name: "Hardware" },
 ];
 
 const CategoryNavbar: React.FC = () => {

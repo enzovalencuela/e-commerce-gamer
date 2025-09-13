@@ -3,14 +3,14 @@
 import React, { useState } from "react";
 
 const departments = [
-  { id: "1", name: "Eletrônicos" },
-  { id: "2", name: "Moda" },
-  { id: "3", name: "Casa" },
-  { id: "4", name: "Esporte" },
-  { id: "5", name: "Livros" },
-  { id: "6", name: "Brinquedos" },
-  { id: "7", name: "Jardinagem" },
-  { id: "8", name: "Beleza" },
+  { id: "1", name: "PC Gamer" },
+  { id: "2", name: "Notebooks" },
+  { id: "3", name: "Periféricos" },
+  { id: "4", name: "Consoles" },
+  { id: "5", name: "Componentes" },
+  { id: "6", name: "Monitores" },
+  { id: "7", name: "Realidade Virtual" },
+  { id: "8", name: "Hardware" },
 ];
 
 const CategoryMenu: React.FC = () => {
@@ -39,16 +39,7 @@ const CategoryMenu: React.FC = () => {
             ))}
           </ul>
           <div className="categorias-exibidas">
-            {selectedDept && (
-              <div className="categorias-content">
-                <div className="categorias-container-right">
-                  <h3>
-                    Confira os Produtos<b> Que acabaram de chegar</b>
-                  </h3>
-                  <button>Ver todos</button>
-                </div>
-              </div>
-            )}
+            {selectedDept && <div className="categorias-content"></div>}
           </div>
         </div>
       )}
