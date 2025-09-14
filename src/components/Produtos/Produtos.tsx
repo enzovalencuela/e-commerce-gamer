@@ -2,7 +2,7 @@ import React from "react";
 import ProductCarousel from "../ProductCarousel/ProductCarousel";
 import "./Produtos.css";
 
-const VITE_BACKEND_URL = import.meta.env.VITE__URL;
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const products = [
   {

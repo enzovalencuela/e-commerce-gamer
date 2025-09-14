@@ -1,3 +1,8 @@
+@media (min-width: 1028px) {
+  .swiper-slide.outdoor {
+    padding: 10px 100px;
+  }
+}
 .section-outdoor {
   height: 510px;
   display: flex;
@@ -8,7 +13,6 @@
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  padding: 10px 100px;
   margin-block: 0px 40px;
 
   img {
@@ -147,7 +151,7 @@
   }
 }
 
-@media (min-width: 8) and (max-width: 1028px) {
+@media (min-width: 738) and (max-width: 1028px) {
   .section-outdoor {
     height: 356px;
   }
