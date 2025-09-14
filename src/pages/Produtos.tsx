@@ -1,9 +1,6 @@
 import React from "react";
-
-// Importando os componentes
 import ProductCarousel from "../components/ProductCarousel";
 
-// Dados de produtos de exemplo para o carrossel (pode vir de uma API no futuro)
 const products = [
   {
     id: 1,
@@ -32,8 +29,8 @@ const products = [
   {
     id: 4,
     titulo: "Monitor Ultrawide",
-    preco: "1.500,00",
-    precoOriginal: "1.700,00",
+    preco: "1500,00",
+    precoOriginal: "1700,00",
     parcelamento: "10x de R$ 150,00",
     img: "https://images.kabum.com.br/produtos/fotos/525503/monitor-gamer-aoc-23-8-full-hd-100hz-1ms-ips-displayport-e-hdmi-adaptive-sync-24g2e1_1710771975_gg.jpg",
   },
@@ -64,8 +61,6 @@ const products = [
 ];
 
 const Home: React.FC = () => {
-  // Funções de callback para as ações da página
-
   const handleBuyProduct = async (productId: number) => {
     try {
       const productToBuy = products.find((p) => p.id === productId);
