@@ -1,3 +1,7 @@
+// src/components/Footer.jsx
+
+import LinkSection from "../components/LinkSection";
+
 function Footer() {
   return (
     <footer>
@@ -13,36 +17,30 @@ function Footer() {
                 <img src="./img/facebook.svg" alt="" />
               </a>
               <a href="">
-                <img src="./img/youtube.svg" alt="" />{" "}
+                <img src="./img/youtube.svg" alt="" />
               </a>
               <a href="">
-                <img src="./img/tiktok.svg" alt="" />{" "}
+                <img src="./img/tiktok.svg" alt="" />
               </a>
             </div>
           </div>
-          <div id="div-links" className="div-links institucional">
-            <h3>
-              Institucional <img src="./img/arrow-more.svg" />
-            </h3>
+
+          <LinkSection title="Institucional">
             <p>Sobre Nós</p>
             <p>Nossas Lojas</p>
             <p>Privacidade e Segurança</p>
             <p>Termos e Condições</p>
-          </div>
-          <div id="div-links" className="div-links central-ajuda">
-            <h3>
-              Central de ajuda <img src="./img/arrow-more.svg" />
-            </h3>
+          </LinkSection>
+
+          <LinkSection title="Central de ajuda">
             <p>Fale Conosco</p>
             <p>Frete e Entrega</p>
             <p>Trocas e Devoluções</p>
             <p>Formas de Pagamento</p>
             <p>FAQ</p>
-          </div>
-          <div id="div-links" className="div-links atendimento">
-            <h3>
-              Atendimento <img src="./img/arrow-more.svg" />
-            </h3>
+          </LinkSection>
+
+          <LinkSection title="Atendimento">
             <p>
               <b>Telefone:</b> (67) 99846-8831
             </p>
@@ -54,7 +52,7 @@ function Footer() {
             </p>
             <p>Segunda a Sábado: 07h00 às 23h00</p>
             <p>Domingos e Feriados: 07h00 às 21h00</p>
-          </div>
+          </LinkSection>
         </div>
         <div className="meios-pagamento">
           <img src="./img/amex.svg" alt="" />
@@ -70,14 +68,17 @@ function Footer() {
       </div>
       <div className="div-footer2">
         <p>
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam
-          nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
-          volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
-          ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
-          Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse
-          molestie consequat, vel illum dolore eu feugiat nulla facilisis at
-          vero eros et accumsan et iusto odio dignissim qui blandit praesent
-          luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+          Este site é um projeto fictício, criado com o propósito de estudo e
+          aprimoramento em tecnologias web. Ele serve como um laboratório para a
+          aplicação de conceitos de front-end e back-end, focando em algumas das
+          ferramentas e técnicas mais relevantes do mercado. Nosso principal
+          objetivo com este site é simular um ambiente de e-commerce real. Para
+          isso, exploramos a integração de sistemas de pagamento, a manipulação
+          de dados de produtos, a criação de interfaces de usuário responsivas e
+          dinâmicas, e a otimização de performance para garantir uma experiência
+          de navegação fluida. Todas as funcionalidades e produtos são para fins
+          educacionais, permitindo que as tecnologias sejam testadas e
+          compreendidas em um contexto prático.
         </p>
         <div className="parceiros">
           <img className="lets-encrypt" src="./img/lets-encrypt.svg" alt="" />

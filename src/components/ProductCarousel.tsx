@@ -93,10 +93,10 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
         slideToClickedSlide
         pagination={{ clickable: true }}
         breakpoints={{
-          320: { slidesPerView: 1, centeredSlides: true },
-          490: { slidesPerView: 2 },
-          800: { slidesPerView: 3 },
-          1200: { slidesPerView: 4 },
+          0: { slidesPerView: 1 },
+          430: { slidesPerView: 2 },
+          660: { slidesPerView: 3 },
+          950: { slidesPerView: 4 },
           1290: { slidesPerView: 5 },
         }}
         spaceBetween={20}
@@ -105,14 +105,16 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
           <SwiperSlide key={index} className="product">
             <div>
               <span className="span-new">novo</span>
+              <span className="off">10% off</span>
               <img src={product.img} alt="" />
               <div className="produto__text">
-                <span className="off">10% off</span>
                 <h3>{product.titulo}</h3>
                 <p>R${product.precoOriginal} </p>
-                <h4>R$ {product.preco}</h4>
+                <h4>
+                  R$ {product.preco} <span>Ou</span>
+                </h4>
                 <span>
-                  Ou em até <b>{product.parcelamento}</b>
+                  em até <b>{product.parcelamento}</b>
                 </span>
               </div>
               <button onClick={() => handleBuyProduct(product.id)}>

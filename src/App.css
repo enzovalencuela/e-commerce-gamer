@@ -189,103 +189,11 @@ nav {
   font-size: 14px;
   line-height: 14px;
   cursor: pointer;
-  width: 90px;
 }
 
-.li-departamento:hover,
-#todasCategorias:hover {
-  font-family: Nunito Sans;
-  font-weight: 700;
+.li-departamento:hover {
   font-size: 14px;
-  line-height: 22px;
   color: var(--primary);
-  position: relative;
-}
-
-#todasCategorias {
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-family: Nunito Sans;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 22px;
-  gap: 10px;
-}
-
-.menu-categorias {
-  position: absolute;
-  background-color: #ffffff;
-  display: block;
-  width: 1191px;
-  height: 329px;
-  padding: 40px;
-  top: 35px;
-  left: -5px;
-  box-shadow: -1px 4px 13px -5px rgba(0, 0, 0, 0.1);
-  z-index: 3;
-}
-
-.menu-conteudo {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  padding: 15px 25px 10px 0px;
-}
-
-.departamentos {
-  background-color: #f5f5f5;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 200px;
-  height: 313px;
-}
-
-.departamento {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  cursor: pointer;
-  font-family: Nunito Sans;
-  font-size: 14px;
-}
-.active,
-.departamento:hover {
-  font-weight: 700;
-  color: var(--primary);
-}
-
-.departamentos-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.categorias-container-right {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: start;
-  gap: 20px;
-
-  h3 {
-    font-size: 16px;
-  }
-
-  button {
-    background-color: var(--primary);
-    border-radius: 6px;
-    border: none;
-    padding: 8px 12px;
-    color: #ffffff;
-    font-weight: 600;
-    font-size: 14px;
-  }
 }
 /*?SECTION DE OUTDOOR -------------------------------------------------------------------------------------*/
 
@@ -314,6 +222,10 @@ nav {
 
 .swiper-slide.outdoor.slide2 {
   background-color: #7c1919;
+}
+
+.swiper-slide.outdoor.slide3 {
+  background-color: #c6edec;
 }
 
 .div-outdoor__text {
@@ -362,6 +274,10 @@ nav {
   h3 {
     color: var(--secondary);
   }
+
+  h2 {
+    color: #1b1b1b;
+  }
 }
 
 .slide2 .div-outdoor__text {
@@ -371,6 +287,24 @@ nav {
 
   h3 {
     color: white;
+  }
+
+  h2 {
+    color: #000;
+  }
+}
+
+.slide3 .div-outdoor__text {
+  p {
+    color: rgb(13, 74, 94);
+  }
+
+  h3 {
+    color: rgb(30, 130, 142);
+  }
+
+  h2 {
+    color: #002d30;
   }
 }
 
@@ -432,6 +366,7 @@ nav {
   user-select: none;
 
   img {
+    margin-top: 10px;
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
@@ -445,12 +380,27 @@ nav {
     left: 8px;
     border-radius: 4px;
     color: #ffffff;
-    font-family: Nunito Sans;
     font-weight: 700;
     font-size: 10px;
     line-height: 22px;
     text-transform: uppercase;
     text-align: center;
+    position: absolute;
+  }
+
+  .off {
+    width: 67px;
+    height: 22px;
+    top: 7px;
+    right: 8px;
+    background-color: #5ec0be;
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    text-decoration: underline;
     position: absolute;
   }
 
@@ -520,26 +470,6 @@ nav {
       line-height: 100%;
     }
   }
-}
-
-.off {
-  background-color: #5ec0be;
-  width: 70px;
-  height: 20px;
-  top: 35px;
-  left: 95px;
-  gap: 10px;
-  border-radius: 4px;
-  padding: 4px 8px;
-  color: #ffffff;
-  font-family: Nunito Sans;
-  font-weight: 700;
-  font-size: 11px;
-  line-height: 12px;
-  text-transform: uppercase;
-  text-decoration: underline;
-  text-align: center;
-  position: absolute;
 }
 
 /*?SECTION DE FOTO E TEXTO----------------------------------------------------------------------------------------*/
@@ -870,7 +800,7 @@ footer {
   gap: 10px;
 }
 
-#div-links h3 img {
+.div-links h3 img {
   display: none;
 }
 
@@ -950,4 +880,217 @@ footer {
   p {
     color: red;
   }
+}
+
+/*?RESPOSTA DE ERRO--------------------------------------------------------------------------------------------------*/
+
+.error-message-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.error-message-container {
+  background-color: #fff;
+  padding: 30px;
+  margin: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  text-align: center;
+}
+
+.error-message-text {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.error-message-close-button {
+  padding: 10px 20px;
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.error-message-close-button:hover {
+  background-color: var(--lightprimary);
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.checkbox-container label {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.error-message-close-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.error-message-close-button:hover:disabled {
+  background-color: #ccc;
+}
+
+/*?FORM--------------------------------------------------------------------------------------------------*/
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background-color: #f0f2f5;
+  padding: 20px;
+}
+
+.form {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.form h2 {
+  margin-bottom: 25px;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.error-message {
+  color: #ff3860;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+.form-link {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.form-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.form-link a:hover {
+  text-decoration: underline;
+}
+
+/*?ACCOUNT--------------------------------------------------------------------------------------------------*/
+
+.account-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  background-color: #f0f2f5;
+  padding: 20px;
+  text-align: center;
+}
+
+.account-container h2 {
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 2rem;
+}
+
+.user-info {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+.user-info p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.user-info strong {
+  color: #333;
+}
+
+.logout-button {
+  padding: 12px 25px;
+  background-color: #dc3545; /* Cor vermelha para "Sair" */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
 }

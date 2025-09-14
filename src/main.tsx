@@ -2,28 +2,67 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-
 import App from "./App.tsx";
-
-// import function to register Swiper custom elements
 import { register } from "swiper/element/bundle";
-// register Swiper custom elements
 register();
-
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-// Importe a página de sucesso que vamos criar
-
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { useAuth } from "./contexts/AuthContext";
 import SuccessPage from "./pages/Success.tsx";
 import StatusPage from "./pages/Status.tsx";
+import Register from "./pages/Register.tsx";
+import Login from "./pages/Login.tsx";
+import Account from "./pages/Account.tsx";
+
+// eslint-disable-next-line react-refresh/only-export-components
+const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { user } = useAuth();
+  return user ? <>{children}</> : <Navigate to="/login" />;
+};
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/success" element={<SuccessPage />} />
-        <Route path="/status" element={<StatusPage />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <App />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/account"
+            element={
+              <PrivateRoute>
+                <Account />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/success"
+            element={
+              <PrivateRoute>
+                <SuccessPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/status"
+            element={
+              <PrivateRoute>
+                <StatusPage />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

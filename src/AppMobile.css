@@ -82,6 +82,7 @@
     gap: 10px;
 
     li {
+      font-weight: 700;
       padding: 10px;
       border-bottom: 1px solid #606060;
       transition: color 0.2s ease-in-out;
@@ -104,7 +105,7 @@
     margin: 0;
 
     img {
-      width: 200px;
+      min-width: 200px;
       object-position: right;
     }
   }
@@ -221,16 +222,23 @@
     padding: 30px;
   }
 
-  #div-links {
+  .div-links {
     width: 100%;
-  }
-
-  .div-links p {
-    display: none;
     padding-inline: 16px;
+
+    p {
+      display: none;
+    }
   }
 
-  #div-links h3 {
+  .div-links.aberto p {
+    display: block;
+    text-align: start;
+    padding: 0px 30px;
+    cursor: pointer;
+  }
+
+  .div-links h3 {
     justify-content: space-between;
     padding: 16px 30px;
     display: flex;
@@ -239,13 +247,14 @@
     width: 100%;
   }
 
-  #div-links h3 img {
+  .div-links h3 img {
+    transition: transform 0.3s ease-in-out;
     display: block;
+    width: 15px;
   }
 
-  .aberto.div-links p {
-    display: flex;
-    text-align: start;
+  .div-links.aberto h3 img {
+    transform: rotate(180deg);
   }
 
   .meios-pagamento {
@@ -257,8 +266,9 @@
   /*SEGUNDA PARTE DO FOOTER---------------------------------------------------*/
 
   .div-footer2 {
-    padding: 40px 20px 20px 20px;
+    padding: 40px 20px;
     gap: 30px;
+    height: auto;
   }
 
   .parceiros {
