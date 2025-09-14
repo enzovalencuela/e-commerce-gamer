@@ -33,6 +33,25 @@
     }
   }
 
+  .div-account {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    gap: 20px;
+    padding-bottom: 20px;
+
+    p {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 14px;
+      list-style: none;
+      text-decoration: none;
+      color: black;
+    }
+  }
+
   .div-span {
     height: 52px;
     padding-inline: 20px;
@@ -66,8 +85,7 @@
     z-index: 3;
 
     button {
-      align-self: flex-end;
-      margin-bottom: 20px;
+      margin-block: 20px;
     }
   }
 

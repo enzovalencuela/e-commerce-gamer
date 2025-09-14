@@ -1,7 +1,8 @@
 // src/pages/Register.tsx
 
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import AuthFormLayout from "../components/AuthFormLayout";
 
 const Register: React.FC = () => {
   const [name, setName] = useState("");
@@ -13,7 +14,6 @@ const Register: React.FC = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validação básica
     if (!name || !email || !password) {
       setError("Todos os campos são obrigatórios.");
       return;
@@ -53,9 +53,15 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="form-container">
-      <form className="form" onSubmit={handleRegister}>
-        <h2>Cadastre-se</h2>
+    <AuthFormLayout
+      title="Cadastre-se"
+      welcomeTitle="Bem-vindo de volta!"
+      welcomeMessage="Para se conectar, faça login com seus dados."
+      welcomeButtonText="Entrar"
+      welcomeButtonLink="/login"
+      showLogo={true}
+    >
+      <form className="auth-form" onSubmit={handleRegister}>
         <div className="form-group">
           <label htmlFor="name">Nome</label>
           <input
@@ -90,11 +96,8 @@ const Register: React.FC = () => {
         <button type="submit" className="submit-button">
           Cadastrar
         </button>
-        <p className="form-link">
-          Já tem uma conta? <Link to="/login">Faça login</Link>
-        </p>
       </form>
-    </div>
+    </AuthFormLayout>
   );
 };
 

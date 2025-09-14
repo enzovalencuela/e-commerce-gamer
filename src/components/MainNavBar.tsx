@@ -23,7 +23,6 @@ const MainNavbar: React.FC<MainNavbarProps> = ({ onSearch, onMenuClick }) => {
       />
       <img src="/LOGO_MARCA.png" alt="Logo" className="logo_marca" />
       <SearchBar onSearch={onSearch} />
-      {/* A div agora é um link */}
       <Link to={user ? "/account" : "/login"} className="div-user">
         <img
           id="icon_person"
@@ -35,8 +34,8 @@ const MainNavbar: React.FC<MainNavbarProps> = ({ onSearch, onMenuClick }) => {
           <br />
           {user ? user.name : "Faça login!"}
         </p>
-        <img src="./img/car.svg" alt="Ícone de carrinho" />
       </Link>
+      <img src="./img/car.svg" alt="Ícone de carrinho" />
     </div>
   );
 };

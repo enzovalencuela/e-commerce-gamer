@@ -1,8 +1,9 @@
 // src/pages/Login.tsx
 
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import AuthFormLayout from "../components/AuthFormLayout";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -33,9 +34,7 @@ const Login: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message || "Erro ao fazer login. Verifique suas credenciais."
-        );
+        throw new Error(data.message || "Email ou senha incorretos.");
       }
 
       login(data.user);
@@ -46,9 +45,15 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="form-container">
-      <form className="form" onSubmit={handleLogin}>
-        <h2>Acesse sua conta</h2>
+    <AuthFormLayout
+      title="Entrar"
+      welcomeTitle="Olá, amigo!"
+      welcomeMessage="Registre-se com seus dados pessoais para usar todos os recursos do site."
+      welcomeButtonText="Inscrever"
+      welcomeButtonLink="/register"
+      showLogo={true}
+    >
+      <form className="auth-form" onSubmit={handleLogin}>
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
@@ -73,11 +78,8 @@ const Login: React.FC = () => {
         <button type="submit" className="submit-button">
           Entrar
         </button>
-        <p className="form-link">
-          Não tem uma conta? <Link to="/register">Cadastre-se</Link>
-        </p>
       </form>
-    </div>
+    </AuthFormLayout>
   );
 };
 

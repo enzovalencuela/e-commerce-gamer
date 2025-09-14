@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import TopBar from "../components/TopBar";
 import MainNavbar from "../components/MainNavBar";
+import { useAuth } from "../contexts/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 
 const navDepartments = [
   { id: "1", name: "PC Gamer" },
@@ -20,7 +22,14 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onSearch }) => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <header>
@@ -46,6 +55,17 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
           >
             X
           </button>
+          <Link to={user ? "/account" : "/login"} className="div-account">
+            <img
+              id="icon_person"
+              src="./img/icon_person.svg"
+              alt="Ícone de perfil"
+            />
+            <p>
+              Olá,
+              {user ? ` ${user.name}` : " Faça login!"}
+            </p>
+          </Link>
           <div className="div-ul-mobile">
             <ul>
               {navDepartments.map((dept) => (
@@ -53,6 +73,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               ))}
             </ul>
           </div>
+          <button onClick={handleLogout} className="logout-button">
+            Sair
+          </button>
         </div>
       )}
     </header>
