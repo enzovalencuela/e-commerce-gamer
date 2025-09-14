@@ -8,11 +8,10 @@ register();
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
-import SuccessPage from "./pages/Success.tsx";
-import StatusPage from "./pages/Status.tsx";
-import Register from "./pages/Register.tsx";
-import Login from "./pages/Login.tsx";
-import Account from "./pages/Account.tsx";
+import Register from "./pages/Register/Register.tsx";
+import Login from "./pages/Login/Login.tsx";
+import Account from "./pages/Account/Account.tsx";
+import Carrinho from "./pages/Carrinho/Carrinho.tsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
@@ -46,18 +45,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             }
           />
           <Route
-            path="/success"
+            path="/carrinho"
             element={
               <PrivateRoute>
-                <SuccessPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/status"
-            element={
-              <PrivateRoute>
-                <StatusPage />
+                <Carrinho />
               </PrivateRoute>
             }
           />

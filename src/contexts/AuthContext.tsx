@@ -24,16 +24,12 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  // Função para fazer o login e armazenar o usuário
   const login = (userData: User) => {
     setUser(userData);
-    // Em um projeto real, você armazenaria o token de autenticação aqui (e.g., localStorage)
   };
 
-  // Função para fazer o logout
   const logout = () => {
     setUser(null);
-    // Remover o token de autenticação do armazenamento aqui
   };
 
   return (

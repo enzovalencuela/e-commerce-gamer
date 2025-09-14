@@ -1,0 +1,138 @@
+footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: end;
+  height: auto;
+  width: 100%;
+}
+
+.footer1 {
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 386px;
+  padding: 64px 130px;
+  gap: 65px;
+}
+
+.div-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: start;
+  width: 100%;
+}
+
+.div-logo-social {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  gap: 40px;
+}
+
+.social-media {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 26px;
+  gap: 40px;
+}
+
+.meios-pagamento {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 24px;
+  gap: 30px;
+}
+
+.div-footer2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 211px;
+  padding: 40px 220px;
+
+  p {
+    font-family: Nunito Sans;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+  }
+}
+
+.parceiros {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  gap: 40px;
+}
+
+.logo {
+  height: 30px;
+}
+
+.vtex-logo {
+  height: 20px;
+}
+
+@media (max-width: 738px) {
+  .footer1 {
+    height: auto;
+    width: 100vw;
+    padding: 20px 0;
+  }
+
+  .div-footer {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .div-logo-social {
+    padding: 30px;
+  }
+
+  .meios-pagamento {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0 30px;
+  }
+
+  .div-footer2 {
+    padding: 40px 20px;
+    gap: 30px;
+    height: auto;
+  }
+
+  .parceiros {
+    gap: 30px;
+  }
+}
+
+@media (min-width: 738px) and (max-width: 1028px) {
+  .footer1 {
+    padding: 20px;
+  }
+
+  .social-media {
+    gap: 20px;
+  }
+
+  .div-footer2 {
+    padding: 40px 20px 20px 20px;
+    gap: 30px;
+  }
+}

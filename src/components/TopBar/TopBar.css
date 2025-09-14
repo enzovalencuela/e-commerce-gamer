@@ -1,0 +1,38 @@
+.div-span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--secondary);
+  height: 30px;
+
+  p {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 22px;
+
+    b {
+      background-color: var(--terciary);
+      border-radius: 4px;
+      padding-inline: 2px;
+    }
+
+    span {
+      font-weight: 400;
+      font-style: italic;
+      font-size: 14px;
+      line-height: 22px;
+    }
+  }
+}
+
+@media (max-width: 738px) {
+  .div-span {
+    height: 52px;
+    padding-inline: 20px;
+
+    p {
+      text-align: center;
+    }
+  }
+}
