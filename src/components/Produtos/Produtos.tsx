@@ -1,8 +1,9 @@
 // src/components/Produtos/Produtos.tsx
 
-import React from "react";
+import React, { useState } from "react";
 import ProductCarousel from "../ProductCarousel/ProductCarousel";
 import "./Produtos.css";
+import OkMessage from "../OkMessage/OkMessage";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -56,11 +57,21 @@ const Produtos: React.FC<ProdutosProps> = ({ products, sectionTitle }) => {
     }
   };
 
+  const emBreveMessage =
+    "Essa sessão estará disponível em breve. Agredeço a compreensão!";
+  const [showEmBreveMessage, setShowEmBreveMessage] = useState(false);
+
   return (
     <section className="section-produtos">
+      {showEmBreveMessage && (
+        <OkMessage
+          message={emBreveMessage}
+          onClose={() => setShowEmBreveMessage(false)}
+        />
+      )}
       <div className="div-produtos__title">
         <h2>{sectionTitle}</h2>
-        <button>Ver mais</button>
+        <button onClick={() => setShowEmBreveMessage(true)}>Ver mais</button>
       </div>
       <ProductCarousel
         handleBuyProduct={handleBuyProduct}

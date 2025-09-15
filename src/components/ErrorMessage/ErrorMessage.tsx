@@ -1,7 +1,6 @@
 // src/components/ErrorMessage.tsx
 
 import React, { useState } from "react";
-import "./ErrorMessage.css";
 
 interface ErrorMessageProps {
   message: string;

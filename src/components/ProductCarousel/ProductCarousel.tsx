@@ -45,7 +45,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
           950: { slidesPerView: 4 },
           1290: { slidesPerView: 5 },
         }}
-        spaceBetween={20}
+        spaceBetween={10}
       >
         {products.map((product, index) => (
           <SwiperSlide key={index} className="product">

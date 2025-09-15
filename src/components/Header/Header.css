@@ -11,14 +11,15 @@
 
 .div-ul {
   width: 100%;
-  gap: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
 }
 
 .li-departamento {
+  align-self: center;
+  width: 100px;
+  text-align: center;
   list-style: none;
   font-weight: 600;
   font-size: 14px;
@@ -35,10 +36,6 @@
   .div-nav {
     gap: 20px;
     padding: 25px 20px;
-  }
-
-  .div-ul {
-    display: none;
   }
 
   .mobile-menu-container {
@@ -79,34 +76,12 @@
       color: black;
     }
   }
-
-  .div-ul-mobile ul {
-    display: flex;
-    flex-direction: column;
-    width: 190px;
-    gap: 10px;
-
-    li {
-      font-weight: 700;
-      padding: 10px;
-      border-bottom: 1px solid #606060;
-      transition: color 0.2s ease-in-out;
-    }
-
-    li:hover {
-      color: var(--primary);
-    }
-  }
 }
 
 @media (min-width: 738px) and (max-width: 1028px) {
   .div-nav {
     gap: 20px;
     padding: 25px 20px;
-  }
-
-  .div-ul {
-    display: none;
   }
 
   .mobile-menu-container {
@@ -127,24 +102,6 @@
     button {
       align-self: flex-end;
       margin-bottom: 20px;
-    }
-  }
-
-  .div-ul-mobile ul {
-    display: flex;
-    flex-direction: column;
-    width: 190px;
-    gap: 10px;
-
-    li {
-      font-weight: 700;
-      padding: 10px;
-      border-bottom: 1px solid #606060;
-      transition: color 0.2s ease-in-out;
-    }
-
-    li:hover {
-      color: var(--primary);
     }
   }
 }

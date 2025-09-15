@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import AuthFormLayout from "../../components/AuthFormLayout/AuthFormLayout";
 import Button from "../../components/Button/Button";
-import "./Login.css";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -48,8 +47,8 @@ const Login: React.FC = () => {
   return (
     <AuthFormLayout
       title="Entrar"
-      welcomeTitle="Olá, amigo!"
-      welcomeMessage="Registre-se com seus dados pessoais para usar todos os recursos do site."
+      welcomeTitle="Bem-vindo de volta!"
+      welcomeMessage="Para se conectar, faça login com seus dados."
       welcomeButtonText="Cadastre-se"
       welcomeButtonLink="/register"
       showLogo={true}

@@ -36,6 +36,8 @@
 .search-response {
   position: absolute;
   display: flex;
+  top: 53px;
+  left: 140px;
   gap: 20px;
   background-color: #e8e8e8;
   border-radius: 10px;
@@ -43,4 +45,11 @@
   max-width: 580px;
   font-size: 14px;
   z-index: 10;
+}
+
+@media (max-width: 738px) {
+  .search-response {
+    top: 40px;
+    left: 0;
+  }
 }

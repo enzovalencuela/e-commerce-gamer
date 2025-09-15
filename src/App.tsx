@@ -184,7 +184,7 @@ const allProducts: Product[] = [
   },
   {
     id: 21,
-    titulo: "Controle 8BitDo Ultimate 2C",
+    titulo: "Controle 8BitDo Ultimate",
     preco: "159,90",
     precoOriginal: "184,90",
     parcelamento: "12x de R$ 16,90",

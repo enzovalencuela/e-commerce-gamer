@@ -1,7 +1,11 @@
 .submit-button {
   width: 100%;
   padding: 16px;
-  background-image: linear-gradient(90deg, var(--primary), var(--lightprimary));
+  background-image: linear-gradient(
+    90deg,
+    var(--secondary),
+    var(--lightsecondary)
+  );
   color: #fff;
   border: none;
   border-radius: 8px;

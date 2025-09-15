@@ -123,8 +123,13 @@ footer {
 }
 
 @media (min-width: 738px) and (max-width: 1028px) {
+  .div-footer {
+    gap: 25px;
+  }
+
   .footer1 {
-    padding: 20px;
+    padding: 20px 50px;
+    height: auto;
   }
 
   .social-media {

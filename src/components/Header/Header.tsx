@@ -4,6 +4,8 @@ import React from "react";
 import TopBar from "../TopBar/TopBar";
 import MainNavbar from "../MainNavBar/MainNavBar";
 import "./Header.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.css";
 
 const navDepartments = [
   { id: "1", name: "PC Gamer" },
@@ -26,12 +28,25 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
       <TopBar />
       <div className="div-nav">
         <MainNavbar onSearch={onSearch} />
+
         <ul className="div-ul">
-          {navDepartments.map((dept) => (
-            <li key={dept.id} className="li-departamento">
-              {dept.name}
-            </li>
-          ))}
+          <Swiper
+            breakpoints={{
+              0: { slidesPerView: 3 },
+              660: { slidesPerView: 5 },
+              950: { slidesPerView: 6 },
+              1290: { slidesPerView: 8 },
+            }}
+            initialSlide={3}
+          >
+            {navDepartments.map((dept) => (
+              <SwiperSlide>
+                <li key={dept.id} className="li-departamento">
+                  {dept.name}
+                </li>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </ul>
       </div>
     </header>
