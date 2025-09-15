@@ -208,7 +208,7 @@ const allProducts: Product[] = [
   },
   {
     id: 24,
-    titulo: "Kit Teclado e Mouse Gamer",
+    titulo: "Controle Wirelless Gamer",
     preco: "169,90",
     precoOriginal: "193,90",
     parcelamento: "12x de R$ 15,90",
@@ -232,7 +232,7 @@ const allProducts: Product[] = [
   },
   {
     id: 27,
-    titulo: "Fone De Ouvido Gamer",
+    titulo: "Kit Mouse e Mousepad",
     preco: "65,90",
     precoOriginal: "79,90",
     parcelamento: "6x de R$ 13,90",
