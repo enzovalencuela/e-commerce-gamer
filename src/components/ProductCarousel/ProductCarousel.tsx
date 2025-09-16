@@ -1,11 +1,14 @@
 // src/components/ProductCarousel.tsx
 
-import React from "react";
+import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/swiper-bundle.css";
 import "./ProductCarousel.css";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import OkMessage from "../OkMessage/OkMessage";
 
 export interface Product {
   id: number;
@@ -17,21 +20,48 @@ export interface Product {
 }
 
 interface ProductCarouselProps {
-  handleBuyProduct: (productId: number) => void;
   products: Product[];
   sectionTitle: string;
 }
 
 const ProductCarousel: React.FC<ProductCarouselProps> = ({
-  handleBuyProduct,
   products,
   sectionTitle,
 }) => {
   const isPromotionSection = sectionTitle === "Em Promoção";
   const isReleasesSection = sectionTitle === "Lançamentos";
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [showOkMessage, setShowOkMessage] = useState(false);
+  const { user, addToCart } = useAuth();
+
+  const errorMessage = "Ocorreu um erro, tente novamente mais tarde.";
+
+  const handleAddToCart = async (product: Product) => {
+    if (!user) {
+      setShowErrorMessage(true);
+      return;
+    }
+
+    await addToCart(product);
+    setShowOkMessage(true);
+  };
+
+  const okMessage = `Produto adicionado ao carrinho!`;
 
   return (
     <div className="card_container">
+      {showErrorMessage && (
+        <ErrorMessage
+          onClose={() => setShowErrorMessage(false)}
+          message={errorMessage}
+        />
+      )}
+      {showOkMessage && (
+        <OkMessage
+          onClose={() => setShowOkMessage(false)}
+          message={okMessage}
+        />
+      )}
       <Swiper
         modules={[Pagination]}
         grabCursor
@@ -66,7 +96,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
                   em até <b>{product.parcelamento}</b>
                 </span>
               </div>
-              <button onClick={() => handleBuyProduct(product.id)}>
+              <button onClick={() => handleAddToCart(product)}>
                 Add ao Carrinho
               </button>
             </div>

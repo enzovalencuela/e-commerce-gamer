@@ -7,6 +7,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import OkMessage from "../../components/OkMessage/OkMessage";
+import "./ProductPage.css";
+import Produtos from "../../components/Produtos/Produtos";
+import BackButton from "../../components/BackButton/BackButton";
 
 interface Product {
   id: number;
@@ -148,6 +151,7 @@ const ProductPage: React.FC = () => {
           message={okMessage}
         />
       )}
+      <BackButton />
       <div className="product-page-card">
         <div className="product-image-section">
           <img src={product.img} alt={product.titulo} />
@@ -193,6 +197,7 @@ const ProductPage: React.FC = () => {
           </div>
         </div>
       </div>
+      <Produtos sectionTitle="Mais Vendidos" sliceStart={7} sliceEnd={14} />
     </div>
   );
 };

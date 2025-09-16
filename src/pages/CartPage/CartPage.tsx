@@ -3,10 +3,13 @@
 
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import "./CartPage.css";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import OkMessage from "../../components/OkMessage/OkMessage";
+import BackButton from "../../components/BackButton/BackButton";
 
 interface Product {
   id: number;
@@ -126,6 +129,7 @@ const CartPage: React.FC = () => {
           message={okMessage}
         />
       )}
+      <BackButton />
       <h1>Seu Carrinho</h1>
       {cartItems.length === 0 ? (
         <div className="empty-cart">
@@ -157,7 +161,8 @@ const CartPage: React.FC = () => {
                   className="cart-remove-btn"
                   onClick={() => handleRemoveFromCart(item.id)}
                 >
-                  Remover
+                  {/* Exemplo de uso de ícone: Botão de remover */}
+                  <FontAwesomeIcon icon={faTrashCan} /> Remover
                 </button>
               </div>
             ))}

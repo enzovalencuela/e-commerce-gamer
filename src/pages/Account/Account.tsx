@@ -2,9 +2,10 @@
 
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button/Button";
 import "./Account.css";
+import BackButton from "../../components/BackButton/BackButton";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -127,9 +128,7 @@ const Account: React.FC = () => {
       </div>
 
       <div className="account-actions">
-        <Link to="/" className="back-button">
-          Voltar para a Página Inicial
-        </Link>
+        <BackButton />
         <button onClick={handleLogout} className="logout-button">
           Sair
         </button>

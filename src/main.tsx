@@ -10,7 +10,7 @@ import Register from "./pages/Register/Register.tsx";
 import Login from "./pages/Login/Login.tsx";
 import Account from "./pages/Account/Account.tsx";
 import Carrinho from "./pages/CartPage/CartPage.tsx";
-import ProductPage from "./pages/ProducPage/ProductPage.tsx";
+import ProductPage from "./pages/ProductPage/ProductPage.tsx";
 import Home from "./pages/Home/Home.tsx";
 
 // ... (register swiper/element/bundle)

@@ -52,10 +52,6 @@ const Produtos: React.FC<ProdutosProps> = ({
     fetchProducts();
   }, []);
 
-  const handleAddToCart = async (productId: number) => {
-    alert(`Adicionar ao carrinho o produto ID: ${productId}`);
-  };
-
   if (loading) {
     return <div>Carregando produtos...</div>;
   }
@@ -72,11 +68,7 @@ const Produtos: React.FC<ProdutosProps> = ({
         <h2>{sectionTitle}</h2>
         <button>Ver mais</button>
       </div>
-      <ProductCarousel
-        handleBuyProduct={handleAddToCart}
-        products={productsToShow}
-        sectionTitle={sectionTitle}
-      />
+      <ProductCarousel products={productsToShow} sectionTitle={sectionTitle} />
     </section>
   );
 };
