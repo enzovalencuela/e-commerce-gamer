@@ -101,12 +101,36 @@ const CartPage: React.FC = () => {
       .replace(".", ",");
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (selectedItems.length === 0) {
       setShowErrorMessage(true);
       return;
     }
-    setShowOkMessage(true);
+
+    const totalAmount = parseFloat(calculateTotal().replace(",", "."));
+
+    try {
+      const response = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "Compra em Loja Virtual",
+          unit_price: totalAmount,
+          quantity: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao criar preferência de pagamento.");
+      }
+
+      const paymentData = await response.json();
+
+      window.location.href = paymentData.init_point;
+    } catch (error) {
+      console.error("Erro no checkout:", error);
+      setShowErrorMessage(true);
+    }
   };
 
   if (loading) {

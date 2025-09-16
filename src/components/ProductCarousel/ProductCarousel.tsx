@@ -8,7 +8,7 @@ import "./ProductCarousel.css";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
-import OkMessage from "../OkMessage/OkMessage";
+import SpanMessage from "../SpanMessage/SpanMessage";
 
 export interface Product {
   id: number;
@@ -31,7 +31,8 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
   const isPromotionSection = sectionTitle === "Em Promoção";
   const isReleasesSection = sectionTitle === "Lançamentos";
   const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const [showOkMessage, setShowOkMessage] = useState(false);
+  const [showSpanOkMessage, setShowSpanOkMessage] = useState(false);
+  const [showSpanErrorMessage, setShowSpanErrorMessage] = useState(false);
   const { user, addToCart } = useAuth();
 
   const errorMessage = "Ocorreu um erro, tente novamente mais tarde.";
@@ -42,11 +43,13 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
       return;
     }
 
-    await addToCart(product);
-    setShowOkMessage(true);
+    const status = await addToCart(product);
+    if (status === "error") {
+      setShowSpanErrorMessage(true);
+    } else {
+      setShowSpanOkMessage(true);
+    }
   };
-
-  const okMessage = `Produto adicionado ao carrinho!`;
 
   return (
     <div className="card_container">
@@ -56,10 +59,13 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
           message={errorMessage}
         />
       )}
-      {showOkMessage && (
-        <OkMessage
-          onClose={() => setShowOkMessage(false)}
-          message={okMessage}
+      {showSpanOkMessage && (
+        <SpanMessage message="Produto adicionado ao carrinho!" status="ok" />
+      )}
+      {showSpanErrorMessage && (
+        <SpanMessage
+          message="Produto já adicionado ao carrinho!"
+          status="error"
         />
       )}
       <Swiper

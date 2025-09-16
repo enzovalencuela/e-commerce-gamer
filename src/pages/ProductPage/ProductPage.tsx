@@ -6,10 +6,10 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
-import OkMessage from "../../components/OkMessage/OkMessage";
 import "./ProductPage.css";
 import Produtos from "../../components/Produtos/Produtos";
 import BackButton from "../../components/BackButton/BackButton";
+import SpanMessage from "../../components/SpanMessage/SpanMessage";
 
 interface Product {
   id: number;
@@ -145,12 +145,7 @@ const ProductPage: React.FC = () => {
           message={errorMessage}
         />
       )}
-      {showOkMessage && (
-        <OkMessage
-          onClose={() => setsShowOkMessage(false)}
-          message={okMessage}
-        />
-      )}
+      {showOkMessage && <SpanMessage message={okMessage} status="ok" />}
       <BackButton />
       <div className="product-page-card">
         <div className="product-image-section">

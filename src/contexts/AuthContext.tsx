@@ -4,7 +4,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 
 interface User {
-  id: number; // Mudei para number, pois é o tipo do banco de dados
+  id: number;
   name: string;
   email: string;
 }
@@ -21,7 +21,7 @@ interface AuthContextType {
   cart: CartItem[];
   login: (userData: User) => void;
   logout: () => void;
-  addToCart: (item: CartItem) => Promise<void>;
+  addToCart: (item: CartItem) => Promise<"ok" | "error">;
   removeFromCart: (itemId: number) => Promise<void>;
 }
 interface AuthProviderProps {
@@ -44,7 +44,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  // Carrega o carrinho quando o usuário está logado
   useEffect(() => {
     const fetchCart = async () => {
       if (user) {
@@ -82,7 +81,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    setCart([]); // Limpa o carrinho ao deslogar
+    setCart([]);
   };
 
   const addToCart = async (item: CartItem) => {
@@ -90,7 +89,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error(
         "Usuário não logado. Não é possível adicionar ao carrinho."
       );
-      return;
+      return "error";
+    }
+
+    const itemExists = cart.some((cartItem) => cartItem.id === item.id);
+    if (itemExists) {
+      return "error";
     }
     try {
       await fetch(`${VITE_BACKEND_URL}/api/cart/add`, {
@@ -99,8 +103,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: JSON.stringify({ userId: user.id, productId: item.id }),
       });
       setCart((prevCart) => [...prevCart, item]);
+      return "ok";
     } catch (error) {
       console.error("Erro ao adicionar produto ao carrinho:", error);
+      return "error";
     }
   };
 
