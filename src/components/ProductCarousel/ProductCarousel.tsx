@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/swiper-bundle.css";
 import "./ProductCarousel.css";
+import { Link } from "react-router-dom";
 
 export interface Product {
   id: number;
@@ -52,7 +53,9 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
             <div>
               {isReleasesSection && <span className="span-new">novo</span>}
               {isPromotionSection && <span className="off">10% off</span>}
-              <img src={product.img} alt="" />
+              <Link to={`/product/${product.id}`}>
+                <img src={product.img} alt={product.titulo} />
+              </Link>
               <div className="produto__text">
                 <h3>{product.titulo}</h3>
                 <p>R${product.precoOriginal} </p>
@@ -64,7 +67,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
                 </span>
               </div>
               <button onClick={() => handleBuyProduct(product.id)}>
-                Comprar
+                Add ao Carrinho
               </button>
             </div>
           </SwiperSlide>

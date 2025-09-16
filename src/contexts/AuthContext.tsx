@@ -1,6 +1,6 @@
 // src/contexts/AuthContext.tsx
 
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 
 interface User {
@@ -9,10 +9,20 @@ interface User {
   email: string;
 }
 
+interface CartItem {
+  id: number,
+  titulo: string,
+  preco: string,
+  img: string,
+}
+
 interface AuthContextType {
   user: User | null;
+  cart: CartItem[];
   login: (userData: User) => void;
   logout: () => void;
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (itemId: number) => void;
 }
 interface AuthProviderProps {
   children: ReactNode;
@@ -29,6 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error("Erro ao carregar usuário do LocalStorage:", error);
     }
   });
+
 
   const login = (userData: User) => {
     setUser(userData);

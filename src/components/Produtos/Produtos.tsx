@@ -1,9 +1,8 @@
 // src/components/Produtos/Produtos.tsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProductCarousel from "../ProductCarousel/ProductCarousel";
 import "./Produtos.css";
-import OkMessage from "../OkMessage/OkMessage";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -14,68 +13,68 @@ interface Product {
   precoOriginal: string;
   parcelamento: string;
   img: string;
+  descricao: string;
 }
 
 interface ProdutosProps {
-  products: Product[];
   sectionTitle: string;
+  sliceStart: number;
+  sliceEnd: number;
 }
 
-const Produtos: React.FC<ProdutosProps> = ({ products, sectionTitle }) => {
-  const handleBuyProduct = async (productId: number) => {
-    try {
-      const productToBuy = products.find((p) => p.id === productId);
+const Produtos: React.FC<ProdutosProps> = ({
+  sectionTitle,
+  sliceStart,
+  sliceEnd,
+}) => {
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-      if (!productToBuy) {
-        alert("Produto não encontrado.");
-        return;
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(`${VITE_BACKEND_URL}/api/products`);
+        if (!response.ok) {
+          throw new Error("Erro ao buscar produtos.");
+        }
+        const data = await response.json();
+        setAllProducts(data);
+      } catch (err) {
+        console.error("Erro ao buscar produtos:", err);
+        setError(
+          "Não foi possível carregar os produtos. Tente novamente mais tarde."
+        );
+      } finally {
+        setLoading(false);
       }
+    };
+    fetchProducts();
+  }, []);
 
-      const productData = {
-        title: productToBuy.titulo,
-        unit_price: parseFloat(productToBuy.preco.replace(",", ".")),
-        quantity: 1,
-      };
-
-      const response = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(productData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao criar a preferência de pagamento.");
-      }
-
-      const data = await response.json();
-      window.location.href = data.init_point;
-    } catch (error) {
-      console.error("Erro na compra:", error);
-      alert("Ocorreu um erro ao processar seu pagamento. Tente novamente.");
-    }
+  const handleAddToCart = async (productId: number) => {
+    alert(`Adicionar ao carrinho o produto ID: ${productId}`);
   };
 
-  const emBreveMessage =
-    "Essa sessão estará disponível em breve. Agredeço a compreensão!";
-  const [showEmBreveMessage, setShowEmBreveMessage] = useState(false);
+  if (loading) {
+    return <div>Carregando produtos...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  const productsToShow = allProducts.slice(sliceStart, sliceEnd);
 
   return (
     <section className="section-produtos">
-      {showEmBreveMessage && (
-        <OkMessage
-          message={emBreveMessage}
-          onClose={() => setShowEmBreveMessage(false)}
-        />
-      )}
       <div className="div-produtos__title">
         <h2>{sectionTitle}</h2>
-        <button onClick={() => setShowEmBreveMessage(true)}>Ver mais</button>
+        <button>Ver mais</button>
       </div>
       <ProductCarousel
-        handleBuyProduct={handleBuyProduct}
-        products={products}
+        handleBuyProduct={handleAddToCart}
+        products={productsToShow}
         sectionTitle={sectionTitle}
       />
     </section>
