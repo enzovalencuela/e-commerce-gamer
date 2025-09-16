@@ -15,7 +15,7 @@ interface Product {
   id: number;
   titulo: string;
   preco: string;
-  precoOriginal: string;
+  preco_original: string;
   parcelamento: string;
   img: string;
   descricao: string;
@@ -156,7 +156,7 @@ const ProductPage: React.FC = () => {
           <p className="product-description">{product.descricao}</p>
           <div className="price-info">
             <span className="original-price">
-              De R$ {product.precoOriginal}
+              De R$ {product.preco_original}
             </span>
             <h2 className="current-price">Por R$ {product.preco}</h2>
             <span className="payment-info">
