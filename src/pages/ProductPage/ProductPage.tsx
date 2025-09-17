@@ -121,11 +121,13 @@ const ProductPage: React.FC = () => {
     }
   };
 
+  /*
   const handleBuyNow = () => {
     alert(
       "Funcionalidade de compra direta não implementada. Por favor, adicione ao carrinho primeiro."
     );
   };
+   */
 
   if (error) {
     return (
@@ -180,9 +182,11 @@ const ProductPage: React.FC = () => {
                   <button className="add-to-cart-btn" onClick={handleAddToCart}>
                     Adicionar ao Carrinho
                   </button>
+                  {/*
                   <button className="buy-now-btn" onClick={handleBuyNow}>
                     Comprar Agora
                   </button>
+                  */}
                 </>
               ) : (
                 <>
@@ -194,7 +198,7 @@ const ProductPage: React.FC = () => {
                   </button>
                   <button
                     className="go-to-cart-btn"
-                    onClick={() => navigate("/cart")}
+                    onClick={() => navigate("/carrinho")}
                   >
                     Ir para o Carrinho
                   </button>

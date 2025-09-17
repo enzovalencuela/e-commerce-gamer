@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 // src/pages/CartPage.tsx
 
 import React, { useState, useEffect } from "react";
@@ -12,20 +11,12 @@ import OkMessage from "../../components/OkMessage/OkMessage";
 import BackButton from "../../components/BackButton/BackButton";
 import Loading from "../../components/Loading/Loading";
 
-interface Product {
-  id: number;
-  titulo: string;
-  preco: string;
-  img: string;
-}
-
 const CartPage: React.FC = () => {
-  const [cartItems, setCartItems] = useState<Product[]>([]);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
-  const { user } = useAuth();
+  const { user, cart, removeFromCart } = useAuth();
   const navigate = useNavigate();
 
   const errorMessage = "Não foi possível fazer a operação. Tente novamente.";
@@ -36,37 +27,10 @@ const CartPage: React.FC = () => {
     if (!user) {
       navigate("/login");
       return;
+    } else {
+      setLoading(false);
     }
-
-    const fetchCart = async () => {
-      try {
-        const response = await fetch(`${VITE_BACKEND_URL}/api/cart/${user.id}`);
-        if (!response.ok) {
-          throw new Error("Erro ao carregar o carrinho.");
-        }
-        const productsIds: number[] = await response.json();
-
-        const fetchedProducts: Product[] = [];
-        for (const productId of productsIds) {
-          const productResponse = await fetch(
-            `${VITE_BACKEND_URL}/api/products/${productId}`
-          );
-          if (productResponse.ok) {
-            const productData = await productResponse.json();
-            fetchedProducts.push(productData);
-          }
-        }
-        setCartItems(fetchedProducts);
-      } catch (error) {
-        console.error("Erro ao buscar o carrinho:", error);
-        setShowErrorMessage(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCart();
-  }, [user, navigate]);
+  }, [user, navigate, cart]);
 
   const handleSelect = (productId: number) => {
     setSelectedItems((prevSelected) =>
@@ -79,12 +43,10 @@ const CartPage: React.FC = () => {
   const handleRemoveFromCart = async (productId: number) => {
     if (!user) return;
     try {
-      await fetch(`${VITE_BACKEND_URL}/api/cart/remove`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, productId }),
-      });
-      setCartItems(cartItems.filter((item) => item.id !== productId));
+      await removeFromCart(productId);
+      setSelectedItems((prevSelected) =>
+        prevSelected.filter((id) => id !== productId)
+      );
     } catch (error) {
       console.error("Erro ao remover do carrinho:", error);
       setShowErrorMessage(true);
@@ -92,7 +54,7 @@ const CartPage: React.FC = () => {
   };
 
   const calculateTotal = () => {
-    return cartItems
+    return cart
       .filter((item) => selectedItems.includes(item.id))
       .reduce(
         (total, item) => total + parseFloat(item.preco.replace(",", ".")),
@@ -154,7 +116,7 @@ const CartPage: React.FC = () => {
       )}
       <BackButton />
       <h1>Seu Carrinho</h1>
-      {cartItems.length === 0 ? (
+      {cart.length === 0 ? (
         <div className="empty-cart">
           <p>Seu carrinho está vazio.</p>
           <Link to="/">Voltar para a página inicial</Link>
@@ -162,7 +124,7 @@ const CartPage: React.FC = () => {
       ) : (
         <div className="cart-content">
           <div className="cart-items-list">
-            {cartItems.map((item) => (
+            {cart.map((item) => (
               <div key={item.id} className="cart-item-card">
                 <input
                   type="checkbox"
