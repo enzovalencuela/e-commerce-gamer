@@ -10,6 +10,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import OkMessage from "../../components/OkMessage/OkMessage";
 import BackButton from "../../components/BackButton/BackButton";
+import Loading from "../../components/Loading/Loading";
 
 interface Product {
   id: number;
@@ -133,13 +134,11 @@ const CartPage: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return <div>Carregando carrinho...</div>;
-  }
-
   const okMessage = `Finalizando a compra de R$ ${calculateTotal()}`;
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="cart-page-container">
       {showErrorMessage && (
         <ErrorMessage

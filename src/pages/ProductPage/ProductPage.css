@@ -14,12 +14,20 @@
   display: flex;
   flex-direction: column;
   border-radius: 12px;
-  padding: 2rem;
-  margin-block: 20px 80px;
   max-width: 1000px;
   width: 100%;
+  gap: 30px;
   background-color: white;
-  box-shadow: 0px 0px 8px #00000064;
+  padding: 30px;
+  margin-block: 50px 80px;
+}
+
+.product-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
 .product-image-section {
@@ -41,7 +49,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  width: 100%;
 }
 
 .product-details-section h1 {
@@ -137,13 +145,13 @@
   color: #777;
 }
 
-@media (min-width: 738px) {
+@media (max-width: 738px) {
   .product-page-card {
-    flex-direction: row;
-    gap: 2rem;
+    background-color: transparent;
+    padding: 0px;
   }
 
-  .product-actions {
-    flex-direction: row;
+  .product-div {
+    flex-direction: column;
   }
 }

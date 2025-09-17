@@ -11,7 +11,8 @@ interface MainNavbarProps {
 }
 
 const MainNavbar: React.FC<MainNavbarProps> = ({ onSearch }) => {
-  const { user } = useAuth();
+  const { user, cart } = useAuth();
+  const qtdItemsCart = cart.length;
 
   return (
     <div className="div-search">
@@ -21,7 +22,10 @@ const MainNavbar: React.FC<MainNavbarProps> = ({ onSearch }) => {
       <SearchBar onSearch={onSearch} />
 
       <Link to={"/carrinho"}>
-        <img src="./img/car.svg" alt="Ícone de carrinho" />
+        <div className="cart">
+          <img src="./img/car.svg" alt="Ícone de carrinho" />
+          <span>{qtdItemsCart}</span>
+        </div>
       </Link>
       <Link to={user ? "/account" : "/login"} className="div-user">
         <img

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import ProductCarousel from "../ProductCarousel/ProductCarousel";
 import "./Produtos.css";
+import Loading from "../Loading/Loading";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -52,17 +53,26 @@ const Produtos: React.FC<ProdutosProps> = ({
     fetchProducts();
   }, []);
 
-  if (loading) {
-    return <div>Carregando produtos...</div>;
-  }
-
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {error}
+      </div>
+    );
   }
 
   const productsToShow = allProducts.slice(sliceStart, sliceEnd);
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <section className="section-produtos">
       <div className="div-produtos__title">
         <h2>{sectionTitle}</h2>

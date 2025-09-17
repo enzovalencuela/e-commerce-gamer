@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/swiper-bundle.css";
 import "./ProductCarousel.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import SpanMessage from "../SpanMessage/SpanMessage";
@@ -33,7 +33,8 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showSpanOkMessage, setShowSpanOkMessage] = useState(false);
   const [showSpanErrorMessage, setShowSpanErrorMessage] = useState(false);
-  const { user, addToCart } = useAuth();
+  const { user, addToCart, cart } = useAuth();
+  const navigate = useNavigate();
 
   const errorMessage = "Ocorreu um erro, tente novamente mais tarde.";
 
@@ -84,30 +85,44 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
         }}
         spaceBetween={10}
       >
-        {products.map((product, index) => (
-          <SwiperSlide key={index} className="product">
-            <div>
-              {isReleasesSection && <span className="span-new">novo</span>}
-              {isPromotionSection && <span className="off">10% off</span>}
-              <Link to={`/product/${product.id}`}>
-                <img src={product.img} alt={product.titulo} />
-              </Link>
-              <div className="produto__text">
-                <h3>{product.titulo}</h3>
-                <p>R${product.precoOriginal} </p>
-                <h4>
-                  R$ {product.preco} <span>Ou</span>
-                </h4>
-                <span>
-                  em até <b>{product.parcelamento}</b>
-                </span>
+        {products.map((product, index) => {
+          const isProductInCart = cart.some((item) => item.id === product.id);
+
+          return (
+            <SwiperSlide key={index} className="product">
+              <div>
+                {isReleasesSection && <span className="span-new">novo</span>}
+                {isPromotionSection && <span className="off">10% off</span>}
+                <Link to={`/product/${product.id}`}>
+                  <img src={product.img} alt={product.titulo} />
+                </Link>
+                <div className="produto__text">
+                  <h3>{product.titulo}</h3>
+                  <p>R${product.precoOriginal} </p>
+                  <h4>
+                    R$ {product.preco} <span>Ou</span>
+                  </h4>
+                  <span>
+                    em até <b>{product.parcelamento}</b>
+                  </span>
+                </div>
+                {/* Lógica para o botão */}
+                <button
+                  onClick={() =>
+                    isProductInCart
+                      ? navigate("/carrinho")
+                      : handleAddToCart(product)
+                  }
+                  className={
+                    isProductInCart ? "added-to-cart-btn" : "add-to-cart-btn"
+                  }
+                >
+                  {isProductInCart ? "Ver no Carrinho" : "Add ao Carrinho"}
+                </button>
               </div>
-              <button onClick={() => handleAddToCart(product)}>
-                Add ao Carrinho
-              </button>
-            </div>
-          </SwiperSlide>
-        ))}
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </div>
   );

@@ -38,6 +38,24 @@
   object-fit: cover;
 }
 
+.cart {
+  position: relative;
+  span {
+    position: absolute;
+    display: flex;
+    background-color: rgb(240, 0, 0);
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    border-radius: 50%;
+    top: -8px;
+    right: -10px;
+  }
+}
+
 @media (max-width: 738px) {
   .div-user {
     width: auto;

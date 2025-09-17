@@ -10,6 +10,7 @@ import "./ProductPage.css";
 import Produtos from "../../components/Produtos/Produtos";
 import BackButton from "../../components/BackButton/BackButton";
 import SpanMessage from "../../components/SpanMessage/SpanMessage";
+import Loading from "../../components/Loading/Loading";
 
 interface Product {
   id: number;
@@ -126,18 +127,27 @@ const ProductPage: React.FC = () => {
     );
   };
 
-  if (loading) {
-    return <div>Carregando produto...</div>;
-  }
-
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {error}
+      </div>
+    );
   }
 
   if (!product) {
     return <div>Produto não encontrado.</div>;
   }
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="product-page-container">
       {showErrorMessage && (
         <ErrorMessage
@@ -148,48 +158,53 @@ const ProductPage: React.FC = () => {
       {showOkMessage && <SpanMessage message={okMessage} status="ok" />}
       <BackButton />
       <div className="product-page-card">
-        <div className="product-image-section">
-          <img src={product.img} alt={product.titulo} />
+        <div className="product-div">
+          <div className="product-image-section">
+            <img src={product.img} alt={product.titulo} />
+          </div>
+          <div className="product-details-section">
+            <h1>{product.titulo}</h1>
+
+            <div className="price-info">
+              <span className="original-price">
+                De R$ {product.preco_original}
+              </span>
+              <h2 className="current-price">Por R$ {product.preco}</h2>
+              <span className="payment-info">
+                em até <b>{product.parcelamento}</b>
+              </span>
+            </div>
+            <div className="product-actions">
+              {!isAddedToCart ? (
+                <>
+                  <button className="add-to-cart-btn" onClick={handleAddToCart}>
+                    Adicionar ao Carrinho
+                  </button>
+                  <button className="buy-now-btn" onClick={handleBuyNow}>
+                    Comprar Agora
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="remove-from-cart-btn"
+                    onClick={handleRemoveFromCart}
+                  >
+                    Remover do Carrinho
+                  </button>
+                  <button
+                    className="go-to-cart-btn"
+                    onClick={() => navigate("/cart")}
+                  >
+                    Ir para o Carrinho
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         </div>
-        <div className="product-details-section">
-          <h1>{product.titulo}</h1>
+        <div>
           <p className="product-description">{product.descricao}</p>
-          <div className="price-info">
-            <span className="original-price">
-              De R$ {product.preco_original}
-            </span>
-            <h2 className="current-price">Por R$ {product.preco}</h2>
-            <span className="payment-info">
-              em até <b>{product.parcelamento}</b>
-            </span>
-          </div>
-          <div className="product-actions">
-            {!isAddedToCart ? (
-              <>
-                <button className="add-to-cart-btn" onClick={handleAddToCart}>
-                  Adicionar ao Carrinho
-                </button>
-                <button className="buy-now-btn" onClick={handleBuyNow}>
-                  Comprar Agora
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  className="remove-from-cart-btn"
-                  onClick={handleRemoveFromCart}
-                >
-                  Remover do Carrinho
-                </button>
-                <button
-                  className="go-to-cart-btn"
-                  onClick={() => navigate("/cart")}
-                >
-                  Ir para o Carrinho
-                </button>
-              </>
-            )}
-          </div>
         </div>
       </div>
       <Produtos sectionTitle="Mais Vendidos" sliceStart={7} sliceEnd={14} />
