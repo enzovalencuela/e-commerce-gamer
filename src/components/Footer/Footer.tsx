@@ -7,6 +7,7 @@ import {
   faGithub,
   faInstagram,
 } from "@fortawesome/free-brands-svg-icons";
+import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 
 function Footer() {
   return (
@@ -18,6 +19,12 @@ function Footer() {
               <img src="/LOGO_MARCA.png" alt="" />
             </div>
             <div className="social-media">
+              <a
+                href="https://enzovalencuela-meu-portifolio.netlify.app"
+                target="_blank"
+              >
+                <FontAwesomeIcon icon={faCircleUser} />
+              </a>
               <a
                 href="https://www.instagram.com/_enzovalencuela"
                 target="_blank"
