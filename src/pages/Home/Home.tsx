@@ -5,7 +5,7 @@ import Outdoor from "../../components/Outdoor/Outdoor.tsx";
 import Produtos from "../../components/Produtos/Produtos.tsx";
 import Banner from "../../components/Banner/Banner.tsx";
 import About from "../../components/About/About.tsx";
-import ErrorMessage from "../../components/ErrorMessage/ErrorMessage.tsx";
+import AttentionMessage from "../../components/AttentionMessage/AttentionMessage.tsx";
 
 const Home: React.FC = () => {
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
@@ -26,7 +26,7 @@ const Home: React.FC = () => {
   return (
     <>
       {showWelcomeMessage && (
-        <ErrorMessage
+        <AttentionMessage
           message={welcomeMessage}
           onClose={() => setShowWelcomeMessage(false)}
         />
