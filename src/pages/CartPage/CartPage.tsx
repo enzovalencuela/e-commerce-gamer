@@ -56,7 +56,7 @@ const CartPage: React.FC = () => {
   const calculateTotal = () => {
     return cart
       .filter((item) => selectedItems.includes(item.id))
-      .reduce((total, item) => total + item.preco, 0)
+      .reduce((total, item) => total + Number(item.preco), 0)
       .toFixed(2)
       .replace(".", ",");
   };
@@ -143,7 +143,6 @@ const CartPage: React.FC = () => {
                   className="cart-remove-btn"
                   onClick={() => handleRemoveFromCart(item.id)}
                 >
-                  {/* Exemplo de uso de ícone: Botão de remover */}
                   <FontAwesomeIcon icon={faTrashCan} /> Remover
                 </button>
               </div>
