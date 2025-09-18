@@ -1,8 +1,21 @@
+.true.menu-container {
+  display: none;
+}
+
 .menu-container {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9;
+}
+
+.div-menu {
   position: absolute;
   top: 110px;
-  right: 5px;
-  display: flex;
+  right: 30px;
   flex-direction: column;
   justify-content: start;
   align-items: start;
