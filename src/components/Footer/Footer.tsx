@@ -8,7 +8,9 @@ function Footer() {
       <div className="footer1">
         <div className="div-footer">
           <div className="div-logo-social">
-            <img className="logo_marca" src="/LOGO_MARCA.png" alt="" />
+            <div className="logo_marca">
+              <img src="/LOGO_MARCA.png" alt="" />
+            </div>
             <div className="social-media">
               <a href="">
                 <img src="./img/instagram.svg" alt="" />

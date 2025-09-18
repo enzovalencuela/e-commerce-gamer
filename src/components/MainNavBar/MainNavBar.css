@@ -65,7 +65,7 @@
     }
   }
 
-  .logo_marca {
+  .logo_marca img {
     display: none;
   }
 }
@@ -78,7 +78,7 @@
     height: 20px;
   }
 
-  .logo_marca {
+  .logo_marca img {
     width: 80px;
   }
 

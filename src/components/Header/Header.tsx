@@ -35,10 +35,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               0: { slidesPerView: 3 },
               660: { slidesPerView: 5 },
               950: { slidesPerView: 6 },
-              1290: { slidesPerView: 8 },
+              1290: {
+                slidesPerView: 8,
+              },
             }}
-            initialSlide={3}
-            navigation
           >
             {navDepartments.map((dept) => (
               <SwiperSlide>
