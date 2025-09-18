@@ -1,6 +1,12 @@
 // src/components/Footer.jsx
 import "./Footer.css";
 import LinkSection from "../LinkSection/LinkSection";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faLinkedin,
+  faGithub,
+  faInstagram,
+} from "@fortawesome/free-brands-svg-icons";
 
 function Footer() {
   return (
@@ -12,17 +18,20 @@ function Footer() {
               <img src="/LOGO_MARCA.png" alt="" />
             </div>
             <div className="social-media">
-              <a href="">
-                <img src="./img/instagram.svg" alt="" />
+              <a
+                href="https://www.instagram.com/_enzovalencuela"
+                target="_blank"
+              >
+                <FontAwesomeIcon icon={faInstagram} />
               </a>
-              <a href="">
-                <img src="./img/facebook.svg" alt="" />
+              <a href="https://github.com/enzovalencuela" target="_blank">
+                <FontAwesomeIcon icon={faGithub} />
               </a>
-              <a href="">
-                <img src="./img/youtube.svg" alt="" />
-              </a>
-              <a href="">
-                <img src="./img/tiktok.svg" alt="" />
+              <a
+                href="https://www.linkedin.com/in/enzo-silva10"
+                target="_blank"
+              >
+                <FontAwesomeIcon icon={faLinkedin} />
               </a>
             </div>
           </div>
@@ -83,10 +92,7 @@ function Footer() {
           compreendidas em um contexto prático.
         </p>
         <div className="parceiros">
-          <img className="lets-encrypt" src="./img/lets-encrypt.svg" alt="" />
-          <img className="vtex-pci" src="./img/vtex-pci.svg" alt="" />
           <img className="logo" src="/LOGO_MARCA.png" alt="" />
-          <img className="vtex-logo" src="./img/VTEX_Logo.svg" alt="" />
         </div>
       </div>
     </footer>
