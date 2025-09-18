@@ -9,15 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import SpanMessage from "../SpanMessage/SpanMessage";
-
-export interface Product {
-  id: number;
-  titulo: string;
-  preco: string;
-  precoOriginal: string;
-  parcelamento: string;
-  img: string;
-}
+import type { Product } from "../../types/Product";
 
 interface ProductCarouselProps {
   products: Product[];
@@ -36,7 +28,8 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
   const { user, addToCart, cart } = useAuth();
   const navigate = useNavigate();
 
-  const errorMessage = "Ocorreu um erro, tente novamente mais tarde.";
+  const errorMessage =
+    "Ocorreu um erro, verifique se está logado ou tente novamente mais tarde.";
 
   const handleAddToCart = async (product: Product) => {
     if (!user) {
@@ -58,6 +51,8 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
         <ErrorMessage
           onClose={() => setShowErrorMessage(false)}
           message={errorMessage}
+          buttonContent="Ir Para Login"
+          onClick={() => navigate("./login")}
         />
       )}
       {showSpanOkMessage && (
@@ -98,7 +93,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
                 </Link>
                 <div className="produto__text">
                   <h3>{product.titulo}</h3>
-                  <p>R${product.precoOriginal} </p>
+                  <p>R${product.preco_original} </p>
                   <h4>
                     R$ {product.preco} <span>Ou</span>
                   </h4>

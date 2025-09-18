@@ -11,16 +11,7 @@ import Produtos from "../../components/Produtos/Produtos";
 import BackButton from "../../components/BackButton/BackButton";
 import SpanMessage from "../../components/SpanMessage/SpanMessage";
 import Loading from "../../components/Loading/Loading";
-
-interface Product {
-  id: number;
-  titulo: string;
-  preco: string;
-  preco_original: string;
-  parcelamento: string;
-  img: string;
-  descricao: string;
-}
+import type { Product } from "../../types/Product";
 
 const ProductPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

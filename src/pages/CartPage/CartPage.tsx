@@ -56,10 +56,7 @@ const CartPage: React.FC = () => {
   const calculateTotal = () => {
     return cart
       .filter((item) => selectedItems.includes(item.id))
-      .reduce(
-        (total, item) => total + parseFloat(item.preco.replace(",", ".")),
-        0
-      )
+      .reduce((total, item) => total + item.preco, 0)
       .toFixed(2)
       .replace(".", ",");
   };

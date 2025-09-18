@@ -1,11 +1,12 @@
 // src/pages/Account.tsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button/Button";
 import "./Account.css";
 import BackButton from "../../components/BackButton/BackButton";
+import Loading from "../../components/Loading/Loading";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -18,6 +19,16 @@ const Account: React.FC = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    } else {
+      setLoading(false);
+    }
+  }, [user, navigate]);
 
   const handleLogout = () => {
     logout();
@@ -73,11 +84,9 @@ const Account: React.FC = () => {
     }
   };
 
-  if (!user) {
-    return <p>Carregando...</p>;
-  }
-
-  return (
+  return loading || !user ? (
+    <Loading />
+  ) : (
     <div className="account-container">
       <h2>Minha Conta</h2>
       <div className="user-info">

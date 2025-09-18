@@ -16,8 +16,8 @@ const MainNavbar: React.FC<MainNavbarProps> = ({ onSearch }) => {
 
   return (
     <div className="div-search">
-      <Link to={"/"}>
-        <img src="/LOGO_MARCA.png" alt="Logo" className="logo_marca" />
+      <Link to={"/"} className="logo_marca">
+        <img src="/LOGO_MARCA.png" alt="Logo" />
       </Link>
       <SearchBar onSearch={onSearch} />
 

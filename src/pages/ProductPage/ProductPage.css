@@ -40,7 +40,7 @@
 .product-image-section img {
   border: 1px solid #2c2f45;
   width: 100%;
-  height: auto;
+  aspect-ratio: 1 / 1;
   border-radius: 8px;
   object-fit: contain;
 }

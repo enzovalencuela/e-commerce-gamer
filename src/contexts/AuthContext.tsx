@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
+import type { Product } from "../types/Product";
 
 interface User {
   id: number;
@@ -9,19 +10,12 @@ interface User {
   email: string;
 }
 
-interface CartItem {
-  id: number;
-  titulo: string;
-  preco: string;
-  img: string;
-}
-
 interface AuthContextType {
   user: User | null;
-  cart: CartItem[];
+  cart: Product[];
   login: (userData: User) => void;
   logout: () => void;
-  addToCart: (item: CartItem) => Promise<"ok" | "error">;
+  addToCart: (item: Product) => Promise<"ok" | "error">;
   removeFromCart: (itemId: number) => Promise<void>;
 }
 interface AuthProviderProps {
@@ -42,7 +36,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   });
 
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -56,7 +50,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
           const productIds: number[] = await response.json();
 
-          const fetchedItems: CartItem[] = [];
+          const fetchedItems: Product[] = [];
           for (const productId of productIds) {
             const productResponse = await fetch(
               `${VITE_BACKEND_URL}/api/products/${productId}`
@@ -84,7 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setCart([]);
   };
 
-  const addToCart = async (item: CartItem) => {
+  const addToCart = async (item: Product) => {
     if (!user) {
       console.error(
         "Usuário não logado. Não é possível adicionar ao carrinho."

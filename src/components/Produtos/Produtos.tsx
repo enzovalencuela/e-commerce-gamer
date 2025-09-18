@@ -2,20 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import ProductCarousel from "../ProductCarousel/ProductCarousel";
+import type { Product } from "../../types/Product";
 import "./Produtos.css";
 import Loading from "../Loading/Loading";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
-interface Product {
-  id: number;
-  titulo: string;
-  preco: string;
-  precoOriginal: string;
-  parcelamento: string;
-  img: string;
-  descricao: string;
-}
 
 interface ProdutosProps {
   sectionTitle: string;
@@ -76,7 +67,7 @@ const Produtos: React.FC<ProdutosProps> = ({
     <section className="section-produtos">
       <div className="div-produtos__title">
         <h2>{sectionTitle}</h2>
-        <button>Ver mais</button>
+        {/*<button>Ver mais</button>*/}
       </div>
       <ProductCarousel products={productsToShow} sectionTitle={sectionTitle} />
     </section>
