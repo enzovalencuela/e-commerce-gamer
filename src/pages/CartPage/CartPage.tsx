@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
@@ -23,51 +23,91 @@ const CartPage: React.FC = () => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
-  const [cardFormInstance, setCardFormInstance] = useState<any>(null);
 
   const { user, cart, removeFromCart } = useAuth();
   const navigate = useNavigate();
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const errorMessage = "Não foi possível fazer a operação. Tente novamente.";
 
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Monta o CardForm
   useEffect(() => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
+    if (!user || !window.MercadoPago || !formRef.current) return;
+
+    const mp = new window.MercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
+      locale: "pt-BR",
+    });
+
+    const cardForm = mp.cardForm({
+      amount: "0",
+      autoMount: true,
+      form: {
+        id: "form-checkout",
+        cardholderName: { id: "form-checkout__cardholderName" },
+        cardNumber: { id: "form-checkout__cardNumber" },
+        cardExpirationMonth: { id: "form-checkout__cardExpirationMonth" },
+        cardExpirationYear: { id: "form-checkout__cardExpirationYear" },
+        securityCode: { id: "form-checkout__securityCode" },
+        installments: { id: "form-checkout__installments" },
+        identificationType: { id: "form-checkout__identificationType" },
+        identificationNumber: { id: "form-checkout__identificationNumber" },
+        issuer: { id: "form-checkout__issuer" },
+        email: { id: "form-checkout__email" },
+      },
+      callbacks: {
+        onFormMounted: (error: any) => {
+          if (error) console.error("Erro ao montar CardForm:", error);
+        },
+        onSubmit: async (event: any) => {
+          event.preventDefault();
+
+          const formData = cardForm.getCardFormData();
+
+          // Filtra apenas os produtos selecionados
+          const selectedProducts = cart.filter((item) =>
+            selectedItems.includes(item.id)
+          );
+
+          const itemsForPayment = selectedProducts.map((item) => ({
+            title: item.titulo,
+            unit_price: Number(item.preco),
+            quantity: 1,
+          }));
+
+          try {
+            const res = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                user_id: user?.id,
+                email: formData.email,
+                payment_method: "card",
+                card_token: formData.token,
+                card_brand: formData.card?.issuer?.name?.toLowerCase(),
+                items: itemsForPayment,
+              }),
+            });
+
+            const data = await res.json();
+
+            if (data?.payment?.status === "approved") {
+              setShowOkMessage(true);
+              navigate(`/status?payment_id=${data.payment.id}`);
+            } else {
+              console.error("Pagamento não aprovado:", data);
+              setShowErrorMessage(true);
+            }
+          } catch (err) {
+            console.error("Erro no checkout de cartão:", err);
+            setShowErrorMessage(true);
+          }
+        },
+      },
+    });
+
     setLoading(false);
-
-    // Inicializa MercadoPago SDK para cartão
-    if (!cardFormInstance && window.MercadoPago) {
-      const mp = new window.MercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
-        locale: "pt-BR",
-      });
-
-      const cardForm = mp.cardForm({
-        amount: "0", // será atualizado dinamicamente
-        autoMount: false,
-        form: {
-          id: "card-form",
-          cardholderName: { id: "cardholderName" },
-          cardNumber: { id: "cardNumber" },
-          cardExpirationMonth: { id: "cardExpirationMonth" },
-          cardExpirationYear: { id: "cardExpirationYear" },
-          securityCode: { id: "securityCode" },
-          installments: { id: "installments" },
-          identificationType: { id: "identificationType" },
-          identificationNumber: { id: "identificationNumber" },
-          issuer: { id: "issuer" },
-        },
-        callbacks: {
-          onFormMounted: (error: any) => {
-            if (error) console.error("Erro ao montar CardForm:", error);
-          },
-        },
-      });
-
-      setCardFormInstance(cardForm);
-    }
-  }, [user]);
+  }, [user, cart, selectedItems]);
 
   const handleSelect = (productId: number) => {
     setSelectedItems((prevSelected) =>
@@ -98,11 +138,13 @@ const CartPage: React.FC = () => {
       .replace(".", ",");
   };
 
-  // --- Função de checkout PIX ---
+  // Checkout PIX
   const checkoutPix = async () => {
     const selectedProducts = cart.filter((item) =>
       selectedItems.includes(item.id)
     );
+
+    if (selectedProducts.length === 0) return;
 
     const itemsForPayment = selectedProducts.map((item) => ({
       title: item.titulo,
@@ -123,64 +165,27 @@ const CartPage: React.FC = () => {
       });
 
       const data = await res.json();
-      setQrCodeUrl(data.payment.point_of_interaction.transaction_data.qr_code);
-      navigate(`/status?payment_id=${data.payment.id}`);
-    } catch (err) {
-      console.error(err);
-      setShowErrorMessage(true);
-    }
-  };
 
-  // --- Função de checkout Cartão ---
-  const checkoutCard = async () => {
-    if (!cardFormInstance) return;
-
-    const selectedProducts = cart.filter((item) =>
-      selectedItems.includes(item.id)
-    );
-
-    const total = selectedProducts.reduce((sum, i) => sum + Number(i.preco), 0);
-    cardFormInstance.setAmount(total.toFixed(2));
-    cardFormInstance.mount();
-
-    try {
-      const { token } = await cardFormInstance.createCardToken();
-      const res = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: selectedProducts.map((i) => ({
-            title: i.titulo,
-            unit_price: Number(i.preco),
-            quantity: 1,
-          })),
-          user_id: user?.id,
-          email: user?.email,
-          payment_method: "card",
-          card_token: token,
-          card_brand: cardFormInstance.getCardBrand(),
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data.payment.status === "approved") {
-        alert("✅ Pagamento aprovado!");
+      if (data?.payment?.point_of_interaction?.transaction_data?.qr_code) {
+        setQrCodeUrl(
+          data.payment.point_of_interaction.transaction_data.qr_code
+        );
         navigate(`/status?payment_id=${data.payment.id}`);
       } else {
+        console.error("Resposta PIX inválida:", data);
         setShowErrorMessage(true);
       }
     } catch (err) {
-      console.error("Erro no checkout de cartão:", err);
+      console.error("Erro no checkout PIX:", err);
       setShowErrorMessage(true);
     }
   };
 
   const okMessage = `Finalizando a compra de R$ ${calculateTotal()}`;
 
-  return loading ? (
-    <Loading />
-  ) : (
+  if (loading) return <Loading />;
+
+  return (
     <div className="cart-page-container">
       {showErrorMessage && (
         <ErrorMessage
@@ -194,8 +199,10 @@ const CartPage: React.FC = () => {
           message={okMessage}
         />
       )}
+
       <BackButton />
       <h1>Seu Carrinho</h1>
+
       {cart.length === 0 ? (
         <div className="empty-cart">
           <p>Seu carrinho está vazio.</p>
@@ -252,23 +259,49 @@ const CartPage: React.FC = () => {
             </button>
 
             <div id="card-form">
-              {/* Campos do CardForm serão montados pelo SDK */}
+              <form id="form-checkout" ref={formRef}>
+                <input
+                  id="form-checkout__cardNumber"
+                  placeholder="Número do cartão"
+                />
+                <input
+                  id="form-checkout__cardExpirationMonth"
+                  placeholder="Mês"
+                />
+                <input
+                  id="form-checkout__cardExpirationYear"
+                  placeholder="Ano"
+                />
+                <input id="form-checkout__securityCode" placeholder="CVC" />
+                <input
+                  id="form-checkout__cardholderName"
+                  placeholder="Nome do titular"
+                />
+                <input id="form-checkout__issuer" placeholder="Bandeira" />
+                <input
+                  id="form-checkout__installments"
+                  placeholder="Parcelas"
+                />
+                <input
+                  id="form-checkout__identificationType"
+                  placeholder="Tipo de documento"
+                />
+                <input
+                  id="form-checkout__identificationNumber"
+                  placeholder="Número do documento"
+                />
+                <input id="form-checkout__email" placeholder="E-mail" />
+                <button type="submit">Pagar com cartão</button>
+              </form>
             </div>
-            <button
-              className="checkout-btn"
-              disabled={selectedItems.length === 0}
-              onClick={checkoutCard}
-            >
-              Finalizar Compra Cartão
-            </button>
-
-            {qrCodeUrl && (
-              <div className="pix-qr-code">
-                <h3>Escaneie o QR Code para pagar via PIX</h3>
-                <img src={qrCodeUrl} alt="QR Code PIX" />
-              </div>
-            )}
           </div>
+
+          {qrCodeUrl && (
+            <div className="pix-qr-code">
+              <h3>Escaneie o QR Code para pagar via PIX</h3>
+              <img src={qrCodeUrl} alt="QR Code PIX" />
+            </div>
+          )}
         </div>
       )}
     </div>

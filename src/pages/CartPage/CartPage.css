@@ -1,26 +1,14 @@
-.empty-cart {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
-
-.container-carrinho {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  gap: 20px;
-}
-
+/* ------------------------------
+   CartPage geral
+--------------------------------*/
 .cart-page-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 60px 20px;
   min-height: 100vh;
+  background-color: #f8f8f8;
+  font-family: "Inter", sans-serif;
 }
 
 .cart-page-container h1 {
@@ -29,6 +17,9 @@
   font-size: 2.5rem;
 }
 
+/* ------------------------------
+   Conteúdo do carrinho
+--------------------------------*/
 .cart-content {
   display: flex;
   flex-direction: column;
@@ -40,9 +31,13 @@
 @media (min-width: 992px) {
   .cart-content {
     flex-direction: row;
+    align-items: flex-start;
   }
 }
 
+/* ------------------------------
+   Lista de produtos
+--------------------------------*/
 .cart-items-list {
   flex: 2;
   display: flex;
@@ -80,10 +75,6 @@
   margin-right: 1rem;
 }
 
-.cart-item-details {
-  flex-grow: 1;
-}
-
 .cart-item-details h3 {
   font-size: 1.2rem;
   margin: 0 0 0.5rem;
@@ -116,19 +107,22 @@
   color: #d62828;
 }
 
-/* Estilo para a seção de resumo da compra */
+/* ------------------------------
+   Resumo da compra
+--------------------------------*/
 .cart-summary {
-  flex: 1;
   background-color: #fff;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  height: fit-content;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .cart-summary h2 {
   font-size: 1.8rem;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid #eee;
   padding-bottom: 1rem;
   margin-bottom: 1rem;
 }
@@ -136,7 +130,6 @@
 .summary-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.8rem;
   font-size: 1rem;
   color: #555;
 }
@@ -147,18 +140,18 @@
   color: #333;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #eee;
 }
 
 .checkout-btn {
   width: 100%;
   padding: 1rem;
+  border-radius: 10px;
   border: none;
-  border-radius: 8px;
   background-color: #4a4e69;
   color: #fff;
   font-size: 1.1rem;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.2s;
 }
@@ -172,6 +165,88 @@
   background-color: #b0b0b0;
   cursor: not-allowed;
   transform: none;
+}
+
+/* ------------------------------
+   Formulário do cartão
+--------------------------------*/
+#card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f9f9fb;
+  border-radius: 10px;
+}
+
+#form-checkout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  #form-checkout {
+    grid-template-columns: 1fr;
+  }
+}
+
+#form-checkout input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#form-checkout input:focus {
+  outline: none;
+  border-color: #4a4e69;
+  box-shadow: 0 0 0 2px rgba(74, 78, 105, 0.2);
+}
+
+#form-checkout button[type="submit"] {
+  grid-column: 1 / -1;
+  padding: 1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #4a4e69;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+#form-checkout button[type="submit"]:hover {
+  background-color: #2c2f45;
+  transform: translateY(-2px);
+}
+
+/* ------------------------------
+   PIX QR Code
+--------------------------------*/
+.pix-qr-code {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.pix-qr-code img {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+  margin-top: 1rem;
+}
+
+/* ------------------------------
+   Carrinho vazio
+--------------------------------*/
+.empty-cart {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
 .empty-cart a {
