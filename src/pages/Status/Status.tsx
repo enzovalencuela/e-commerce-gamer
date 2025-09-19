@@ -33,9 +33,12 @@ const StatusPagamento: React.FC = () => {
       const dbStatus = data.database?.status;
       const providerPayment = data.provider;
 
-      if (!paymentMethod && providerPayment?.payment_method_id) {
-        setPaymentMethod(
-          providerPayment.payment_method_id.includes("pix") ? "pix" : "card"
+      if (
+        paymentMethod === "pix" &&
+        providerPayment?.point_of_interaction?.transaction_data?.qr_code
+      ) {
+        setQrCodeUrl(
+          providerPayment.point_of_interaction.transaction_data.qr_code
         );
       }
 

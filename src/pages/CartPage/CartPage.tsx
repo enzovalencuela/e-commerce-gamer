@@ -1,5 +1,5 @@
-// src/pages/CartPage.tsx
-
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,26 +11,63 @@ import OkMessage from "../../components/OkMessage/OkMessage";
 import BackButton from "../../components/BackButton/BackButton";
 import Loading from "../../components/Loading/Loading";
 
+declare global {
+  interface Window {
+    MercadoPago: any;
+  }
+}
+
 const CartPage: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
+  const [cardFormInstance, setCardFormInstance] = useState<any>(null);
+
   const { user, cart, removeFromCart } = useAuth();
   const navigate = useNavigate();
-
-  const errorMessage = "Não foi possível fazer a operação. Tente novamente.";
-
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const errorMessage = "Não foi possível fazer a operação. Tente novamente.";
 
   useEffect(() => {
     if (!user) {
       navigate("/login");
       return;
-    } else {
-      setLoading(false);
     }
-  }, [user, navigate, cart]);
+    setLoading(false);
+
+    // Inicializa MercadoPago SDK para cartão
+    if (!cardFormInstance && window.MercadoPago) {
+      const mp = new window.MercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
+        locale: "pt-BR",
+      });
+
+      const cardForm = mp.cardForm({
+        amount: "0", // será atualizado dinamicamente
+        autoMount: false,
+        form: {
+          id: "card-form",
+          cardholderName: { id: "cardholderName" },
+          cardNumber: { id: "cardNumber" },
+          cardExpirationMonth: { id: "cardExpirationMonth" },
+          cardExpirationYear: { id: "cardExpirationYear" },
+          securityCode: { id: "securityCode" },
+          installments: { id: "installments" },
+          identificationType: { id: "identificationType" },
+          identificationNumber: { id: "identificationNumber" },
+          issuer: { id: "issuer" },
+        },
+        callbacks: {
+          onFormMounted: (error: any) => {
+            if (error) console.error("Erro ao montar CardForm:", error);
+          },
+        },
+      });
+
+      setCardFormInstance(cardForm);
+    }
+  }, [user]);
 
   const handleSelect = (productId: number) => {
     setSelectedItems((prevSelected) =>
@@ -61,15 +98,12 @@ const CartPage: React.FC = () => {
       .replace(".", ",");
   };
 
-  const handleCheckout = async () => {
-    if (selectedItems.length === 0) {
-      setShowErrorMessage(true);
-      return;
-    }
-
+  // --- Função de checkout PIX ---
+  const checkoutPix = async () => {
     const selectedProducts = cart.filter((item) =>
       selectedItems.includes(item.id)
     );
+
     const itemsForPayment = selectedProducts.map((item) => ({
       title: item.titulo,
       unit_price: Number(item.preco),
@@ -77,24 +111,67 @@ const CartPage: React.FC = () => {
     }));
 
     try {
-      const response = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
+      const res = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: itemsForPayment,
           user_id: user?.id,
+          email: user?.email,
+          payment_method: "pix",
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Erro ao criar preferência de pagamento.");
+      const data = await res.json();
+      setQrCodeUrl(data.payment.point_of_interaction.transaction_data.qr_code);
+      navigate(`/status?payment_id=${data.payment.id}`);
+    } catch (err) {
+      console.error(err);
+      setShowErrorMessage(true);
+    }
+  };
+
+  // --- Função de checkout Cartão ---
+  const checkoutCard = async () => {
+    if (!cardFormInstance) return;
+
+    const selectedProducts = cart.filter((item) =>
+      selectedItems.includes(item.id)
+    );
+
+    const total = selectedProducts.reduce((sum, i) => sum + Number(i.preco), 0);
+    cardFormInstance.setAmount(total.toFixed(2));
+    cardFormInstance.mount();
+
+    try {
+      const { token } = await cardFormInstance.createCardToken();
+      const res = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: selectedProducts.map((i) => ({
+            title: i.titulo,
+            unit_price: Number(i.preco),
+            quantity: 1,
+          })),
+          user_id: user?.id,
+          email: user?.email,
+          payment_method: "card",
+          card_token: token,
+          card_brand: cardFormInstance.getCardBrand(),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.payment.status === "approved") {
+        alert("✅ Pagamento aprovado!");
+        navigate(`/status?payment_id=${data.payment.id}`);
+      } else {
+        setShowErrorMessage(true);
       }
-
-      const paymentData = await response.json();
-
-      window.location.href = paymentData.init_point;
-    } catch (error) {
-      console.error("Erro no checkout:", error);
+    } catch (err) {
+      console.error("Erro no checkout de cartão:", err);
       setShowErrorMessage(true);
     }
   };
@@ -154,6 +231,7 @@ const CartPage: React.FC = () => {
               </div>
             ))}
           </div>
+
           <div className="cart-summary">
             <h2>Resumo da Compra</h2>
             <div className="summary-item">
@@ -164,13 +242,32 @@ const CartPage: React.FC = () => {
               <span>Valor total:</span>
               <span>R$ {calculateTotal()}</span>
             </div>
+
             <button
               className="checkout-btn"
-              onClick={handleCheckout}
               disabled={selectedItems.length === 0}
+              onClick={checkoutPix}
             >
-              Finalizar Compra
+              Finalizar Compra PIX
             </button>
+
+            <div id="card-form">
+              {/* Campos do CardForm serão montados pelo SDK */}
+            </div>
+            <button
+              className="checkout-btn"
+              disabled={selectedItems.length === 0}
+              onClick={checkoutCard}
+            >
+              Finalizar Compra Cartão
+            </button>
+
+            {qrCodeUrl && (
+              <div className="pix-qr-code">
+                <h3>Escaneie o QR Code para pagar via PIX</h3>
+                <img src={qrCodeUrl} alt="QR Code PIX" />
+              </div>
+            )}
           </div>
         </div>
       )}
