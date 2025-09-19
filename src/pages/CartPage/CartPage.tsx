@@ -55,37 +55,17 @@ const CartPage: React.FC = () => {
       .reduce((total, item) => total + Number(item.preco), 0);
   };
 
-  // Checkout PIX
   const checkoutPix = async () => {
-    const selectedProducts = cart.filter((item) =>
-      selectedItems.includes(item.id)
-    );
+    const productIdsForPayment = selectedItems;
 
-    if (selectedProducts.length === 0) return;
-
-    const itemsForPayment = selectedProducts.map((item) => {
-      const precoLimpo = String(item.preco).replace(",", ".");
-      const price = Number(precoLimpo);
-
-      // Adicione a validação de preço
-      if (isNaN(price)) {
-        console.error("Preço do item inválido:", item);
-        throw new Error("Preço do item inválido.");
-      }
-
-      return {
-        title: item.titulo,
-        unit_price: price,
-        quantity: 1,
-      };
-    });
+    if (productIdsForPayment.length === 0) return;
 
     try {
       const res = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: itemsForPayment,
+          product_ids: productIdsForPayment,
           user_id: user?.id,
           email: user?.email,
           payment_method: "pix",
