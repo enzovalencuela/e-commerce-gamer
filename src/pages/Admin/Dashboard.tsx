@@ -46,13 +46,18 @@ const Dashboard: React.FC = () => {
       : `${VITE_BACKEND_URL}/api/products/${editingProduct?.id}`;
     const method = isNew ? "POST" : "PUT";
 
+    const productWithDisponivel = {
+      ...productData,
+      disponivel: productData.disponivel ?? true, // default true
+    };
+
     try {
       const response = await fetch(`${url}`, {
         method: method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(productData),
+        body: JSON.stringify(productWithDisponivel),
       });
 
       if (!response.ok) {
