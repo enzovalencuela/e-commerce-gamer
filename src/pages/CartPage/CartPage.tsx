@@ -67,16 +67,21 @@ const CartPage: React.FC = () => {
       return;
     }
 
-    try {
-      const totalAmount = parseFloat(calculateTotal().replace(",", "."));
+    const selectedProducts = cart.filter((item) =>
+      selectedItems.includes(item.id)
+    );
+    const itemsForPayment = selectedProducts.map((item) => ({
+      title: item.titulo,
+      unit_price: Number(item.preco),
+      quantity: 1,
+    }));
 
+    try {
       const response = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: "Compra em Loja Virtual",
-          unit_price: totalAmount,
-          quantity: 1,
+          items: itemsForPayment,
           user_id: user?.id,
         }),
       });
