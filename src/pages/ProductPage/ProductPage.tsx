@@ -167,7 +167,7 @@ const ProductPage: React.FC = () => {
                 em até <b>{product.parcelamento}</b>
               </span>
             </div>
-            <div className="product-actions">
+            <div>
               {!isAddedToCart ? (
                 <>
                   <button className="add-to-cart-btn" onClick={handleAddToCart}>

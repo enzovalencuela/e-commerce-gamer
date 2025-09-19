@@ -20,30 +20,41 @@ const ProductForm: React.FC<ProductFormProps> = ({
   onSave,
   onCancel,
 }) => {
+  const categoriasDisponiveis = [
+    "Áudio",
+    "Periféricos",
+    "Consoles",
+    "VR",
+    "Acessórios",
+    "Notebooks",
+    "Setup",
+    "Monitor",
+  ];
+
   const [formData, setFormData] = useState({
     titulo: "",
-    preco: "",
-    preco_original: "",
+    preco: 0,
+    preco_original: 0,
     parcelamento: "",
     img: "",
     descricao: "",
     categoria: "",
     tags: "",
-    disponivel: true, // Adicionado o estado inicial para 'disponivel'
+    disponivel: true,
   });
 
   useEffect(() => {
     if (product) {
       setFormData({
         titulo: product.titulo || "",
-        preco: product.preco.toString() || "",
-        preco_original: product.preco_original?.toString() || "",
+        preco: product.preco,
+        preco_original: product.preco_original || 0,
         parcelamento: product.parcelamento || "",
         img: product.img || "",
         descricao: product.descricao || "",
         categoria: product.categoria || "",
         tags: product.tags?.join(", ") || "",
-        disponivel: product.disponivel, // Preenche com o valor do produto existente
+        disponivel: product.disponivel,
       });
     }
   }, [product]);
@@ -65,16 +76,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     const newProduct = {
       titulo: formData.titulo,
-      preco: parseFloat(formData.preco),
+      preco: parseFloat(String(formData.preco)),
       preco_original: formData.preco_original
-        ? parseFloat(formData.preco_original)
+        ? parseFloat(String(formData.preco_original))
         : undefined,
       parcelamento: formData.parcelamento,
       img: formData.img,
       descricao: formData.descricao,
       categoria: formData.categoria,
       tags: formData.tags.split(",").map((tag) => tag.trim()),
-      disponivel: formData.disponivel, // Incluído na submissão
+      disponivel: formData.disponivel,
     };
 
     onSave(newProduct);
@@ -122,6 +133,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             name="parcelamento"
             value={formData.parcelamento}
             onChange={handleChange}
+            placeholder="0x de R$ 00.00"
           />
         </label>
         <label>
@@ -145,13 +157,19 @@ const ProductForm: React.FC<ProductFormProps> = ({
         </label>
         <label>
           Categoria:
-          <input
-            type="text"
+          <select
             name="categoria"
             value={formData.categoria}
-            onChange={handleChange}
+            onChange={() => handleChange}
             required
-          />
+          >
+            <option value="">Selecione uma categoria</option>
+            {categoriasDisponiveis.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
         </label>
         <label>
           Tags (separadas por vírgula):

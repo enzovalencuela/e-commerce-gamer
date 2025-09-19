@@ -195,6 +195,45 @@ ul {
   background-color: #ccc;
 }
 
+.buy-now-btn,
+.remove-from-cart-btn,
+.go-to-cart-btn,
+.added-to-cart-btn,
+.add-to-cart-btn {
+  color: #fff;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  width: 100%;
+}
+
+.remove-from-cart-btn {
+  background-color: #4a4e69;
+  color: #fff;
+}
+
+.remove-from-cart-btn:hover {
+  background-color: #2c2f45;
+}
+
+.add-to-cart-btn {
+  background-color: var(--primary);
+}
+.add-to-cart-btn:hover {
+  background-color: var(--lightprimary);
+}
+
+.added-to-cart-btn {
+  background-color: #303030;
+}
+.added-to-cart-btn:hover {
+  background-color: #454545;
+}
+
 @media (min-width: 738px) and (max-width: 1028px) {
   .swiper-slide {
     padding: 10px;

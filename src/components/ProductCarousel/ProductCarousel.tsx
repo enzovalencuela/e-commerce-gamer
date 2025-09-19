@@ -13,7 +13,7 @@ import type { Product } from "../../types/Product";
 
 interface ProductCarouselProps {
   products: Product[];
-  sectionTitle: string;
+  sectionTitle?: string;
 }
 
 const ProductCarousel: React.FC<ProductCarouselProps> = ({

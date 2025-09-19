@@ -8,14 +8,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 
 const navDepartments = [
-  { id: "1", name: "PC Gamer" },
+  { id: "1", name: "Setups" },
   { id: "2", name: "Notebooks" },
   { id: "3", name: "Periféricos" },
   { id: "4", name: "Consoles" },
-  { id: "5", name: "Componentes" },
+  { id: "5", name: "Acessórios" },
   { id: "6", name: "Monitores" },
   { id: "7", name: "Realidade VR" },
-  { id: "8", name: "Hardware" },
+  { id: "8", name: "Áudio" },
 ];
 
 interface HeaderProps {

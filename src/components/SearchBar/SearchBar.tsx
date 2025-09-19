@@ -2,23 +2,18 @@
 
 import React, { useState } from "react";
 import "./SearchBar.css";
+import { useNavigate } from "react-router-dom";
 
-interface SearchBarProps {
-  onSearch: (query: string) => void;
-}
-
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+const SearchBar: React.FC = () => {
   const [query, setQuery] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!query.trim()) {
-      setMessage("Por favor, digite um termo de pesquisa.");
-    } else {
-      setMessage(`Você buscou por: '${query}'`);
-      onSearch(query);
+    if (query.trim()) {
+      navigate(`/produtos/search?q=${query.trim()}`);
+      setQuery("");
     }
   };
 
@@ -36,14 +31,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           <img src="/img/search.svg" alt="" />
         </button>
       </form>
-      {message && (
-        <div className="search-response">
-          <p className="message">{message}</p>
-          <button className="close-button" onClick={() => setMessage("")}>
-            X
-          </button>
-        </div>
-      )}
     </>
   );
 };

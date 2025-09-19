@@ -13,6 +13,7 @@ import ProductPage from "./pages/ProductPage/ProductPage.tsx";
 import Home from "./pages/Home/Home.tsx";
 import Dashboard from "./pages/Admin/Dashboard.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import SearchResultsPage from "./pages/SearchResultsPage/SearchResultsPage.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -26,6 +27,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route path="product/:id" element={<ProductPage />} />
             <Route path="account" element={<Account />} />
             <Route path="carrinho" element={<Carrinho />} />
+            <Route path="/produtos/search" element={<SearchResultsPage />} />
+            <Route
+              path="/produtos/categoria/:categoria"
+              element={<SearchResultsPage />}
+            />
 
             <Route
               path="dashboard"

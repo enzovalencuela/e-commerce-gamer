@@ -8,11 +8,13 @@ import "./Dashboard.css";
 import type { Product } from "../../types/Product";
 import Loading from "../../components/Loading/Loading";
 import BackButton from "../../components/BackButton/BackButton";
+import SpanMessage from "../../components/SpanMessage/SpanMessage";
 type NewProduct = Omit<Product, "id">;
 
 const Dashboard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSpan, setShowSpan] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -38,14 +40,14 @@ const Dashboard: React.FC = () => {
   }, [VITE_BACKEND_URL]);
 
   const handleSave = async (productData: NewProduct) => {
-    const isNew = !editingProduct;
+    const isNew = !editingProduct || !editingProduct.id;
     const url = isNew
-      ? `${VITE_BACKEND_URL}/api/products`
+      ? `${VITE_BACKEND_URL}/api/products/add`
       : `${VITE_BACKEND_URL}/api/products/${editingProduct?.id}`;
     const method = isNew ? "POST" : "PUT";
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(`${url}`, {
         method: method,
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +71,7 @@ const Dashboard: React.FC = () => {
       }
 
       setEditingProduct(null);
-      console.log("Produto salvo com sucesso!");
+      setShowSpan(true);
     } catch (error) {
       console.error("Erro ao salvar produto:", error);
     }
@@ -108,6 +110,9 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard-container">
+      {showSpan && (
+        <SpanMessage message="Produto salvo com sucesso!" status="ok" />
+      )}
       <BackButton />
       <h1>Painel de Administração</h1>
 
