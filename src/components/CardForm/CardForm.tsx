@@ -1,4 +1,8 @@
-const CardForm = () => {
+type CardFormProps = {
+  selectedItems: number[];
+};
+
+const CardForm: React.FC<CardFormProps> = ({ selectedItems }) => {
   return (
     <form id="form-checkout">
       <input id="form-checkout__cardNumber" placeholder="Número do cartão" />
@@ -17,7 +21,13 @@ const CardForm = () => {
         placeholder="Número do documento"
       />
       <input id="form-checkout__email" placeholder="E-mail" />
-      <button type="submit">Pagar com cartão</button>
+      <button
+        className="checkout-btn"
+        type="submit"
+        disabled={selectedItems.length === 0}
+      >
+        Pagar com cartão
+      </button>
     </form>
   );
 };

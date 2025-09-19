@@ -52,9 +52,7 @@ const CartPage: React.FC = () => {
   const calculateTotal = () => {
     return cart
       .filter((item) => selectedItems.includes(item.id))
-      .reduce((total, item) => total + Number(item.preco), 0)
-      .toFixed(2)
-      .replace(".", ",");
+      .reduce((total, item) => total + Number(item.preco), 0);
   };
 
   // Checkout PIX
@@ -65,11 +63,16 @@ const CartPage: React.FC = () => {
 
     if (selectedProducts.length === 0) return;
 
-    const itemsForPayment = selectedProducts.map((item) => ({
-      title: item.titulo,
-      unit_price: Number(item.preco),
-      quantity: 1,
-    }));
+    const itemsForPayment = selectedProducts.map((item) => {
+      const precoLimpo = String(item.preco).replace(",", ".");
+      const price = Number(precoLimpo);
+
+      return {
+        title: item.titulo,
+        unit_price: price,
+        quantity: 1,
+      };
+    });
 
     try {
       const res = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
@@ -238,7 +241,7 @@ const CartPage: React.FC = () => {
             </div>
             <div className="summary-item total">
               <span>Valor total:</span>
-              <span>R$ {calculateTotal()}</span>
+              <span>R$ {calculateTotal().toFixed(2).replace(".", ",")}</span>
             </div>
 
             <button
@@ -249,7 +252,7 @@ const CartPage: React.FC = () => {
               Finalizar Compra PIX
             </button>
             <div id="card-form">
-              <CardForm />
+              <CardForm selectedItems={selectedItems} />
             </div>
           </div>
 

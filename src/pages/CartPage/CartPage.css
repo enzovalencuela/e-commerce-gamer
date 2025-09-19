@@ -143,30 +143,6 @@
   border-top: 1px solid #eee;
 }
 
-.checkout-btn {
-  width: 100%;
-  padding: 1rem;
-  border-radius: 10px;
-  border: none;
-  background-color: #4a4e69;
-  color: #fff;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s;
-}
-
-.checkout-btn:hover {
-  background-color: #2c2f45;
-  transform: translateY(-2px);
-}
-
-.checkout-btn:disabled {
-  background-color: #b0b0b0;
-  cursor: not-allowed;
-  transform: none;
-}
-
 /* ------------------------------
    Formulário do cartão
 --------------------------------*/
@@ -204,23 +180,6 @@
   outline: none;
   border-color: #4a4e69;
   box-shadow: 0 0 0 2px rgba(74, 78, 105, 0.2);
-}
-
-#form-checkout button[type="submit"] {
-  grid-column: 1 / -1;
-  padding: 1rem;
-  border-radius: 8px;
-  border: none;
-  background-color: #4a4e69;
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s;
-}
-
-#form-checkout button[type="submit"]:hover {
-  background-color: #2c2f45;
-  transform: translateY(-2px);
 }
 
 /* ------------------------------
