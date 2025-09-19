@@ -2,11 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import Loading from "../../components/Loading/Loading";
+import "./Status.css";
 
 const StatusPagamento: React.FC = () => {
   const [status, setStatus] = useState("Carregando...");
   const [searchParams] = useSearchParams();
   const paymentId = searchParams.get("payment_id");
+  const urlStatus = searchParams.get("status");
+
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
@@ -22,7 +26,6 @@ const StatusPagamento: React.FC = () => {
         const data = await res.json();
 
         const paymentStatus = data.status;
-
         setStatus(paymentStatus);
 
         if (paymentStatus === "approved" || paymentStatus === "rejected") {
@@ -39,23 +42,27 @@ const StatusPagamento: React.FC = () => {
       }
     };
 
-    checkPaymentStatus();
-    intervalId = setInterval(checkPaymentStatus, 3000);
+    if (urlStatus === "approved") {
+      setStatus("approved");
+    } else {
+      checkPaymentStatus();
+      intervalId = setInterval(checkPaymentStatus, 3000);
+    }
 
     return () => {
       if (intervalId) {
         clearInterval(intervalId);
       }
     };
-  }, [paymentId, VITE_BACKEND_URL]);
+  }, [paymentId, VITE_BACKEND_URL, urlStatus]);
 
   return (
-    <div>
+    <div className="status-container">
       <h1>Status do Pagamento</h1>
       {status === "approved" && <p>✅ Pagamento aprovado!</p>}
       {status === "pending" && <p>⏳ Pagamento pendente...</p>}
       {status === "rejected" && <p>❌ Pagamento rejeitado.</p>}
-      {status === "Carregando..." && <p>Carregando...</p>}
+      {status === "Carregando..." && <Loading />}
     </div>
   );
 };
