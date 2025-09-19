@@ -67,9 +67,9 @@ const CartPage: React.FC = () => {
       return;
     }
 
-    const totalAmount = parseFloat(calculateTotal().replace(",", "."));
-
     try {
+      const totalAmount = parseFloat(calculateTotal().replace(",", "."));
+
       const response = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -77,6 +77,7 @@ const CartPage: React.FC = () => {
           title: "Compra em Loja Virtual",
           unit_price: totalAmount,
           quantity: 1,
+          user_id: user?.id,
         }),
       });
 
