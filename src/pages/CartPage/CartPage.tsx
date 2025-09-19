@@ -9,7 +9,6 @@ import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import OkMessage from "../../components/OkMessage/OkMessage";
 import BackButton from "../../components/BackButton/BackButton";
-import Loading from "../../components/Loading/Loading";
 
 declare global {
   interface Window {
@@ -19,7 +18,6 @@ declare global {
 
 const CartPage: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
@@ -31,7 +29,6 @@ const CartPage: React.FC = () => {
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  // Monta o CardForm
   useEffect(() => {
     if (!user || !window.MercadoPago || !formRef.current) return;
 
@@ -64,7 +61,6 @@ const CartPage: React.FC = () => {
 
           const formData = cardForm.getCardFormData();
 
-          // Filtra apenas os produtos selecionados
           const selectedProducts = cart.filter((item) =>
             selectedItems.includes(item.id)
           );
@@ -105,8 +101,6 @@ const CartPage: React.FC = () => {
         },
       },
     });
-
-    setLoading(false);
   }, [user, cart, selectedItems]);
 
   const handleSelect = (productId: number) => {
@@ -182,8 +176,6 @@ const CartPage: React.FC = () => {
   };
 
   const okMessage = `Finalizando a compra de R$ ${calculateTotal()}`;
-
-  if (loading) return <Loading />;
 
   return (
     <div className="cart-page-container">
