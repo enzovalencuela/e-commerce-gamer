@@ -7,13 +7,19 @@ import {
 import "./Menu.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import ProtectedRoute from "../ProtectedRoute";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Menu() {
   const [showMenu, setShowMenu] = useState("");
-  const { logout } = useAuth();
+  const [userAdmin, setUserAdmin] = useState(false);
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && user.role === "admin") {
+      setUserAdmin(true);
+    }
+  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -26,14 +32,14 @@ export default function Menu() {
       onClick={() => setShowMenu("true")}
     >
       <div className="div-menu">
-        <ProtectedRoute requiredRole="admin">
+        {userAdmin && (
           <Link to={"/dashboard"}>
             <button>
               <FontAwesomeIcon icon={faDashboard} />
               Dashboard
             </button>
           </Link>
-        </ProtectedRoute>
+        )}
         <Link to={"/account"}>
           <button>
             <FontAwesomeIcon icon={faUser} />

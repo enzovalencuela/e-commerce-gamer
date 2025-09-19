@@ -52,7 +52,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
           onClose={() => setShowErrorMessage(false)}
           message={errorMessage}
           buttonContent="Ir Para Login"
-          onClick={() => navigate("./login")}
+          onClick={() => navigate("/login")}
         />
       )}
       {showSpanOkMessage && (

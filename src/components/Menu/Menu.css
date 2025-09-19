@@ -43,3 +43,9 @@
     right: 30px;
   }
 }
+
+@media (min-width: 738px) and (max-width: 1028px) {
+  .div-menu {
+    right: 80px;
+  }
+}

@@ -15,7 +15,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const { user } = useAuth();
 
-  if (!user || user.role !== requiredRole) {
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  if (user.role !== requiredRole) {
     return <Navigate to="/login" replace />;
   }
 

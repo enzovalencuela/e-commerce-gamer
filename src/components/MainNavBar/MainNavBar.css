@@ -57,6 +57,13 @@
   }
 }
 
+.cart-icon,
+.user-icon {
+  color: var(--secondary);
+  background-color: transparent;
+  font-size: 20px;
+}
+
 @media (max-width: 738px) {
   .div-user {
     width: auto;

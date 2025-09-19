@@ -24,11 +24,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
     "Áudio",
     "Periféricos",
     "Consoles",
-    "VR",
+    "Realidade VR",
     "Acessórios",
     "Notebooks",
-    "Setup",
-    "Monitor",
+    "Setups",
+    "Monitores",
   ];
 
   const [formData, setFormData] = useState({

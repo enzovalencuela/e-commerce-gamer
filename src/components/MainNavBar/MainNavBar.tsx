@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import "./MainNavBar.css";
 import Menu from "../Menu/Menu";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartShopping, faUser } from "@fortawesome/free-solid-svg-icons";
 
 const MainNavbar: React.FC = () => {
   const [menu, setMenu] = useState(false);
@@ -23,16 +25,12 @@ const MainNavbar: React.FC = () => {
 
         <Link to={"/carrinho"}>
           <div className="cart">
-            <img src="./img/car.svg" alt="Ícone de carrinho" />
+            <FontAwesomeIcon className="cart-icon" icon={faCartShopping} />
             <span>{qtdItemsCart}</span>
           </div>
         </Link>
         <div onClick={() => setMenu(!menu)} className="div-user">
-          <img
-            id="icon_person"
-            src="./img/icon_person.svg"
-            alt="Ícone de perfil"
-          />
+          <FontAwesomeIcon className="user-icon" icon={faUser} />
           <p>
             Olá,
             <br />
