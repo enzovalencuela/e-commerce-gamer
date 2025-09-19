@@ -60,7 +60,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
   }, [product]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value, type } = e.target;
     const isCheckbox = type === "checkbox";
@@ -160,7 +162,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           <select
             name="categoria"
             value={formData.categoria}
-            onChange={() => handleChange}
+            onChange={handleChange}
             required
           >
             <option value="">Selecione uma categoria</option>

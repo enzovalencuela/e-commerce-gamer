@@ -6,6 +6,7 @@ import MainNavbar from "../MainNavBar/MainNavBar";
 import "./Header.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
+import { useNavigate } from "react-router-dom";
 
 const navDepartments = [
   { id: "1", name: "Setups" },
@@ -18,16 +19,18 @@ const navDepartments = [
   { id: "8", name: "Áudio" },
 ];
 
-interface HeaderProps {
-  onSearch: (query: string) => void;
-}
+const Header: React.FC = () => {
+  const navigate = useNavigate();
 
-const Header: React.FC<HeaderProps> = ({ onSearch }) => {
+  const handleCategoryClick = (categoryName: string) => {
+    navigate(`/produtos/search?categoria=${categoryName}`);
+  };
+
   return (
     <header>
       <TopBar />
       <div className="div-nav">
-        <MainNavbar onSearch={onSearch} />
+        <MainNavbar />
 
         <ul className="div-ul">
           <Swiper
@@ -42,7 +45,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
           >
             {navDepartments.map((dept) => (
               <SwiperSlide>
-                <li key={dept.id} className="li-departamento">
+                <li
+                  key={dept.id}
+                  className="li-departamento"
+                  onClick={() => handleCategoryClick(dept.name)}
+                >
                   {dept.name}
                 </li>
               </SwiperSlide>

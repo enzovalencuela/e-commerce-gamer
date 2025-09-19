@@ -7,11 +7,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import "./MainNavBar.css";
 import Menu from "../Menu/Menu";
 
-interface MainNavbarProps {
-  onSearch: (query: string) => void;
-}
-
-const MainNavbar: React.FC<MainNavbarProps> = ({ onSearch }) => {
+const MainNavbar: React.FC = () => {
   const [menu, setMenu] = useState(false);
   const { user, cart } = useAuth();
   const qtdItemsCart = cart.length;
@@ -23,7 +19,7 @@ const MainNavbar: React.FC<MainNavbarProps> = ({ onSearch }) => {
         <Link to={"/"} className="logo_marca">
           <img src="/LOGO_MARCA.png" alt="Logo" />
         </Link>
-        <SearchBar onSearch={onSearch} />
+        <SearchBar />
 
         <Link to={"/carrinho"}>
           <div className="cart">
