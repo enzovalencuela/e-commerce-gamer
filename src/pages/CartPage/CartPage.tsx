@@ -92,7 +92,7 @@ const CartPage: React.FC = () => {
 
       const paymentData = await response.json();
 
-      window.location.href = paymentData.init_point;
+      navigate(`/status?payment_id=${paymentData.id}`);
     } catch (error) {
       console.error("Erro no checkout:", error);
       setShowErrorMessage(true);
