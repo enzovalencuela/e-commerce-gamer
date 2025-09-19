@@ -67,6 +67,12 @@ const CartPage: React.FC = () => {
       const precoLimpo = String(item.preco).replace(",", ".");
       const price = Number(precoLimpo);
 
+      // Adicione a validação de preço
+      if (isNaN(price)) {
+        console.error("Preço do item inválido:", item);
+        throw new Error("Preço do item inválido.");
+      }
+
       return {
         title: item.titulo,
         unit_price: price,
