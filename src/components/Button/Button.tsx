@@ -2,7 +2,7 @@ import "./Button.css";
 
 interface ButtonProps {
   child: string;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 export default function Button({ child, disabled }: ButtonProps) {
