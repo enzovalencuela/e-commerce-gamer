@@ -97,8 +97,12 @@ const PaymentResum = () => {
         >
           Finalizar Compra PIX
         </button>
-        <div id="card-form">
-          <CardForm selectedItems={selectedItems} />
+        <div id="card-form-container">
+          <CardForm
+            selectedItems={selectedItems}
+            calculateTotal={calculateTotal}
+            cpf={cpf}
+          />
         </div>
       </div>
 
