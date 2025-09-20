@@ -9,7 +9,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import OkMessage from "../../components/OkMessage/OkMessage";
 import BackButton from "../../components/BackButton/BackButton";
-import CardForm from "../../components/CardForm/CardForm";
+import Button from "../../components/Button/Button";
 
 declare global {
   interface Window {
@@ -18,18 +18,16 @@ declare global {
 }
 
 const CartPage: React.FC = () => {
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
-  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
-
-  const { user, cart, removeFromCart } = useAuth();
+  const { user, cart, removeFromCart, selectedItems, setSelectedItems } =
+    useAuth();
   const navigate = useNavigate();
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const errorMessage = "Não foi possível fazer a operação. Tente novamente.";
 
-  const handleSelect = (productId: number) => {
-    setSelectedItems((prevSelected) =>
+  const handleSelect = (productId: number): void => {
+    setSelectedItems((prevSelected: number[]) =>
       prevSelected.includes(productId)
         ? prevSelected.filter((id) => id !== productId)
         : [...prevSelected, productId]
@@ -40,9 +38,6 @@ const CartPage: React.FC = () => {
     if (!user) return;
     try {
       await removeFromCart(productId);
-      setSelectedItems((prevSelected) =>
-        prevSelected.filter((id) => id !== productId)
-      );
     } catch (error) {
       console.error("Erro ao remover do carrinho:", error);
       setShowErrorMessage(true);
@@ -53,40 +48,6 @@ const CartPage: React.FC = () => {
     return cart
       .filter((item) => selectedItems.includes(item.id))
       .reduce((total, item) => total + Number(item.preco), 0);
-  };
-
-  const checkoutPix = async () => {
-    const productIdsForPayment = selectedItems;
-
-    if (productIdsForPayment.length === 0) return;
-
-    try {
-      const res = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          product_ids: productIdsForPayment,
-          user_id: user?.id,
-          email: user?.email,
-          payment_method: "pix",
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data?.payment?.point_of_interaction?.transaction_data?.qr_code) {
-        setQrCodeUrl(
-          data.payment.point_of_interaction.transaction_data.qr_code
-        );
-        navigate(`/status?payment_id=${data.payment.id}`);
-      } else {
-        console.error("Resposta PIX inválida:", data);
-        setShowErrorMessage(true);
-      }
-    } catch (err) {
-      console.error("Erro no checkout PIX:", err);
-      setShowErrorMessage(true);
-    }
   };
 
   useEffect(() => {
@@ -218,36 +179,12 @@ const CartPage: React.FC = () => {
               </div>
             ))}
           </div>
-
-          <div className="cart-summary">
-            <h2>Resumo da Compra</h2>
-            <div className="summary-item">
-              <span>Total de itens selecionados:</span>
-              <span>{selectedItems.length}</span>
-            </div>
-            <div className="summary-item total">
-              <span>Valor total:</span>
-              <span>R$ {calculateTotal().toFixed(2).replace(".", ",")}</span>
-            </div>
-
-            <button
-              className="checkout-btn"
-              disabled={selectedItems.length === 0}
-              onClick={checkoutPix}
-            >
-              Finalizar Compra PIX
-            </button>
-            <div id="card-form">
-              <CardForm selectedItems={selectedItems} />
-            </div>
-          </div>
-
-          {qrCodeUrl && (
-            <div className="pix-qr-code">
-              <h3>Escaneie o QR Code para pagar via PIX</h3>
-              <img src={qrCodeUrl} alt="QR Code PIX" />
-            </div>
-          )}
+          <Link to={"/checkout"}>
+            <Button
+              disabled={selectedItems.length <= 0}
+              child="Ir para Checkout"
+            />
+          </Link>
         </div>
       )}
     </div>

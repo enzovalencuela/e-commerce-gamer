@@ -11,13 +11,22 @@ interface User {
   role: "admin" | "user";
 }
 
+interface CartItem {
+  id: number;
+  titulo: string;
+  preco: number;
+  img: string;
+}
+
 interface AuthContextType {
   user: User | null;
-  cart: Product[];
+  cart: CartItem[];
   login: (userData: User) => void;
   logout: () => void;
   addToCart: (item: Product) => Promise<"ok" | "error">;
   removeFromCart: (itemId: number) => Promise<void>;
+  selectedItems: number[];
+  setSelectedItems: React.Dispatch<React.SetStateAction<number[]>>;
 }
 interface AuthProviderProps {
   children: ReactNode;
@@ -27,6 +36,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [user, setUser] = useState<User | null>(() => {
     try {
       const storedUser = localStorage.getItem("user");
@@ -114,17 +124,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: JSON.stringify({ userId: user.id, productId: itemId }),
       });
       setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
+      setSelectedItems((prevSelected) =>
+        prevSelected.filter((id) => id !== itemId)
+      );
     } catch (error) {
       console.error("Erro ao remover produto do carrinho:", error);
     }
   };
 
+  const contextValue = {
+    user,
+    cart,
+    login,
+    logout,
+    addToCart,
+    removeFromCart,
+    selectedItems,
+    setSelectedItems,
+  };
+
   return (
-    <AuthContext.Provider
-      value={{ user, cart, login, logout, addToCart, removeFromCart }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 

@@ -15,6 +15,7 @@ import Dashboard from "./pages/Admin/Dashboard.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import SearchResultsPage from "./pages/SearchResultsPage/SearchResultsPage.tsx";
 import StatusPagamento from "./pages/Status/Status.tsx";
+import PaymentResum from "./pages/PaymentResum/PaymentResum.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -34,6 +35,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               element={<SearchResultsPage />}
             />
             <Route path="status" element={<StatusPagamento />} />
+            <Route path="checkout" element={<PaymentResum />} />
 
             <Route
               path="dashboard"
