@@ -5,12 +5,21 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import "./Status.css";
 
-interface PaymentStatus {
-  status: string;
+interface PixInfo {
   qr_code?: string;
   qr_code_base64?: string;
+  ticket_url?: string;
+}
+
+interface PaymentStatus {
+  id: number;
+  status: string;
   status_detail?: string;
   total_amount?: number;
+  payment_type?: string;
+  payment_method?: string;
+  date_approved?: string;
+  pix?: PixInfo;
 }
 
 const StatusPagamento: React.FC = () => {
@@ -35,26 +44,12 @@ const StatusPagamento: React.FC = () => {
     const fetchPaymentStatus = async () => {
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL}/api/payments/${paymentId}/status`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+          `${VITE_BACKEND_URL}/api/payments/${paymentId}/status`
         );
 
         const data = await response.json();
         if (response.ok && data.payment) {
-          const qrCodeData =
-            data.payment.point_of_interaction?.transaction_data;
-          setPaymentStatus({
-            status: data.payment.status,
-            qr_code: qrCodeData?.qr_code,
-            qr_code_base64: qrCodeData?.qr_code_base64,
-            status_detail: data.payment.status_detail,
-            total_amount: data.payment.total_amount,
-          });
+          setPaymentStatus(data.payment);
         } else {
           console.error("Erro ao obter status do pagamento:", data.error);
           setPaymentStatus(null);
@@ -89,49 +84,64 @@ const StatusPagamento: React.FC = () => {
 
   return (
     <div className="status-container">
-      {paymentStatus.status === "pending" && (
-        <div className="status-pending">
-          <h2>Pagamento Pendente</h2>
-          <p>Seu pagamento via PIX está aguardando a confirmação.</p>
-          {paymentStatus.qr_code_base64 && (
-            <div className="pix-qr-code">
-              <h3>Escaneie o QR Code</h3>
-              <img
-                src={`data:image/png;base64,${paymentStatus.qr_code_base64}`}
-                alt="QR Code PIX"
-              />
-              <p>Valor: R$ {paymentStatus.total_amount?.toFixed(2)}</p>
+      {paymentStatus.payment_type === "pix" &&
+        paymentStatus.status === "pending" && (
+          <div className="status-pending">
+            <h2>Pagamento Pendente</h2>
+            <p>Seu pagamento via PIX está aguardando a confirmação.</p>
+            {paymentStatus.pix?.qr_code_base64 && (
+              <div className="pix-qr-code">
+                <h3>Escaneie o QR Code</h3>
+                <img
+                  src={`data:image/png;base64,${paymentStatus.pix.qr_code_base64}`}
+                  alt="QR Code PIX"
+                />
+                <p>Valor: R$ {paymentStatus.total_amount?.toFixed(2)}</p>
+              </div>
+            )}
+            <p>Você pode copiar o código PIX abaixo para pagar no seu banco.</p>
+            <div className="pix-code-container">
+              <span>{paymentStatus.pix?.qr_code}</span>
+              <button
+                onClick={() =>
+                  navigator.clipboard.writeText(
+                    paymentStatus.pix?.qr_code || ""
+                  )
+                }
+              >
+                Copiar código
+              </button>
             </div>
-          )}
-          <p>Você pode copiar o código PIX abaixo para pagar no seu banco.</p>
-          <div className="pix-code-container">
-            <span>{paymentStatus.qr_code}</span>
-            <button
-              onClick={() =>
-                navigator.clipboard.writeText(paymentStatus.qr_code || "")
-              }
-            >
-              Copiar código
-            </button>
+            {paymentStatus.pix?.ticket_url && (
+              <p>
+                Ou <a href={paymentStatus.pix.ticket_url}>clique aqui</a> para
+                abrir no app do seu banco.
+              </p>
+            )}
           </div>
-        </div>
-      )}
+        )}
 
-      {paymentStatus.status === "approved" && (
-        <div className="status-approved">
-          <h2>Pagamento Aprovado!</h2>
-          <p>Obrigado pela sua compra. Seu pedido será processado em breve.</p>
-        </div>
-      )}
+      {/* Caso seja cartão aprovado */}
+      {paymentStatus.payment_type === "credit_card" &&
+        paymentStatus.status === "approved" && (
+          <div className="status-approved">
+            <h2>Pagamento Aprovado!</h2>
+            <p>
+              Obrigado pela sua compra. Seu pedido será processado em breve.
+            </p>
+            <p>
+              Cartão: {paymentStatus.payment_method?.toUpperCase()} <br />
+              Data: {new Date(paymentStatus.date_approved!).toLocaleString()}
+            </p>
+          </div>
+        )}
 
+      {/* Caso rejeitado */}
       {paymentStatus.status === "rejected" && (
         <div className="status-rejected">
           <h2>Pagamento Rejeitado</h2>
-          <p>
-            Não foi possível processar seu pagamento. Detalhes:{" "}
-            {paymentStatus.status_detail}
-          </p>
-          <p>Por favor, tente novamente ou use outro método de pagamento.</p>
+          <p>Detalhes: {paymentStatus.status_detail}</p>
+          <p>Tente novamente ou use outro método de pagamento.</p>
         </div>
       )}
     </div>

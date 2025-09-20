@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import "./CartPage.css";
@@ -22,8 +21,6 @@ const CartPage: React.FC = () => {
   const [showOkMessage, setShowOkMessage] = useState(false);
   const { user, cart, removeFromCart, selectedItems, setSelectedItems } =
     useAuth();
-  const navigate = useNavigate();
-  const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const errorMessage = "Não foi possível fazer a operação. Tente novamente.";
 
   const handleSelect = (productId: number): void => {
@@ -49,80 +46,6 @@ const CartPage: React.FC = () => {
       .filter((item) => selectedItems.includes(item.id))
       .reduce((total, item) => total + Number(item.preco), 0);
   };
-
-  useEffect(() => {
-    if (!user || !window.MercadoPago) return;
-
-    const mp = new window.MercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
-      locale: "pt-BR",
-    });
-
-    const cardForm = mp.cardForm({
-      amount: `${calculateTotal()}`,
-      autoMount: true,
-      form: {
-        id: "form-checkout",
-        cardholderName: { id: "form-checkout__cardholderName" },
-        cardNumber: { id: "form-checkout__cardNumber" },
-        cardExpirationMonth: { id: "form-checkout__cardExpirationMonth" },
-        cardExpirationYear: { id: "form-checkout__cardExpirationYear" },
-        securityCode: { id: "form-checkout__securityCode" },
-        installments: { id: "form-checkout__installments" },
-        identificationType: { id: "form-checkout__identificationType" },
-        identificationNumber: { id: "form-checkout__identificationNumber" },
-        issuer: { id: "form-checkout__issuer" },
-        email: { id: "form-checkout__email" },
-      },
-      callbacks: {
-        onFormMounted: (error: any) => {
-          if (error) console.error("Erro ao montar CardForm:", error);
-        },
-        onSubmit: async (event: any) => {
-          event.preventDefault();
-
-          const formData = cardForm.getCardFormData();
-
-          const selectedProducts = cart.filter((item) =>
-            selectedItems.includes(item.id)
-          );
-
-          const itemsForPayment = selectedProducts.map((item) => ({
-            title: item.titulo,
-            unit_price: Number(item.preco),
-            quantity: 1,
-          }));
-
-          try {
-            const res = await fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                user_id: user?.id,
-                email: formData.email,
-                payment_method: "card",
-                card_token: formData.token,
-                card_brand: formData.card?.issuer?.name?.toLowerCase(),
-                items: itemsForPayment,
-              }),
-            });
-
-            const data = await res.json();
-
-            if (data?.payment?.status === "approved") {
-              setShowOkMessage(true);
-              navigate(`/status?payment_id=${data.payment.id}`);
-            } else {
-              console.error("Pagamento não aprovado:", data);
-              setShowErrorMessage(true);
-            }
-          } catch (err) {
-            console.error("Erro no checkout de cartão:", err);
-            setShowErrorMessage(true);
-          }
-        },
-      },
-    });
-  }, [user, cart, selectedItems]);
 
   const okMessage = `Finalizando a compra de R$ ${calculateTotal()}`;
 
