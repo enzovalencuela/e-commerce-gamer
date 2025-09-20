@@ -61,8 +61,6 @@ const PaymentResum = () => {
 
         {paymentMethod === "pix" && (
           <PixForm
-            total={calculateTotal()}
-            selectedItems={selectedItems}
             onSuccess={(paymentId) =>
               navigate(`/status?payment_id=${paymentId}`)
             }
