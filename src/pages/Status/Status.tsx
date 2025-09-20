@@ -46,18 +46,17 @@ const StatusPagamento: React.FC = () => {
 
         const data = await response.json();
         if (response.ok && data.payment) {
+          // Extrai o QR Code base64 e o QR Code (código de copia e cola)
+          const qrCodeData =
+            data.payment.point_of_interaction?.transaction_data;
           setPaymentStatus({
             status: data.payment.status,
-            qr_code:
-              data.payment.point_of_interaction?.transaction_data?.qr_code,
-            qr_code_base64:
-              data.payment.point_of_interaction?.transaction_data
-                ?.qr_code_base64,
+            qr_code: qrCodeData?.qr_code,
+            qr_code_base64: qrCodeData?.qr_code_base64,
             status_detail: data.payment.status_detail,
             total_amount: data.payment.transaction_amount,
           });
         } else {
-          // Lida com erros do back-end
           console.error("Erro ao obter status do pagamento:", data.error);
           setPaymentStatus(null);
         }

@@ -7,7 +7,7 @@ import BackButton from "../../components/BackButton/BackButton";
 import "./PaymentResum.css";
 
 const PaymentResum = () => {
-  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
+  const [qrCodeUrl] = useState<string | null>(null);
   const [cpf, setCpf] = useState<string>("");
   const { user, cart, selectedItems } = useAuth();
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -45,13 +45,11 @@ const PaymentResum = () => {
 
       const data = await res.json();
 
-      if (data?.payment?.point_of_interaction?.transaction_data?.qr_code) {
-        setQrCodeUrl(
-          data.payment.point_of_interaction.transaction_data.qr_code
-        );
+      if (res.ok && data?.payment?.id) {
+        // A resposta do back-end é um sucesso, e ela contém o ID do pagamento
         navigate(`/status?payment_id=${data.payment.id}`);
       } else {
-        console.error("Resposta PIX inválida:", data);
+        console.error("Resposta inválida ou erro no back-end:", data);
         setShowErrorMessage(true);
       }
     } catch (err) {
