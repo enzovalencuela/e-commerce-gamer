@@ -1,21 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import BackButton from "../../components/BackButton/BackButton";
 import { initMercadoPago, Payment } from "@mercadopago/sdk-react";
 import "./PaymentResum.css";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/Loading/Loading";
 
 initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY);
 
 const PaymentResum = () => {
   const { user, cart, selectedItems } = useAuth();
   const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const [pixInfo, setPixInfo] = useState<{
-    qrCode: string;
-    qrCodeBase64: string;
-  } | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const errorMessage = "Não foi possível fazer a operação. Tente novamente.";
 
@@ -32,9 +31,13 @@ const PaymentResum = () => {
 
   const totalAmount = calculateTotal();
 
-  if (totalAmount <= 1) {
-    navigate("/carrinho");
-  }
+  useEffect(() => {
+    if (totalAmount <= 1) {
+      setTimeout(() => {
+        navigate("/carrinho");
+      }, 3000);
+    }
+  }, [totalAmount, navigate]);
 
   const initialization = {
     amount: totalAmount,
@@ -51,6 +54,7 @@ const PaymentResum = () => {
   };
 
   const onSubmit = async ({ formData }: { formData: Record<string, any> }) => {
+    setLoading(true);
     if (!user || totalAmount <= 0) {
       setShowErrorMessage(true);
       return;
@@ -74,16 +78,13 @@ const PaymentResum = () => {
         })
         .then((data) => {
           console.log("Pagamento processado:", data);
-          const transactionData =
-            data.payment.point_of_interaction.transaction_data;
-          setPixInfo({
-            qrCode: transactionData.qr_code,
-            qrCodeBase64: transactionData.qr_code_base64,
-          });
+          setLoading(false);
+          const id = data.payment.id;
+          navigate(`/status?payment_id=${id}`);
           resolve();
-          return data;
         })
         .catch((error) => {
+          setLoading(false);
           setShowErrorMessage(true);
           console.error("Erro ao processar pagamento", error);
           reject();
@@ -92,58 +93,52 @@ const PaymentResum = () => {
   };
 
   const onError = async (error: any) => {
+    setLoading(false);
     console.log(error);
   };
   const onReady = async () => {
-    return;
+    setLoading(false);
   };
+
+  if (totalAmount <= 1) {
+    return null;
+  }
 
   return (
     <div className="cart-resum-container">
       <BackButton />
-      <>
-        {showErrorMessage && (
-          <ErrorMessage
-            onClose={() => setShowErrorMessage(false)}
-            message={errorMessage}
-          />
-        )}
-        <div className="cart-summary">
-          <h2>Resumo da Compra</h2>
-          <div className="summary-item">
-            <span>Total de itens selecionados:</span>
-            <span>{selectedItems.length}</span>
-          </div>
-          <div className="summary-item total">
-            <span>Valor total:</span>
-            <span>R$ {totalAmount.toFixed(2).replace(".", ",")}</span>
-          </div>
-          {totalAmount > 0 && (
-            <Payment
-              initialization={initialization}
-              customization={customization}
-              onSubmit={onSubmit}
-              onReady={onReady}
-              onError={onError}
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          {showErrorMessage && (
+            <ErrorMessage
+              onClose={() => setShowErrorMessage(false)}
+              message={errorMessage}
             />
           )}
-          {pixInfo && (
-            <div className="pix-qr-code">
-              <h2>Pague com PIX</h2>
-              <img
-                src={`data:image/png;base64,${pixInfo.qrCodeBase64}`}
-                alt="QR Code Pix"
-              />
-              <p>{pixInfo.qrCode}</p>
-              <button
-                onClick={() => navigator.clipboard.writeText(pixInfo.qrCode)}
-              >
-                Copiar código PIX
-              </button>
+          <div className="cart-summary">
+            <h2>Resumo da Compra</h2>
+            <div className="summary-item">
+              <span>Total de itens selecionados:</span>
+              <span>{selectedItems.length}</span>
             </div>
-          )}
-        </div>
-      </>
+            <div className="summary-item total">
+              <span>Valor total:</span>
+              <span>R$ {totalAmount.toFixed(2).replace(".", ",")}</span>
+            </div>
+            {totalAmount > 0 && (
+              <Payment
+                initialization={initialization}
+                customization={customization}
+                onSubmit={onSubmit}
+                onReady={onReady}
+                onError={onError}
+              />
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };
