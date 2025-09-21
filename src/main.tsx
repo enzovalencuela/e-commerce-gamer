@@ -16,8 +16,6 @@ import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import SearchResultsPage from "./pages/SearchResultsPage/SearchResultsPage.tsx";
 import StatusPagamento from "./pages/Status/Status.tsx";
 import PaymentResum from "./pages/PaymentResum/PaymentResum.tsx";
-import { initMercadoPago } from "@mercadopago/sdk-react";
-initMercadoPago("APP_USR-1442de63-8241-4e9f-bdae-d3792763a65d");
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
