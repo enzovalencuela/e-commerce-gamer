@@ -1,3 +1,4 @@
+/*
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -43,7 +44,7 @@ const PixForm: React.FC<PixFormProps> = ({ onSuccess, onError }) => {
   };
 
   return (
-    <div>
+    <div className="payment-methods">
       <div className="input_container">
         <label className="input_label">CPF</label>
         <input
@@ -76,3 +77,4 @@ const PixForm: React.FC<PixFormProps> = ({ onSuccess, onError }) => {
 };
 
 export default PixForm;
+*/

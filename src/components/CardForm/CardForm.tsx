@@ -1,21 +1,14 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/*
 import { useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 
 interface CardFormProps {
-  total: number;
-  selectedItems: number[];
   onSuccess: (paymentId: string) => void;
   onError: () => void;
 }
 
-const CardForm: React.FC<CardFormProps> = ({
-  total,
-  selectedItems,
-  onSuccess,
-  onError,
-}) => {
-  const { user } = useAuth();
+const CardForm: React.FC<CardFormProps> = ({ onSuccess, onError }) => {
+  const { user, selectedItems } = useAuth();
 
   useEffect(() => {
     if (!user) return;
@@ -25,7 +18,7 @@ const CardForm: React.FC<CardFormProps> = ({
     });
 
     const cardForm = mp.cardForm({
-      amount: total.toFixed(2),
+      amount: selectedItems,
       iframe: true,
       form: {
         id: "form-checkout",
@@ -108,7 +101,7 @@ const CardForm: React.FC<CardFormProps> = ({
         },
       },
     });
-  }, [total, selectedItems]);
+  }, [selectedItems]);
 
   return (
     <form id="form-checkout">
@@ -143,3 +136,4 @@ const CardForm: React.FC<CardFormProps> = ({
 };
 
 export default CardForm;
+*/

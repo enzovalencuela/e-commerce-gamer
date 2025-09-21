@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,12 +8,6 @@ import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import OkMessage from "../../components/OkMessage/OkMessage";
 import BackButton from "../../components/BackButton/BackButton";
 import Button from "../../components/Button/Button";
-
-declare global {
-  interface Window {
-    MercadoPago: any;
-  }
-}
 
 const CartPage: React.FC = () => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);

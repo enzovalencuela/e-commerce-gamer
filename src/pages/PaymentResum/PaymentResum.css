@@ -10,11 +10,14 @@
 }
 
 .cart-summary {
-  background-color: #fff;
+  background-color: #f5f5f5;
   border-radius: 10px;
-  padding: 0 2rem;
+  padding: 10px 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   display: flex;
+  width: 100%;
+  max-width: 500px;
+  justify-self: center;
   flex-direction: column;
   gap: 1.5rem;
 }
@@ -73,48 +76,43 @@
   background-color: transparent;
 }
 
-.purchase--btn {
-  height: 55px;
-  background: #f2f2f2;
-  border-radius: 11px;
-  border: 0;
-  outline: none;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 700;
-  background: linear-gradient(180deg, #363636 0%, #1b1b1b 50%, #000000 100%);
-  box-shadow: 0px 0px 0px 0px #ffffff, 0px 0px 0px 0px #000000;
-  transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
-}
-
-.purchase--btn:hover {
-  box-shadow: 0px 0px 0px 2px #ffffff, 0px 0px 0px 4px #0000003a;
-}
-
-/* Reset input number styles */
-.input_field::-webkit-outer-spin-button,
-.input_field::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.purchase--btn:disabled {
-  background: #b0b0b0;
-  cursor: not-allowed;
-  transform: none;
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
 }
 
 /* ------------------------------
    PIX QR Code
 --------------------------------*/
 .pix-qr-code {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   margin-top: 2rem;
   text-align: center;
-}
+  gap: 20px;
 
-.pix-qr-code img {
-  width: 220px;
-  height: 220px;
-  object-fit: contain;
-  margin-top: 1rem;
+  img {
+    width: 220px;
+    height: 220px;
+    object-fit: contain;
+    margin-top: 1rem;
+  }
+
+  p {
+    font-size: 8px;
+  }
+
+  button {
+    background-color: var(--primary);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    color: #fff;
+    font-weight: 600;
+  }
 }
