@@ -3,12 +3,10 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import BackButton from "../../components/BackButton/BackButton";
-import { initMercadoPago, Payment } from "@mercadopago/sdk-react";
+import { Payment } from "@mercadopago/sdk-react";
 import "./PaymentResum.css";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading/Loading";
-
-initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY);
 
 const PaymentResum = () => {
   const { user, cart, selectedItems } = useAuth();
@@ -94,8 +92,9 @@ const PaymentResum = () => {
 
   const onError = async (error: any) => {
     setLoading(false);
-    console.log(error);
+    console.log("Erro:", error);
   };
+
   const onReady = async () => {
     setLoading(false);
   };

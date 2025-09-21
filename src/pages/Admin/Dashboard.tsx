@@ -99,7 +99,6 @@ const Dashboard: React.FC = () => {
       }
 
       setProducts(products.filter((p) => p.id !== productId));
-      console.log("Produto removido com sucesso!");
     } catch (error) {
       console.error("Erro ao remover produto:", error);
     }

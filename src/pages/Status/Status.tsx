@@ -124,7 +124,7 @@ const StatusPagamento: React.FC = () => {
         )}
 
       {/* Caso seja cartão aprovado */}
-      {paymentStatus.payment_type === "credit_card" &&
+      {paymentStatus.payment_type !== "pix" &&
         paymentStatus.status === "approved" && (
           <div className="status-approved">
             <h2>Pagamento Aprovado!</h2>
