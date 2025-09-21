@@ -4,15 +4,34 @@ import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import BackButton from "../../components/BackButton/BackButton";
 import { Payment } from "@mercadopago/sdk-react";
+
 import "./PaymentResum.css";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading/Loading";
+
+interface PaymentResponse {
+  payment: {
+    payment_method_id: string;
+    point_of_interaction: {
+      transaction_data: {
+        qr_code: string;
+        qr_code_base64: string;
+      };
+    };
+  };
+}
+
+interface PixResponse {
+  qrCode: string;
+  qrCodeBase64: string;
+}
 
 const PaymentResum = () => {
   const { user, cart, selectedItems } = useAuth();
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const [dataInfo, setDataInfo] = useState<PaymentResponse | null>(null);
+  const [pixInfo, setPixInfo] = useState<PixResponse | null>(null);
   const navigate = useNavigate();
   const errorMessage = "Não foi possível fazer a operação. Tente novamente.";
 
@@ -32,7 +51,7 @@ const PaymentResum = () => {
   useEffect(() => {
     if (totalAmount <= 1) {
       setTimeout(() => {
-        navigate("/");
+        navigate("/carrinho");
       }, 3000);
     }
   }, [totalAmount, navigate]);
@@ -76,9 +95,8 @@ const PaymentResum = () => {
         })
         .then((data) => {
           console.log("Pagamento processado:", data);
+          setDataInfo(data);
           setLoading(false);
-          const id = data.payment.id;
-          navigate(`/status?payment_id=${id}`);
           resolve();
         })
         .catch((error) => {
@@ -92,12 +110,22 @@ const PaymentResum = () => {
 
   const onError = async (error: any) => {
     setLoading(false);
-    console.log("Erro:", error);
+    console.log(error);
   };
-
   const onReady = async () => {
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (dataInfo && dataInfo.payment.payment_method_id === "pix") {
+      const transactionData =
+        dataInfo.payment.point_of_interaction.transaction_data;
+      setPixInfo({
+        qrCode: transactionData.qr_code,
+        qrCodeBase64: transactionData.qr_code_base64,
+      });
+    }
+  }, [dataInfo]);
 
   if (totalAmount <= 1) {
     return null;
@@ -134,6 +162,21 @@ const PaymentResum = () => {
                 onReady={onReady}
                 onError={onError}
               />
+            )}
+            {pixInfo && (
+              <div className="pix-qr-code">
+                <h2>Pague com PIX</h2>
+                <img
+                  src={`data:image/png;base64,${pixInfo.qrCodeBase64}`}
+                  alt="QR Code Pix"
+                />
+                <p>{pixInfo.qrCode}</p>
+                <button
+                  onClick={() => navigator.clipboard.writeText(pixInfo.qrCode)}
+                >
+                  Copiar código PIX
+                </button>
+              </div>
             )}
           </div>
         </>
