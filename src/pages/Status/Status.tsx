@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import "./Status.css";
+import BackButton from "../../components/BackButton/BackButton";
 
 interface PixInfo {
   qr_code?: string;
@@ -84,6 +85,7 @@ const StatusPagamento: React.FC = () => {
 
   return (
     <div className="status-container">
+      <BackButton />
       {paymentStatus.payment_type === "pix" &&
         paymentStatus.status === "pending" && (
           <div className="status-pending">

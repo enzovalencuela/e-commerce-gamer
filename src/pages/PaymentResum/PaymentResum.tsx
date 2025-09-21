@@ -34,7 +34,7 @@ const PaymentResum = () => {
   useEffect(() => {
     if (totalAmount <= 1) {
       setTimeout(() => {
-        navigate("/carrinho");
+        navigate("/");
       }, 3000);
     }
   }, [totalAmount, navigate]);
