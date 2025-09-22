@@ -46,73 +46,34 @@
 }
 
 .input_container {
+  background-color: #f9f9ff;
+  border-radius: 16px;
   width: 100%;
+  max-width: 500px;
+  justify-self: center;
   height: fit-content;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-}
+  padding: 60px 20px;
+  gap: 8px;
 
-.input_label {
-  font-size: 10px;
-  color: #8b8e98;
-  font-weight: 600;
-}
-
-.input_field {
-  width: auto;
-  height: 40px;
-  padding: 0 0 0 16px;
-  border-radius: 9px;
-  outline: none;
-  background-color: #f2f2f2;
-  border: 1px solid #e5e5e500;
-  transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
-}
-
-.input_field:focus {
-  border: 1px solid transparent;
-  box-shadow: 0px 0px 0px 2px #242424;
-  background-color: transparent;
-}
-
-.payment-methods {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  gap: 20px;
-}
-
-/* ------------------------------
-   PIX QR Code
---------------------------------*/
-.pix-qr-code {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2rem;
-  text-align: center;
-  gap: 20px;
-
-  img {
-    width: 220px;
-    height: 220px;
-    object-fit: contain;
-    margin-top: 1rem;
-  }
-
-  p {
-    font-size: 8px;
-  }
-
-  button {
-    background-color: var(--primary);
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    color: #fff;
+  input {
+    font-size: 12px;
+    color: #8b8e98;
     font-weight: 600;
+    width: auto;
+    height: 40px;
+    padding: 0 0 0 16px;
+    border-radius: 9px;
+    outline: none;
+    background-color: #f2f2f2;
+    border: 1px solid #e5e5e500;
+    transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+  }
+
+  input:focus {
+    border: 1px solid transparent;
+    box-shadow: 0px 0px 0px 2px #242424;
+    background-color: transparent;
   }
 }

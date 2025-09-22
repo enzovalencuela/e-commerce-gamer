@@ -234,6 +234,32 @@ ul {
   background-color: #454545;
 }
 
+.submit-button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--secondary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  letter-spacing: 1px;
+  margin-top: 15px;
+}
+
+.submit-button:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.submit-button:disabled {
+  background: #b0b0b0;
+  cursor: not-allowed;
+  transform: none;
+}
+
 @media (min-width: 738px) and (max-width: 1028px) {
   .swiper-slide {
     padding: 10px;

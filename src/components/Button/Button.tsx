@@ -1,5 +1,3 @@
-import "./Button.css";
-
 interface ButtonProps {
   child: string;
   disabled?: boolean;

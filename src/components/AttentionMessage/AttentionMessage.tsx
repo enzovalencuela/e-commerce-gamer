@@ -1,13 +1,16 @@
-// src/components/ErrorMessage.tsx
+// src/components/AttentionMessage.tsx
 
 import React, { useState } from "react";
 
-interface ErrorMessageProps {
+interface AttentionMessageProps {
   message: string;
   onClose: () => void;
 }
 
-const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, onClose }) => {
+const AttentionMessage: React.FC<AttentionMessageProps> = ({
+  message,
+  onClose,
+}) => {
   const [isChecked, setIsChecked] = useState(false);
 
   return (
@@ -37,4 +40,4 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, onClose }) => {
   );
 };
 
-export default ErrorMessage;
+export default AttentionMessage;
