@@ -7,11 +7,12 @@ import { Payment } from "@mercadopago/sdk-react";
 import "./PaymentResum.css";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading/Loading";
+import { initMercadoPago } from "@mercadopago/sdk-react";
 
 const PaymentResum = () => {
   const { user, cart, selectedItems } = useAuth();
   const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const errorMessage = "Não foi possível fazer a operação. Tente novamente.";
@@ -37,22 +38,27 @@ const PaymentResum = () => {
     }
   }, [totalAmount, navigate]);
 
+  initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
+    locale: "pt-BR",
+  });
+
   const initialization = {
     amount: totalAmount,
+    payer: {
+      firstName: user?.name,
+    },
   };
   const customization = {
     paymentMethods: {
-      ticket: ["all"],
+      ticket: [],
       bankTransfer: "all",
       creditCard: "all",
-      prepaidCard: "all",
       debitCard: "all",
-      mercadoPago: "all",
+      maxInstallments: 12,
     },
   };
 
   const onSubmit = async ({ formData }: { formData: Record<string, any> }) => {
-    setLoading(true);
     if (!user || totalAmount <= 0) {
       setShowErrorMessage(true);
       return;
@@ -99,9 +105,11 @@ const PaymentResum = () => {
     setLoading(false);
   };
 
-  if (totalAmount <= 1) {
-    return null;
-  }
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
 
   return (
     <div className="cart-resum-container">
