@@ -28,9 +28,6 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
   const { user, addToCart, cart } = useAuth();
   const navigate = useNavigate();
 
-  const errorMessage =
-    "Ocorreu um erro, verifique se está logado ou tente novamente mais tarde.";
-
   const handleAddToCart = async (product: Product) => {
     if (!user) {
       setShowErrorMessage(true);
@@ -50,7 +47,6 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
       {showErrorMessage && (
         <ErrorMessage
           onClose={() => setShowErrorMessage(false)}
-          message={errorMessage}
           buttonContent="Ir Para Login"
           onClick={() => navigate("/login")}
         />
