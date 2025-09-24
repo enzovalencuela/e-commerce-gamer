@@ -26,8 +26,6 @@ const ProductPage: React.FC = () => {
 
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-  const errorMessage =
-    "Ocorreu algum erro. Verifique se você esta logado ou tente novamente mais tarde";
   const okMessage = "Operação realizada com sucesso.";
 
   useEffect(() => {
@@ -120,7 +118,7 @@ const ProductPage: React.FC = () => {
   };
    */
 
-  if (error) {
+  if (error || !product) {
     return (
       <div
         style={{
@@ -130,23 +128,17 @@ const ProductPage: React.FC = () => {
           justifyContent: "center",
         }}
       >
+        <BackButton />
         {error}
       </div>
     );
-  }
-
-  if (!product) {
-    return <div>Produto não encontrado.</div>;
   }
   return loading ? (
     <Loading />
   ) : (
     <div className="product-page-container">
       {showErrorMessage && (
-        <ErrorMessage
-          onClose={() => setsShowErrorMessage(false)}
-          message={errorMessage}
-        />
+        <ErrorMessage onClose={() => setsShowErrorMessage(false)} />
       )}
       {showOkMessage && <SpanMessage message={okMessage} status="ok" />}
       <BackButton />

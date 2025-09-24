@@ -35,9 +35,6 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
   const contaTesteMessage =
     "Se for preferível você pode entrar com uma conta teste, assim não precisará se cadastrar";
 
-  const errorLoginTesteMessage =
-    "Erro ao entrar com conta teste. Por favor, tente mais tarde.";
-
   const handleLoginTeste = async () => {
     try {
       const response = await fetch(`${VITE_BACKEND_URL}/api/login`, {
@@ -67,10 +64,7 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
   return (
     <div className="auth-page-container">
       {showErrorMessage && (
-        <ErrorMessage
-          message={errorLoginTesteMessage}
-          onClose={() => setShowContaTesteMessage(false)}
-        />
+        <ErrorMessage onClose={() => setShowContaTesteMessage(false)} />
       )}
       {showContaTesteMessage && (
         <OkMessage

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import "./CartPage.css";
@@ -16,7 +16,17 @@ const CartPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { user, cart, removeFromCart, selectedItems, setSelectedItems } =
     useAuth();
-  const errorMessage = "Não foi possível fazer a operação. Tente novamente.";
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      setShowErrorMessage(true);
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
+    }
+  }, [user, navigate]);
 
   const handleSelect = (productId: number): void => {
     setSelectedItems((prevSelected: number[]) =>
@@ -27,7 +37,6 @@ const CartPage: React.FC = () => {
   };
 
   const handleRemoveFromCart = async (productId: number) => {
-    if (!user) return;
     try {
       await removeFromCart(productId);
     } catch (error) {
@@ -50,72 +59,65 @@ const CartPage: React.FC = () => {
 
   const okMessage = `Finalizando a compra de R$ ${calculateTotal()}`;
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="cart-page-container">
-      {loading ? (
-        <Loading />
+      {showErrorMessage && (
+        <ErrorMessage onClose={() => setShowErrorMessage(false)} />
+      )}
+      {showOkMessage && (
+        <OkMessage
+          onClose={() => setShowOkMessage(false)}
+          message={okMessage}
+        />
+      )}
+
+      <BackButton />
+      <h1>Seu Carrinho</h1>
+
+      {cart.length === 0 ? (
+        <div className="empty-cart">
+          <p>Seu carrinho está vazio.</p>
+          <Link to="/">Voltar para a página inicial</Link>
+        </div>
       ) : (
-        <>
-          {showErrorMessage && (
-            <ErrorMessage
-              onClose={() => setShowErrorMessage(false)}
-              message={errorMessage}
-            />
-          )}
-          {showOkMessage && (
-            <OkMessage
-              onClose={() => setShowOkMessage(false)}
-              message={okMessage}
-            />
-          )}
-
-          <BackButton />
-          <h1>Seu Carrinho</h1>
-
-          {cart.length === 0 ? (
-            <div className="empty-cart">
-              <p>Seu carrinho está vazio.</p>
-              <Link to="/">Voltar para a página inicial</Link>
-            </div>
-          ) : (
-            <div className="cart-content">
-              <div className="cart-items-list">
-                {cart.map((item) => (
-                  <div key={item.id} className="cart-item-card">
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.includes(item.id)}
-                      onChange={() => handleSelect(item.id)}
-                    />
-                    <Link to={`/product/${item.id}`} className="cart-item-link">
-                      <img
-                        src={item.img}
-                        alt={item.titulo}
-                        className="cart-item-image"
-                      />
-                      <div className="cart-item-details">
-                        <h3>{item.titulo}</h3>
-                        <span>R$ {item.preco}</span>
-                      </div>
-                    </Link>
-                    <button
-                      className="cart-remove-btn"
-                      onClick={() => handleRemoveFromCart(item.id)}
-                    >
-                      <FontAwesomeIcon icon={faTrashCan} /> Remover
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <Link to={"/checkout"}>
-                <Button
-                  disabled={selectedItems.length <= 0}
-                  child="Ir para Checkout"
+        <div className="cart-content">
+          <div className="cart-items-list">
+            {cart.map((item) => (
+              <div key={item.id} className="cart-item-card">
+                <input
+                  type="checkbox"
+                  checked={selectedItems.includes(item.id)}
+                  onChange={() => handleSelect(item.id)}
                 />
-              </Link>
-            </div>
-          )}
-        </>
+                <Link to={`/product/${item.id}`} className="cart-item-link">
+                  <img
+                    src={item.img}
+                    alt={item.titulo}
+                    className="cart-item-image"
+                  />
+                  <div className="cart-item-details">
+                    <h3>{item.titulo}</h3>
+                    <span>R$ {item.preco}</span>
+                  </div>
+                </Link>
+                <button
+                  className="cart-remove-btn"
+                  onClick={() => handleRemoveFromCart(item.id)}
+                >
+                  <FontAwesomeIcon icon={faTrashCan} /> Remover
+                </button>
+              </div>
+            ))}
+          </div>
+          <Link to={"/checkout"}>
+            <Button
+              disabled={selectedItems.length <= 0}
+              child="Ir para Checkout"
+            />
+          </Link>
+        </div>
       )}
     </div>
   );

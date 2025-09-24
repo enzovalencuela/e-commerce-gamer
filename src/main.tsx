@@ -16,6 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import SearchResultsPage from "./pages/SearchResultsPage/SearchResultsPage.tsx";
 import StatusPagamento from "./pages/Status/Status.tsx";
 import PaymentResum from "./pages/PaymentResum/PaymentResum.tsx";
+import MinhasCompras from "./pages/MinhasCompras/MinhasCompras.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -29,6 +30,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route path="product/:id" element={<ProductPage />} />
             <Route path="account" element={<Account />} />
             <Route path="carrinho" element={<Carrinho />} />
+            <Route path="minhas-compras" element={<MinhasCompras />} />
             <Route path="/produtos/search" element={<SearchResultsPage />} />
             <Route
               path="/produtos/categoria/:categoria"

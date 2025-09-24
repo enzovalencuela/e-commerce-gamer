@@ -4,7 +4,7 @@
   justify-content: space-around;
   align-items: center;
   gap: 24px;
-  width: 100vw;
+  width: 100%;
   padding: 22px 180px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 15px;
 }

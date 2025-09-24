@@ -31,7 +31,6 @@ const PaymentResum = () => {
   });
 
   const navigate = useNavigate();
-  const errorMessage = "Não foi possível fazer a operação. Tente novamente.";
   const spanMessage = "Operação, realizada com sucesso.";
 
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -152,15 +151,14 @@ const PaymentResum = () => {
     setLoading(false);
   }, 1000);
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="cart-resum-container">
       <BackButton />
-
-      {loading && <Loading />}
       {showErrorMessage && (
         <ErrorMessage
           onClose={() => (setShowErrorMessage(false), navigate("/carrinho"))}
-          message={errorMessage}
         />
       )}
       {showOkMessage && <SpanMessage message={spanMessage} status="ok" />}

@@ -58,11 +58,9 @@ const SearchResultsPage: React.FC = () => {
     navigate("/");
   };
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="search-results-container">
       {searchQuery && (
         <div className="active-filter-tag">

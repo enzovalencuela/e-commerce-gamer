@@ -27,27 +27,25 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  height: auto;
+  width: 100%;
   gap: 20px;
 }
 
 .product-image-section {
-  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 400px;
 }
 
 .product-image-section img {
   border: 1px solid #2c2f45;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 8px;
   object-fit: contain;
 }
 
 .ils-section {
-  flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -135,6 +133,7 @@
   }
 
   .product-image-section {
-    width: 300px;
+    max-width: 350px;
+    width: auto;
   }
 }

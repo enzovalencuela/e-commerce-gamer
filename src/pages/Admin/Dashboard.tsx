@@ -108,11 +108,9 @@ const Dashboard: React.FC = () => {
     setEditingProduct(product);
   };
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="dashboard-container">
       {showSpan && (
         <SpanMessage message="Produto salvo com sucesso!" status="ok" />

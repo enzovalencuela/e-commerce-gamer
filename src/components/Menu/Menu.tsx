@@ -3,6 +3,7 @@ import {
   faDoorOpen,
   faUser,
   faDashboard,
+  faBagShopping,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Menu.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,7 +24,7 @@ export default function Menu() {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -44,6 +45,12 @@ export default function Menu() {
           <button>
             <FontAwesomeIcon icon={faUser} />
             Minha Conta
+          </button>
+        </Link>
+        <Link to={"/minhas-compras"}>
+          <button>
+            <FontAwesomeIcon icon={faBagShopping} />
+            Minha Compras
           </button>
         </Link>
         <button onClick={() => handleLogout()}>

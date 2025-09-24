@@ -6,3 +6,26 @@
   min-height: 100vh;
   padding: 60px 20px;
 }
+
+.status-pending,
+.status-rejected,
+.status-approved {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 16px;
+  gap: 10px;
+}
+
+.status-pending {
+  border: 2px solid #fffa00;
+}
+
+.status-rejected {
+  border: 2px solid #ff3700;
+}
+
+.status-approved {
+  border: 2px solid #1aff00;
+}
