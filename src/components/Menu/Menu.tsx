@@ -50,7 +50,7 @@ export default function Menu() {
         <Link to={"/minhas-compras"}>
           <button>
             <FontAwesomeIcon icon={faBagShopping} />
-            Minha Compras
+            Minhas Compras
           </button>
         </Link>
         <button onClick={() => handleLogout()}>

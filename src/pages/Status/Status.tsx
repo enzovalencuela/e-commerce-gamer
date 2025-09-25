@@ -1,75 +1,19 @@
 // src/pages/Status/Status.tsx
 
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import "./Status.css";
 import BackButton from "../../components/BackButton/BackButton";
 import Loading from "../../components/Loading/Loading";
-
-interface PixInfo {
-  qr_code?: string;
-  qr_code_base64?: string;
-  ticket_url?: string;
-}
-
-interface PaymentStatus {
-  id: number;
-  status: string;
-  status_detail?: string;
-  total_amount?: number;
-  payment_type?: string;
-  payment_method?: string;
-  date_approved?: string;
-  pix?: PixInfo;
-}
-
+import { useNavigate } from "react-router-dom";
 const StatusPagamento: React.FC = () => {
-  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus | null>(
-    null
-  );
-  const [loading, setLoading] = useState(true);
-  const location = useLocation();
+  const { paymentStatus, purchasedProducts, loading } = useAuth();
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const paymentId = queryParams.get("payment_id");
-
-    if (!paymentId || !user) {
-      navigate("/");
-      return;
-    }
-
-    const fetchPaymentStatus = async () => {
-      try {
-        const response = await fetch(
-          `${VITE_BACKEND_URL}/api/payments/${paymentId}/status`
-        );
-
-        const data = await response.json();
-        if (response.ok && data.payment) {
-          setPaymentStatus(data.payment);
-        } else {
-          console.error("Erro ao obter status do pagamento:", data.error);
-          setPaymentStatus(null);
-        }
-      } catch (error) {
-        console.error("Erro de rede ao buscar status:", error);
-        setPaymentStatus(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPaymentStatus();
-  }, [location.search, navigate, user, VITE_BACKEND_URL]);
 
   if (!paymentStatus) {
     return (
       <div className="status-container">
+        <BackButton />
         <h1>Erro ao carregar o status do pagamento.</h1>
         <p>Tente novamente mais tarde ou entre em contato com o suporte.</p>
       </div>
@@ -80,6 +24,27 @@ const StatusPagamento: React.FC = () => {
     <Loading />
   ) : (
     <div className="status-container">
+      {purchasedProducts.length > 0 && (
+        <>
+          <h3>Produtos:</h3>
+          <div className="card_container_comprados">
+            {purchasedProducts.map((product) => (
+              <div
+                key={product.id}
+                onClick={() => navigate(`/product/${product.id}`)}
+                className="product_comprados"
+              >
+                <img src={product.img} alt={product.titulo} />
+                <div className="produto__text">
+                  <h3>{product.titulo}</h3>
+                  <p>R${product.preco_original} </p>
+                  <h4>R$ {product.preco}</h4>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
       <BackButton />
       {paymentStatus.status === "pending" && (
         <div className="status-pending">
@@ -92,7 +57,7 @@ const StatusPagamento: React.FC = () => {
                 src={`data:image/png;base64,${paymentStatus.pix.qr_code_base64}`}
                 alt="QR Code PIX"
               />
-              <p>Valor: R$ {paymentStatus.total_amount?.toFixed(2)}</p>
+              <p>Valor: R$ {paymentStatus.total_amount}</p>
             </div>
           )}
           <p>Você pode copiar o código PIX abaixo para pagar no seu banco.</p>
@@ -115,30 +80,28 @@ const StatusPagamento: React.FC = () => {
         </div>
       )}
 
-      {/* Caso seja aprovado */}
-      {paymentStatus.status === "approved" && (
-        <div className="status-approved">
-          <h2>Pagamento Aprovado!</h2>
-          <p>Obrigado pela sua compra. Seu pedido será processado em breve.</p>
-          <p>Data: {new Date(paymentStatus.date_approved!).toLocaleString()}</p>
-          <p>
-            Método de pagamento: {paymentStatus.payment_method?.toUpperCase()}
-          </p>
-          <p>Valor: R${paymentStatus.total_amount}</p>
-          <p>Tentativa por: {paymentStatus.payment_method}</p>
-        </div>
-      )}
-
-      {/* Caso rejeitado */}
-      {paymentStatus.status === "rejected" && (
-        <div className="status-rejected">
-          <h2>Pagamento Rejeitado</h2>
-          <p>Valor: R${paymentStatus.total_amount}</p>
-          <p>Tentativa por: {paymentStatus.payment_method}</p>
-          <p>Detalhes: {paymentStatus.status_detail}</p>
-          <p>Tente novamente ou use outro método de pagamento.</p>
-        </div>
-      )}
+      <div className={`${paymentStatus.status}`}>
+        {paymentStatus.status === "approved" ? (
+          <>
+            <h2>Pagamento Aprovado!</h2>
+            <p>
+              Obrigado pela sua compra. Seu pedido será processado em breve.
+            </p>
+          </>
+        ) : (
+          <>
+            <h2>Pagamento Rejeitado!</h2>
+            <p>Tente novamente ou use outro método de pagamento.</p>
+          </>
+        )}
+        <p>Data: {new Date(paymentStatus.date_approved!).toLocaleString()}</p>
+        <p>
+          Método de pagamento: {paymentStatus.payment_method?.toUpperCase()}
+        </p>
+        <p>Detalhes: {paymentStatus.status_detail}</p>
+        <p>Valor Total: R${paymentStatus.total_amount}</p>
+        <p>Parcelamento: {paymentStatus.installments}</p>
+      </div>
     </div>
   );
 };

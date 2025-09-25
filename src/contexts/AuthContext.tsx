@@ -1,7 +1,7 @@
 // src/contexts/AuthContext.tsx
 
 import React, { createContext, useState, useContext, useEffect } from "react";
-import type { ReactNode } from "react";
+import type { ReactNode, SetStateAction } from "react";
 import type { Product } from "../types/Product";
 
 interface User {
@@ -27,9 +27,45 @@ interface AuthContextType {
   removeFromCart: (itemId: number) => Promise<void>;
   selectedItems: number[];
   setSelectedItems: React.Dispatch<React.SetStateAction<number[]>>;
+  paymentStatus: PaymentStatus | null;
+  purchasedProducts: Product[];
+  setQueryParams: React.Dispatch<SetStateAction<URLSearchParams | undefined>>;
+  loading: boolean;
 }
 interface AuthProviderProps {
   children: ReactNode;
+}
+
+interface Items {
+  category_id: string;
+  description: string;
+  id: string;
+  quantity: string;
+  title: string;
+  unit_price: string;
+}
+
+interface AdditionalInfo {
+  items: Items[];
+}
+
+interface PixInfo {
+  qr_code?: string;
+  qr_code_base64?: string;
+  ticket_url?: string;
+}
+
+interface PaymentStatus {
+  id: number;
+  status: string;
+  status_detail?: string;
+  total_amount?: number;
+  payment_type?: string;
+  payment_method?: string;
+  date_approved?: string;
+  additional_info?: AdditionalInfo;
+  installments?: number;
+  pix?: PixInfo;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,6 +73,12 @@ const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus | null>(
+    null
+  );
+  const [purchasedProducts, setPurchasedProducts] = useState<Product[]>([]);
+  const [queryParams, setQueryParams] = useState<URLSearchParams>();
   const [user, setUser] = useState<User | null>(() => {
     try {
       const storedUser = localStorage.getItem("user");
@@ -132,6 +174,62 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const paymentId = queryParams?.get("payment_id");
+
+  useEffect(() => {
+    setLoading(true);
+    if (!paymentId || !user) {
+      return;
+    }
+
+    const fetchPaymentStatus = async () => {
+      try {
+        const response = await fetch(
+          `${VITE_BACKEND_URL}/api/payments/${paymentId}/status`
+        );
+
+        const data = await response.json();
+        if (response.ok && data.payment) {
+          setPaymentStatus(data.payment);
+        } else {
+          console.error("Erro ao obter status do pagamento:", data.error);
+          setPaymentStatus(null);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Erro de rede ao buscar status:", error);
+        setPaymentStatus(null);
+        setLoading(false);
+      }
+    };
+
+    fetchPaymentStatus();
+  }, [user, paymentId]);
+
+  useEffect(() => {
+    const fetchPurchasedProducts = async () => {
+      if (!paymentStatus?.additional_info?.items) return;
+
+      try {
+        const products: Product[] = [];
+        for (const item of paymentStatus.additional_info.items) {
+          const response = await fetch(
+            `${VITE_BACKEND_URL}/api/products/${item.id}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            products.push(data);
+          }
+        }
+        setPurchasedProducts(products);
+      } catch (error) {
+        console.error("Erro ao buscar produtos comprados:", error);
+      }
+    };
+
+    fetchPurchasedProducts();
+  }, [paymentStatus]);
+
   const contextValue = {
     user,
     cart,
@@ -141,6 +239,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     removeFromCart,
     selectedItems,
     setSelectedItems,
+    paymentStatus,
+    purchasedProducts,
+    setQueryParams,
+    loading,
   };
 
   return (
