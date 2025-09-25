@@ -1,0 +1,9 @@
+.vendas-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  gap: 20px;
+  min-height: 100vh;
+  padding: 60px 20px;
+}

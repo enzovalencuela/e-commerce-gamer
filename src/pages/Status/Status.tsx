@@ -26,7 +26,7 @@ const StatusPagamento: React.FC = () => {
     <div className="status-container">
       {purchasedProducts.length > 0 && (
         <>
-          <h3>Produtos:</h3>
+          <h1>Produtos</h1>
           <div className="card_container_comprados">
             {purchasedProducts.map((product) => (
               <div

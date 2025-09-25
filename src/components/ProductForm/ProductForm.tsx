@@ -95,7 +95,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
   return (
     <div className="product-form-container">
-      <h2>{product ? "Editar Produto" : "Adicionar Novo Produto"}</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Título:
