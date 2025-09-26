@@ -114,7 +114,7 @@ const ProdutosDashboard: React.FC = () => {
         <SpanMessage message="Produto salvo com sucesso!" status="ok" />
       )}
       <BackButton />
-      <h1>Painel de Produtos</h1>
+      <h1>Produtos</h1>
 
       {isAdding ? (
         <ProductForm
@@ -141,16 +141,12 @@ const ProdutosDashboard: React.FC = () => {
                   </div>
                 </div>
                 <div className="product-actions">
-                  {editingProduct?.id !== product.id && (
-                    <>
-                      <button onClick={() => setEditingProduct(product)}>
-                        Editar
-                      </button>
-                      <button onClick={() => handleDeleteProduct(product.id)}>
-                        Remover
-                      </button>
-                    </>
-                  )}
+                  <button onClick={() => setEditingProduct(product)}>
+                    Editar
+                  </button>
+                  <button onClick={() => handleDeleteProduct(product.id)}>
+                    Remover
+                  </button>
                 </div>
               </div>
               {editingProduct?.id === product.id && (

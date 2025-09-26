@@ -17,9 +17,6 @@ import SearchResultsPage from "./pages/SearchResultsPage/SearchResultsPage.tsx";
 import StatusPagamento from "./pages/Status/Status.tsx";
 import PaymentResum from "./pages/PaymentResum/PaymentResum.tsx";
 import MinhasCompras from "./pages/MinhasCompras/MinhasCompras.tsx";
-import ProdutosDashboard from "./pages/Admin/Produtos/Produtos.tsx";
-import Vendas from "./pages/Admin/Vendas/Vendas.tsx";
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
@@ -46,22 +43,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               element={
                 <ProtectedRoute requiredRole="admin">
                   <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="dashboard/produtos"
-              element={
-                <ProtectedRoute requiredRole="admin">
-                  <ProdutosDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="dashboard/vendas"
-              element={
-                <ProtectedRoute requiredRole="admin">
-                  <Vendas />
                 </ProtectedRoute>
               }
             />

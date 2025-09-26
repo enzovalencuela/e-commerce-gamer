@@ -181,7 +181,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             onChange={handleChange}
           />
         </label>
-        <label>
+        <label className="checkbox">
           Disponível:
           <input
             type="checkbox"

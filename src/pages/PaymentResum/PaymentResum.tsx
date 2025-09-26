@@ -50,7 +50,7 @@ const PaymentResum = () => {
 
     try {
       const res = await fetch(
-        `${VITE_BACKEND_URL}/api/users/${user.id}/update-checkout-info`,
+        `${VITE_BACKEND_URL}/api/user/${user.id}/update-checkout-info`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
