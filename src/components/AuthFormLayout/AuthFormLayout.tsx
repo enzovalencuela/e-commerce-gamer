@@ -37,7 +37,7 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
 
   const handleLoginTeste = async () => {
     try {
-      const response = await fetch(`${VITE_BACKEND_URL}/api/login`, {
+      const response = await fetch(`${VITE_BACKEND_URL}/api/user/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
