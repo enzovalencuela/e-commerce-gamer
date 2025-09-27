@@ -11,13 +11,7 @@ const StatusPagamento: React.FC = () => {
   const navigate = useNavigate();
 
   if (!paymentStatus) {
-    return (
-      <div className="status-container">
-        <BackButton />
-        <h1>Erro ao carregar o status do pagamento.</h1>
-        <p>Tente novamente mais tarde ou entre em contato com o suporte.</p>
-      </div>
-    );
+    return <Loading />;
   }
 
   return loading ? (

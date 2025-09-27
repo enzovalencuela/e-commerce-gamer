@@ -1,14 +1,13 @@
 /* src/pages/Admin/Dashboard.css */
 
-.dashboard-container {
+.products-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   min-height: 100vh;
-  padding: 60px 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.dashboard-container h1 {
+.products-container h1 {
   text-align: center;
   color: #333;
   margin-bottom: 20px;
@@ -35,6 +34,7 @@
 
 .product-list {
   display: grid;
+  padding-block: 20px;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 20px;
 }
@@ -48,7 +48,6 @@
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 18px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 

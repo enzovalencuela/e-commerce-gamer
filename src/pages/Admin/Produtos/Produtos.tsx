@@ -9,36 +9,75 @@ import type { Product } from "../../../types/Product";
 import Loading from "../../../components/Loading/Loading";
 import BackButton from "../../../components/BackButton/BackButton";
 import SpanMessage from "../../../components/SpanMessage/SpanMessage";
+import { Swiper, SwiperSlide } from "swiper/react";
 type NewProduct = Omit<Product, "id">;
+
+const navDepartments = [
+  { id: "1", name: "Setups" },
+  { id: "2", name: "Notebooks" },
+  { id: "3", name: "Periféricos" },
+  { id: "4", name: "Consoles" },
+  { id: "5", name: "Acessórios" },
+  { id: "6", name: "Monitores" },
+  { id: "7", name: "Realidade VR" },
+  { id: "8", name: "Áudio" },
+];
 
 const ProdutosDashboard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSpan, setShowSpan] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [searchProducts, setSearchProducts] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>();
   const [isAdding, setIsAdding] = useState(false);
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-  const fetchProducts = async () => {
+  useEffect(() => {
     setLoading(true);
-    try {
-      const response = await fetch(`${VITE_BACKEND_URL}/api/products`);
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Erro ao buscar produtos.");
+
+    const handleCategoryClick = async () => {
+      try {
+        const response = await fetch(
+          `${VITE_BACKEND_URL}/api/products/search?categoria=${searchQuery}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Falha na busca de produtos.");
+        }
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
       }
-      const data: Product[] = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error("Erro ao carregar produtos:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    handleCategoryClick();
+  }, [searchQuery]);
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${VITE_BACKEND_URL}/api/products`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Erro ao buscar produtos.");
+        }
+        const data: Product[] = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Erro ao carregar produtos:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProducts();
-  }, [VITE_BACKEND_URL]);
+  }, [searchProducts]);
 
   const handleSave = async (productData: NewProduct) => {
     const isNew = isAdding;
@@ -109,7 +148,7 @@ const ProdutosDashboard: React.FC = () => {
   return loading ? (
     <Loading />
   ) : (
-    <div className="dashboard-container">
+    <div className="products-container">
       {showSpan && (
         <SpanMessage message="Produto salvo com sucesso!" status="ok" />
       )}
@@ -127,8 +166,46 @@ const ProdutosDashboard: React.FC = () => {
           Adicionar Novo Produto
         </button>
       )}
-
-      {products ? (
+      <ul className="div-ul">
+        <Swiper
+          breakpoints={{
+            0: { slidesPerView: 3 },
+            660: { slidesPerView: 5 },
+            950: { slidesPerView: 6 },
+            1290: {
+              slidesPerView: 8,
+            },
+          }}
+        >
+          {navDepartments.map((dept) => (
+            <SwiperSlide>
+              <li
+                key={dept.id}
+                className="li-departamento"
+                onClick={() => setSearchQuery(dept.name)}
+              >
+                {dept.name}
+              </li>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </ul>
+      {searchQuery !== undefined && (
+        <div className="active-filter-tag">
+          <span>{searchQuery}</span>
+          <button
+            onClick={() => {
+              setSearchQuery(undefined);
+              setTimeout(() => {
+                setSearchProducts(!searchProducts);
+              }, 100);
+            }}
+          >
+            &times;
+          </button>
+        </div>
+      )}
+      {products.length > 0 ? (
         <div className="product-list">
           {products.map((product) => (
             <div key={product.id} className="product-item">

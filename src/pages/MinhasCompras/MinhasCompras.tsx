@@ -24,7 +24,7 @@ function MinhasCompras() {
   const [loading, setLoading] = useState(true);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showSpanOkMessage, setShowSpanOkMessage] = useState(false);
-  const { user, setQueryParams } = useAuth();
+  const { user, setAtualizarQuery } = useAuth();
   const navigate = useNavigate();
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -109,12 +109,8 @@ function MinhasCompras() {
               key={compra.id}
               onClick={(e) => {
                 e.stopPropagation();
-                setQueryParams(
-                  new URLSearchParams({
-                    payment_id: compra.provider_payment_id,
-                  })
-                );
                 navigate(`/status?payment_id=${compra.provider_payment_id}`);
+                setAtualizarQuery(true);
               }}
             >
               <div className="div-info">

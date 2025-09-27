@@ -1,7 +1,7 @@
 // src/contexts/AuthContext.tsx
 
 import React, { createContext, useState, useContext, useEffect } from "react";
-import type { ReactNode, SetStateAction } from "react";
+import type { ReactNode } from "react";
 import type { Product } from "../types/Product";
 
 interface User {
@@ -29,8 +29,8 @@ interface AuthContextType {
   setSelectedItems: React.Dispatch<React.SetStateAction<number[]>>;
   paymentStatus: PaymentStatus | null;
   purchasedProducts: Product[];
-  setQueryParams: React.Dispatch<SetStateAction<URLSearchParams | undefined>>;
   loading: boolean;
+  setAtualizarQuery: React.Dispatch<React.SetStateAction<boolean>>;
 }
 interface AuthProviderProps {
   children: ReactNode;
@@ -78,7 +78,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     null
   );
   const [purchasedProducts, setPurchasedProducts] = useState<Product[]>([]);
-  const [queryParams, setQueryParams] = useState<URLSearchParams>();
+  const [paymentId, setPaymentId] = useState<URLSearchParams>();
+  const [atualizarQuery, setAtualizarQuery] = useState(false);
   const [user, setUser] = useState<User | null>(() => {
     try {
       const storedUser = localStorage.getItem("user");
@@ -174,18 +175,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const paymentId = queryParams?.get("payment_id");
+  if (!paymentId) {
+    setPaymentId(new URLSearchParams(window.location.search));
+  }
+
+  useEffect(() => {
+    if (atualizarQuery) {
+      setPaymentId(new URLSearchParams(window.location.search));
+    }
+    setAtualizarQuery(false);
+  }, [atualizarQuery]);
 
   useEffect(() => {
     setLoading(true);
-    if (!paymentId || !user) {
-      return;
-    }
 
     const fetchPaymentStatus = async () => {
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL}/api/payments/${paymentId}/status`
+          `${VITE_BACKEND_URL}/api/payments/status?${paymentId}`
         );
 
         const data = await response.json();
@@ -195,18 +202,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           console.error("Erro ao obter status do pagamento:", data.error);
           setPaymentStatus(null);
         }
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
       } catch (error) {
         console.error("Erro de rede ao buscar status:", error);
         setPaymentStatus(null);
         setLoading(false);
       }
     };
-
     fetchPaymentStatus();
   }, [user, paymentId]);
 
   useEffect(() => {
+    setLoading(true);
     const fetchPurchasedProducts = async () => {
       if (!paymentStatus?.additional_info?.items) return;
 
@@ -222,8 +231,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         }
         setPurchasedProducts(products);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
       } catch (error) {
         console.error("Erro ao buscar produtos comprados:", error);
+        setLoading(false);
       }
     };
 
@@ -241,8 +254,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setSelectedItems,
     paymentStatus,
     purchasedProducts,
-    setQueryParams,
     loading,
+    setAtualizarQuery,
   };
 
   return (

@@ -15,7 +15,7 @@ initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
 });
 
 const PaymentResum = () => {
-  const { user, cart, selectedItems } = useAuth();
+  const { user, cart, selectedItems, setAtualizarQuery } = useAuth();
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
   const [formSubmit, setFormSubmit] = useState(false);
@@ -127,6 +127,7 @@ const PaymentResum = () => {
           setLoading(false);
           const id = data.payment.id;
           navigate(`/status?payment_id=${id}`);
+          setAtualizarQuery(true);
           resolve();
         })
         .catch((error) => {

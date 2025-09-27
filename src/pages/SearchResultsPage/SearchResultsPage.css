@@ -10,6 +10,7 @@
 .active-filter-tag {
   display: inline-flex;
   align-items: center;
+  width: min-content;
   gap: 8px;
   background-color: #f0f0f0;
   border-radius: 20px;
@@ -22,7 +23,7 @@
 }
 
 .active-filter-tag span {
-  text-transform: capitalize; /* Deixa a primeira letra da busca maiúscula, se aplicável */
+  text-transform: capitalize;
 }
 
 .active-filter-tag button {
