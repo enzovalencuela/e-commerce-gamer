@@ -4,6 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { PaymentProvider } from "./contexts/PaymentContext.tsx";
 import App from "./App.tsx";
 import Register from "./pages/Register/Register.tsx";
 import Login from "./pages/Login/Login.tsx";
@@ -21,33 +22,35 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/" element={<App />}>
-            <Route index element={<Home />} />
-            <Route path="product/:id" element={<ProductPage />} />
-            <Route path="account" element={<Account />} />
-            <Route path="carrinho" element={<Carrinho />} />
-            <Route path="minhas-compras" element={<MinhasCompras />} />
-            <Route path="/produtos/search" element={<SearchResultsPage />} />
-            <Route
-              path="/produtos/categoria/:categoria"
-              element={<SearchResultsPage />}
-            />
-            <Route path="status" element={<StatusPagamento />} />
-            <Route path="checkout" element={<PaymentResum />} />
+        <PaymentProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/" element={<App />}>
+              <Route index element={<Home />} />
+              <Route path="product/:id" element={<ProductPage />} />
+              <Route path="account" element={<Account />} />
+              <Route path="carrinho" element={<Carrinho />} />
+              <Route path="minhas-compras" element={<MinhasCompras />} />
+              <Route path="/produtos/search" element={<SearchResultsPage />} />
+              <Route
+                path="/produtos/categoria/:categoria"
+                element={<SearchResultsPage />}
+              />
+              <Route path="status" element={<StatusPagamento />} />
+              <Route path="checkout" element={<PaymentResum />} />
 
-            <Route
-              path="dashboard"
-              element={
-                <ProtectedRoute requiredRole="admin">
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
-        </Routes>
+              <Route
+                path="dashboard"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+          </Routes>
+        </PaymentProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

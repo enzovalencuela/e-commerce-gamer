@@ -32,6 +32,7 @@ interface AuthContextType {
   loading: boolean;
   setAtualizarQuery: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -94,6 +95,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const fetchCart = async () => {
+      setLoading(true);
       if (user) {
         try {
           const response = await fetch(
@@ -113,8 +115,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             fetchedItems.push(productData);
           }
           setCart(fetchedItems);
+          setLoading(false);
         } catch (error) {
           console.error("Erro ao buscar carrinho:", error);
+          setLoading(false);
         }
       }
     };

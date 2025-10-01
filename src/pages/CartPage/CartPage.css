@@ -4,6 +4,7 @@
 .cart-page-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   padding: 60px 20px;
   width: 100%;
@@ -122,5 +123,6 @@
 @media (max-width: 1028px) {
   .cart-content {
     flex-direction: column;
+    align-items: center;
   }
 }

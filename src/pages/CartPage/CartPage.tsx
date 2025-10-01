@@ -5,15 +5,22 @@ import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import "./CartPage.css";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
-import OkMessage from "../../components/OkMessage/OkMessage";
 import BackButton from "../../components/BackButton/BackButton";
 import Button from "../../components/Button/Button";
+import Loading from "../../components/Loading/Loading";
+import { usePayment } from "../../contexts/PaymentContext";
 
 const CartPage: React.FC = () => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const [showOkMessage, setShowOkMessage] = useState(false);
-  const { user, cart, removeFromCart, selectedItems, setSelectedItems } =
-    useAuth();
+  const {
+    user,
+    cart,
+    removeFromCart,
+    selectedItems,
+    setSelectedItems,
+    loading,
+  } = useAuth();
+  const { totalAmount } = usePayment();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,26 +49,12 @@ const CartPage: React.FC = () => {
     }
   };
 
-  const calculateTotal = () => {
-    return cart
-      .filter((item) => selectedItems.includes(item.id))
-      .reduce((total, item) => total + Number(item.preco), 0);
-  };
-
-  const totalAmount = calculateTotal();
-
-  const okMessage = `Finalizando a compra de R$ ${calculateTotal()}`;
-
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="cart-page-container">
       {showErrorMessage && (
         <ErrorMessage onClose={() => setShowErrorMessage(false)} />
-      )}
-      {showOkMessage && (
-        <OkMessage
-          onClose={() => setShowOkMessage(false)}
-          message={okMessage}
-        />
       )}
 
       <BackButton />
