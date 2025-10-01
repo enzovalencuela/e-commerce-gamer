@@ -188,8 +188,9 @@ const ProductPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div>
-          <p className="product-description">{product.descricao}</p>
+        <div className="product-description">
+          <h3>Descrição</h3>
+          <p>{product.descricao}</p>
         </div>
       </div>
       <Produtos sectionTitle="Mais Vendidos" sliceStart={7} sliceEnd={14} />

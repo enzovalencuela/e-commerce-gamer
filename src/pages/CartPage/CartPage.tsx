@@ -8,19 +8,16 @@ import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import OkMessage from "../../components/OkMessage/OkMessage";
 import BackButton from "../../components/BackButton/BackButton";
 import Button from "../../components/Button/Button";
-import Loading from "../../components/Loading/Loading";
 
 const CartPage: React.FC = () => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
-  const [loading, setLoading] = useState(true);
   const { user, cart, removeFromCart, selectedItems, setSelectedItems } =
     useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) {
-      setLoading(false);
       setShowErrorMessage(true);
       setTimeout(() => {
         navigate("/");
@@ -51,17 +48,11 @@ const CartPage: React.FC = () => {
       .reduce((total, item) => total + Number(item.preco), 0);
   };
 
-  useEffect(() => {
-    if (cart.length > 0) {
-      setLoading(false);
-    }
-  }, [cart]);
+  const totalAmount = calculateTotal();
 
   const okMessage = `Finalizando a compra de R$ ${calculateTotal()}`;
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <div className="cart-page-container">
       {showErrorMessage && (
         <ErrorMessage onClose={() => setShowErrorMessage(false)} />
@@ -111,12 +102,25 @@ const CartPage: React.FC = () => {
               </div>
             ))}
           </div>
-          <Link to={"/checkout"}>
-            <Button
-              disabled={selectedItems.length <= 0}
-              child="Ir para Checkout"
-            />
-          </Link>
+          <div className="cart-summary">
+            <h2>Resumo da Compra</h2>
+            <div className="summary-item">
+              <span>Total de itens selecionados:</span>
+              <span>{selectedItems.length}</span>
+            </div>
+            <div className="summary-item total">
+              <span>Valor total:</span>
+              <span>R$ {totalAmount.toFixed(2).replace(".", ",")}</span>
+            </div>
+            {totalAmount > 0 && (
+              <Link to={"/checkout"}>
+                <Button
+                  disabled={selectedItems.length <= 0}
+                  child="Ir para Checkout"
+                />
+              </Link>
+            )}
+          </div>
         </div>
       )}
     </div>

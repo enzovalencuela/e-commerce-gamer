@@ -8,10 +8,9 @@
   padding: 60px 20px;
   width: 100%;
   margin-block: 40px;
-  max-width: 500px;
+  max-width: 1024px;
   justify-self: center;
   min-height: 100vh;
-  background-color: #f8f8f8;
   border-radius: 16px;
 }
 
@@ -26,9 +25,8 @@
 --------------------------------*/
 .cart-content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
-  max-width: 1200px;
   gap: 2rem;
 }
 
@@ -119,4 +117,10 @@
   color: #4a4e69;
   text-decoration: none;
   font-weight: bold;
+}
+
+@media (max-width: 1028px) {
+  .cart-content {
+    flex-direction: column;
+  }
 }

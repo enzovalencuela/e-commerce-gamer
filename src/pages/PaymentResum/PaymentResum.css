@@ -17,6 +17,7 @@
   display: flex;
   width: 100%;
   max-width: 500px;
+  height: min-content;
   justify-self: center;
   flex-direction: column;
   gap: 1.5rem;

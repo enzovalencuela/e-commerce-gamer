@@ -8,6 +8,7 @@ import "./PaymentResum.css";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading/Loading";
 import { initMercadoPago } from "@mercadopago/sdk-react";
+import FormDados from "../../components/FormDados/FormDados";
 import SpanMessage from "../../components/SpanMessage/SpanMessage";
 
 initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
@@ -17,57 +18,16 @@ initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
 const PaymentResum = () => {
   const { user, cart, selectedItems, setAtualizarQuery } = useAuth();
   const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const [showOkMessage, setShowOkMessage] = useState(false);
   const [formSubmit, setFormSubmit] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({
-    phone: "",
-    address: "",
-    number: "",
-    neighborhood: "",
-    city: "",
-    state: "",
-    zip: "",
-  });
+  const [showOkMessage, setShowOkMessage] = useState(false);
+  const spanMessage = "Operação, realizada com sucesso.";
 
   const navigate = useNavigate();
-  const spanMessage = "Operação, realizada com sucesso.";
 
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   if (!user) return;
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    setTimeout(() => {
-      setFormSubmit(false);
-    }, 1000);
-
-    try {
-      const res = await fetch(
-        `${VITE_BACKEND_URL}/api/user/${user.id}/update-checkout-info`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Erro ao salvar dados do usuário");
-      }
-
-      setShowOkMessage(true);
-    } catch (error) {
-      console.error("Erro ao atualizar dados de checkout:", error);
-      setShowErrorMessage(true);
-    }
-  };
 
   const calculateTotal = () => {
     if (!cart || !selectedItems) {
@@ -156,82 +116,19 @@ const PaymentResum = () => {
     <Loading />
   ) : (
     <div className="cart-resum-container">
+      {showOkMessage && <SpanMessage message={spanMessage} status="ok" />}
       <BackButton />
       {showErrorMessage && (
         <ErrorMessage
           onClose={() => (setShowErrorMessage(false), navigate("/carrinho"))}
         />
       )}
-      {showOkMessage && <SpanMessage message={spanMessage} status="ok" />}
       {formSubmit ? (
-        <form onSubmit={handleSubmit} className="input_container">
-          <input
-            name="phone"
-            placeholder="Telefone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="address"
-            placeholder="Endereço"
-            value={formData.address}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="number"
-            placeholder="Número"
-            value={formData.number}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="neighborhood"
-            placeholder="Bairro"
-            value={formData.neighborhood}
-            onChange={handleChange}
-          />
-          <input
-            name="city"
-            placeholder="Cidade"
-            value={formData.city}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="state"
-            placeholder="Estado"
-            value={formData.state}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="zip"
-            placeholder="CEP"
-            value={formData.zip}
-            onChange={handleChange}
-            required
-          />
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={
-              !formData.address ||
-              !formData.city ||
-              !formData.neighborhood ||
-              !formData.number ||
-              !formData.phone ||
-              !formData.state ||
-              !formData.zip
-            }
-          >
-            Salvar informações
-          </button>
-          <button className="add-to-cart-btn" onClick={() => navigate(-1)}>
-            Voltar
-          </button>
-        </form>
+        <FormDados
+          setShowErrorMessage={setShowErrorMessage}
+          setFormSubmit={setFormSubmit}
+          setShowOkMessage={setShowOkMessage}
+        />
       ) : (
         <div className="cart-summary">
           <h2>Resumo da Compra</h2>
