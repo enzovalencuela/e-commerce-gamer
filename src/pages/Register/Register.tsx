@@ -34,7 +34,7 @@ const Register: React.FC = () => {
     setError("");
 
     try {
-      const response = await fetch(`${VITE_BACKEND_URL}/api/register`, {
+      const response = await fetch(`${VITE_BACKEND_URL}/api/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
