@@ -30,20 +30,16 @@ const Home: React.FC = () => {
           onClose={() => setShowWelcomeMessage(false)}
         />
       )}
-
       <Outdoor />
-
-      {/* Sessões especiais */}
-      <Produtos tipoSessao="maisVendidos" />
-      <Produtos tipoSessao="recomendados" />
-      <Produtos tipoSessao="emPromocao" />
 
       {/* Sessões por categoria */}
       <Produtos categoria="Setups" />
       <Produtos categoria="Periféricos" />
-
-      <Banner />
+      <Produtos categoria="Notebooks" />
+      <Produtos categoria="Consoles" />
       <About />
+      <Produtos categoria="Acessórios" />
+      <Banner />
     </>
   );
 };
