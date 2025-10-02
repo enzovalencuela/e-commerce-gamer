@@ -33,13 +33,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="carrinho" element={<Carrinho />} />
               <Route path="minhas-compras" element={<MinhasCompras />} />
               <Route path="/produtos/search" element={<SearchResultsPage />} />
-              <Route
-                path="/produtos/categoria/:categoria"
-                element={<SearchResultsPage />}
-              />
               <Route path="status" element={<StatusPagamento />} />
               <Route path="checkout" element={<PaymentResum />} />
-
               <Route
                 path="dashboard"
                 element={

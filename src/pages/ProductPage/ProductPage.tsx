@@ -193,7 +193,7 @@ const ProductPage: React.FC = () => {
           <p>{product.descricao}</p>
         </div>
       </div>
-      <Produtos />
+      <Produtos tipoSessao="recomendados" />
     </div>
   );
 };

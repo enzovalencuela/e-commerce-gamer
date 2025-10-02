@@ -33,9 +33,10 @@ const Home: React.FC = () => {
       <Outdoor />
 
       {/* Sessões por categoria */}
+      <Produtos tipoSessao="emPromocao" />
+      <Produtos tipoSessao="maisVendidos" />
       <Produtos categoria="Setups" />
       <Produtos categoria="Periféricos" />
-      <Produtos categoria="Notebooks" />
       <Produtos categoria="Consoles" />
       <About />
       <Produtos categoria="Acessórios" />
