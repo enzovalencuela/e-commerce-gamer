@@ -18,6 +18,12 @@ import SearchResultsPage from "./pages/SearchResultsPage/SearchResultsPage.tsx";
 import StatusPagamento from "./pages/Status/Status.tsx";
 import PaymentResum from "./pages/PaymentResum/PaymentResum.tsx";
 import MinhasCompras from "./pages/MinhasCompras/MinhasCompras.tsx";
+import { initMercadoPago } from "@mercadopago/sdk-react";
+
+initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
+  locale: "pt-BR",
+});
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>

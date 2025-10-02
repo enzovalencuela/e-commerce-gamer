@@ -5,14 +5,9 @@ import { Payment } from "@mercadopago/sdk-react";
 import "./PaymentResum.css";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading/Loading";
-import { initMercadoPago } from "@mercadopago/sdk-react";
 import FormDados from "../../components/FormDados/FormDados";
 import SpanMessage from "../../components/SpanMessage/SpanMessage";
 import { usePayment } from "../../contexts/PaymentContext";
-
-initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
-  locale: "pt-BR",
-});
 
 const PaymentResum = () => {
   const {
