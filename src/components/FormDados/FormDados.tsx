@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import "./FormDados.css";
 
 function FormDados({
   setShowErrorMessage,

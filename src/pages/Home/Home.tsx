@@ -1,5 +1,4 @@
 // src/pages/Home/Home.tsx
-
 import React, { useEffect, useState } from "react";
 import Outdoor from "../../components/Outdoor/Outdoor.tsx";
 import Produtos from "../../components/Produtos/Produtos.tsx";
@@ -31,13 +30,20 @@ const Home: React.FC = () => {
           onClose={() => setShowWelcomeMessage(false)}
         />
       )}
+
       <Outdoor />
-      <Produtos sectionTitle="Lançamentos" sliceStart={0} sliceEnd={7} />
-      <Produtos sectionTitle="Mais Vendidos" sliceStart={7} sliceEnd={14} />
-      <Produtos sectionTitle="Em Promoção" sliceStart={14} sliceEnd={21} />
-      <About />
-      <Produtos sectionTitle="Acessórios" sliceStart={21} sliceEnd={28} />
+
+      {/* Sessões especiais */}
+      <Produtos tipoSessao="maisVendidos" />
+      <Produtos tipoSessao="recomendados" />
+      <Produtos tipoSessao="emPromocao" />
+
+      {/* Sessões por categoria */}
+      <Produtos categoria="Setups" />
+      <Produtos categoria="Periféricos" />
+
       <Banner />
+      <About />
     </>
   );
 };

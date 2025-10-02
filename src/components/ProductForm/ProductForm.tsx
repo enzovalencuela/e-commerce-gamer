@@ -40,6 +40,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     descricao: "",
     categoria: "",
     tags: "",
+    cores: "",
     disponivel: true,
   });
 
@@ -54,6 +55,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         descricao: product.descricao || "",
         categoria: product.categoria || "",
         tags: product.tags?.join(", ") || "",
+        cores: product.cores?.join(", ") || "",
         disponivel: product.disponivel,
       });
     }
@@ -73,6 +75,13 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }));
   };
 
+  const handleClear = (name: keyof typeof formData) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: "",
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -87,6 +96,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       descricao: formData.descricao,
       categoria: formData.categoria,
       tags: formData.tags.split(",").map((tag) => tag.trim()),
+      cores: formData.tags.split(",").map((cor) => cor.trim()),
       disponivel: formData.disponivel,
     };
 
@@ -105,6 +115,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
             onChange={handleChange}
             required
           />
+          {formData.titulo && (
+            <button type="button" onClick={() => handleClear("titulo")}>
+              X
+            </button>
+          )}
         </label>
         <label>
           Preço:
@@ -146,7 +161,13 @@ const ProductForm: React.FC<ProductFormProps> = ({
             onChange={handleChange}
             required
           />
+          {formData.img && (
+            <button type="button" onClick={() => handleClear("img")}>
+              X
+            </button>
+          )}
         </label>
+        {formData.img && <img src={formData.img} alt="" />}
         <label>
           Descrição:
           <textarea
@@ -155,6 +176,39 @@ const ProductForm: React.FC<ProductFormProps> = ({
             onChange={handleChange}
             required
           ></textarea>
+          {formData.descricao && (
+            <button type="button" onClick={() => handleClear("descricao")}>
+              X
+            </button>
+          )}
+        </label>
+        <label>
+          Cores (separadas por vírgula):
+          <input
+            type="text"
+            name="cores"
+            value={formData.cores}
+            onChange={handleChange}
+          />
+          {formData.cores && (
+            <button type="button" onClick={() => handleClear("cores")}>
+              X
+            </button>
+          )}
+        </label>
+        <label>
+          Tags (separadas por vírgula):
+          <input
+            type="text"
+            name="tags"
+            value={formData.tags}
+            onChange={handleChange}
+          />
+          {formData.tags && (
+            <button type="button" onClick={() => handleClear("tags")}>
+              X
+            </button>
+          )}
         </label>
         <label>
           Categoria:
@@ -171,15 +225,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
               </option>
             ))}
           </select>
-        </label>
-        <label>
-          Tags (separadas por vírgula):
-          <input
-            type="text"
-            name="tags"
-            value={formData.tags}
-            onChange={handleChange}
-          />
         </label>
         <label className="checkbox">
           Disponível:

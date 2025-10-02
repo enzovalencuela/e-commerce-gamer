@@ -1,6 +1,5 @@
 // src/components/Produtos/Produtos.tsx
-
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ProductCarousel from "../ProductCarousel/ProductCarousel";
 import type { Product } from "../../types/Product";
 import "./Produtos.css";
@@ -8,17 +7,25 @@ import Loading from "../Loading/Loading";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
+type Categoria =
+  | "Setups"
+  | "Notebooks"
+  | "Periféricos"
+  | "Consoles"
+  | "Acessórios"
+  | "Monitores"
+  | "Realidade VR"
+  | "Áudio";
+
+type TipoSessao = "maisVendidos" | "recomendados" | "emPromocao";
+
 interface ProdutosProps {
-  sectionTitle: string;
-  sliceStart: number;
-  sliceEnd: number;
+  categoria?: Categoria;
+  tipoSessao?: TipoSessao;
+  titulo?: string;
 }
 
-const Produtos: React.FC<ProdutosProps> = ({
-  sectionTitle,
-  sliceStart,
-  sliceEnd,
-}) => {
+const Produtos: React.FC<ProdutosProps> = ({ categoria, titulo }) => {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +66,14 @@ const Produtos: React.FC<ProdutosProps> = ({
     );
   }
 
-  const productsToShow = allProducts.slice(sliceStart, sliceEnd);
+  // 🔎 Filtragem dinâmica
+  let productsToShow: Product[] = [];
+  let sectionTitle = titulo || "";
+
+  if (categoria) {
+    productsToShow = allProducts.filter((p) => p.categoria === categoria);
+    sectionTitle = titulo || categoria;
+  }
 
   return loading ? (
     <Loading />
@@ -67,7 +81,6 @@ const Produtos: React.FC<ProdutosProps> = ({
     <section className="section-produtos">
       <div className="div-produtos__title">
         <h2>{sectionTitle}</h2>
-        {/*<button>Ver mais</button>*/}
       </div>
       <ProductCarousel products={productsToShow} sectionTitle={sectionTitle} />
     </section>

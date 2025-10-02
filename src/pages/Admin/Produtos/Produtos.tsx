@@ -237,7 +237,9 @@ const ProdutosDashboard: React.FC = () => {
           ))}
         </div>
       ) : (
-        <p>sem produtos</p>
+        <div className="empty-product-list">
+          <p>sem produtos</p>
+        </div>
       )}
     </div>
   );

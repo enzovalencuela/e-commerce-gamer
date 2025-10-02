@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useEffect, useState } from "react";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import BackButton from "../../components/BackButton/BackButton";
 import { Payment } from "@mercadopago/sdk-react";
@@ -16,7 +15,6 @@ initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
 });
 
 const PaymentResum = () => {
-  const { selectedItems, loading } = useAuth();
   const {
     totalAmount,
     showErrorMessage,
@@ -24,12 +22,21 @@ const PaymentResum = () => {
     onError,
     onReady,
     setShowErrorMessage,
+    loading,
+    setLoading,
   } = usePayment();
   const [formSubmit, setFormSubmit] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
   const spanMessage = "Operação, realizada com sucesso.";
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2500);
+  }, [setLoading]);
 
   if (totalAmount <= 1) {
     setTimeout(() => {
@@ -51,10 +58,9 @@ const PaymentResum = () => {
     },
   };
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <div className="cart-resum-container">
+      {loading && <Loading />}
       {showOkMessage && <SpanMessage message={spanMessage} status="ok" />}
       <BackButton />
       {showErrorMessage && (
@@ -69,36 +75,20 @@ const PaymentResum = () => {
           setShowOkMessage={setShowOkMessage}
         />
       ) : (
-        <>
-          <div className="cart-summary">
-            <h2>Resumo da Compra</h2>
-            <div className="summary-item">
-              <span>Total de itens selecionados:</span>
-              <span>{selectedItems.length}</span>
-            </div>
-            <div className="summary-item total">
-              <span>Valor total:</span>
-              <span>R$ {totalAmount.toFixed(2).replace(".", ",")}</span>
-            </div>
-            <button
-              className="submit-button"
-              onClick={() => setFormSubmit(true)}
-            >
-              Atualizar dados pessoais
-            </button>
-          </div>
-          <div>
-            {totalAmount > 0 && (
-              <Payment
-                initialization={initialization}
-                customization={customization}
-                onSubmit={onSubmit}
-                onReady={onReady}
-                onError={onError}
-              />
-            )}
-          </div>
-        </>
+        <div className="content-resum">
+          <button className="submit-button" onClick={() => setFormSubmit(true)}>
+            Atualizar dados pessoais
+          </button>
+          {totalAmount > 0 && (
+            <Payment
+              initialization={initialization}
+              customization={customization}
+              onSubmit={onSubmit}
+              onReady={onReady}
+              onError={onError}
+            />
+          )}
+        </div>
       )}
     </div>
   );

@@ -13,5 +13,7 @@ export interface Product {
   tamanhos?: string[];
   avaliacoes?: number;
   mediaAvaliacao?: number;
+  salesCount?: number;
+  createdAt?: string;
   disponivel: boolean;
 }

@@ -169,7 +169,7 @@ const Account: React.FC = () => {
             </form>
           </div>
 
-          <div className="account-actions">
+          <div className="change-password-section">
             <BackButton />
             <button onClick={handleLogout} className="logout-button">
               Sair

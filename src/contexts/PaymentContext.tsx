@@ -10,6 +10,7 @@ interface AuthContextType {
   onReady: () => Promise<void>;
   totalAmount: number;
   loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   showErrorMessage: boolean;
   setShowErrorMessage: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -95,6 +96,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
     onSubmit,
     totalAmount,
     loading,
+    setLoading,
     showErrorMessage,
     setShowErrorMessage,
     onError,
