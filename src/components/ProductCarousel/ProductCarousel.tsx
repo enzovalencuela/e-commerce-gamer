@@ -98,7 +98,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
                     R$ {product.preco} <span>Ou</span>
                   </h4>
                   <span>
-                    em até <b>{product.parcelamento}</b>
+                    em até <b>{product.max_parcelas}</b>
                   </span>
                 </div>
                 {/* Lógica para o botão */}
