@@ -12,6 +12,7 @@ import BackButton from "../../components/BackButton/BackButton";
 import SpanMessage from "../../components/SpanMessage/SpanMessage";
 import Loading from "../../components/Loading/Loading";
 import type { Product } from "../../types/Product";
+import { useProduct } from "../../contexts/ProductContext";
 
 const ProductPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,6 +23,7 @@ const ProductPage: React.FC = () => {
   const [showErrorMessage, setsShowErrorMessage] = useState(false);
   const [showOkMessage, setsShowOkMessage] = useState(false);
   const { user } = useAuth();
+  const { setSearchQuery, setProdutos } = useProduct();
   const navigate = useNavigate();
 
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -147,14 +149,13 @@ const ProductPage: React.FC = () => {
           </div>
           <div className="product-details-section">
             <h1>{product.titulo}</h1>
-
             <div className="price-info">
               <span className="original-price">
                 De R$ {product.preco_original}
               </span>
               <h2 className="current-price">Por R$ {product.preco}</h2>
               <span className="payment-info">
-                em até <b>{product.parcelamento}</b>
+                em até <b>{product.max_parcelas}</b>
               </span>
             </div>
             <div>
@@ -184,6 +185,18 @@ const ProductPage: React.FC = () => {
                     Ir para o Carrinho
                   </button>
                 </>
+              )}
+              {user?.role === "admin" && (
+                <button
+                  className="add-to-cart-btn"
+                  onClick={() => {
+                    setProdutos(true);
+                    navigate("/dashboard");
+                    setSearchQuery(product.titulo);
+                  }}
+                >
+                  Ver no Dashboard
+                </button>
               )}
             </div>
           </div>

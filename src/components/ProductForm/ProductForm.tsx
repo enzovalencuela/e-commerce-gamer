@@ -9,7 +9,7 @@ interface ProductFormProps {
   onSave: (
     product: Omit<
       Product,
-      "id" | "desconto" | "avaliacoes" | "mediaAvaliacao" | "cores" | "tamanhos"
+      "id" | "desconto" | "avaliacoes" | "mediaAvaliacao" | "tamanhos"
     >
   ) => void;
   onCancel: () => void;
@@ -35,7 +35,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
     titulo: "",
     preco: 0,
     preco_original: 0,
-    parcelamento: "",
+    max_parcelas: 1,
+    taxa_parcela: 0,
     img: "",
     descricao: "",
     categoria: "",
@@ -50,7 +51,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
         titulo: product.titulo || "",
         preco: product.preco,
         preco_original: product.preco_original || 0,
-        parcelamento: product.parcelamento || "",
+        max_parcelas: product.max_parcelas || 1,
+        taxa_parcela: product.taxa_parcela || 0,
         img: product.img || "",
         descricao: product.descricao || "",
         categoria: product.categoria || "",
@@ -82,6 +84,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }));
   };
 
+  const valor_parcela =
+    (formData.preco / Number(formData.max_parcelas)) *
+    (1 + formData.taxa_parcela / 100);
+
+  const parcela = `${formData.max_parcelas}x de R$${(valor_parcela || 0)
+    .toFixed(2)
+    .replace(".", ",")}`;
+
+  const valor_total = formData.max_parcelas * (valor_parcela || 0);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -91,12 +103,13 @@ const ProductForm: React.FC<ProductFormProps> = ({
       preco_original: formData.preco_original
         ? parseFloat(String(formData.preco_original))
         : undefined,
-      parcelamento: formData.parcelamento,
+      max_parcelas: parseInt(String(formData.max_parcelas)),
+      taxa_parcela: parseInt(String(formData.taxa_parcela)),
       img: formData.img,
       descricao: formData.descricao,
       categoria: formData.categoria,
       tags: formData.tags.split(",").map((tag) => tag.trim()),
-      cores: formData.tags.split(",").map((cor) => cor.trim()),
+      cores: formData.cores.split(",").map((cor) => cor.trim()),
       disponivel: formData.disponivel,
     };
 
@@ -121,36 +134,87 @@ const ProductForm: React.FC<ProductFormProps> = ({
             </button>
           )}
         </label>
+        <div className="div-row-label">
+          <label>
+            Preço: (R$)
+            <input
+              type="number"
+              name="preco"
+              value={formData.preco}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value);
+                setFormData((prev) => ({
+                  ...prev,
+                  preco: value,
+                }));
+              }}
+              step="0.01"
+              required
+            />
+          </label>
+          <label>
+            Preço Original: (R$)
+            <input
+              type="number"
+              name="preco_original"
+              value={formData.preco_original}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value);
+                setFormData((prev) => ({
+                  ...prev,
+                  preco_original: value,
+                }));
+              }}
+              step="0.01"
+            />
+          </label>
+        </div>
         <label>
-          Preço:
-          <input
-            type="number"
-            name="preco"
-            value={formData.preco}
-            onChange={handleChange}
-            step="0.01"
-            required
-          />
-        </label>
-        <label>
-          Preço Original:
+          Desconto: (%)
           <input
             type="number"
             name="preco_original"
-            value={formData.preco_original}
-            onChange={handleChange}
+            value={(
+              100 -
+              (formData.preco * 100) / (formData.preco_original || 1)
+            ).toFixed(2)}
+            onChange={(e) => {
+              const desconto = parseFloat(e.target.value);
+              const novoPreco =
+                formData.preco_original -
+                (formData.preco_original * desconto) / 100;
+              setFormData((prev) => ({
+                ...prev,
+                preco: parseFloat(novoPreco.toFixed(2)),
+              }));
+            }}
             step="0.01"
           />
         </label>
+        <div className="div-row-label">
+          <label>
+            Max. de parcelas:
+            <input
+              type="number"
+              name="max_parcelas"
+              value={formData.max_parcelas}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Taxa da parcela: (%)
+            <input
+              type="number"
+              name="taxa_parcela"
+              value={formData.taxa_parcela}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
         <label>
-          Parcelamento:
-          <input
-            type="text"
-            name="parcelamento"
-            value={formData.parcelamento}
-            onChange={handleChange}
-            placeholder="0x de R$ 00.00"
-          />
+          Parcelas:
+          <br />
+          {parcela} = {valor_total.toFixed(2).replace(".", ",")}
         </label>
         <label>
           URL da Imagem:

@@ -19,6 +19,7 @@ import StatusPagamento from "./pages/Status/Status.tsx";
 import PaymentResum from "./pages/PaymentResum/PaymentResum.tsx";
 import MinhasCompras from "./pages/MinhasCompras/MinhasCompras.tsx";
 import { initMercadoPago } from "@mercadopago/sdk-react";
+import { ProductProvider } from "./contexts/ProductContext.tsx";
 
 initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
   locale: "pt-BR",
@@ -28,30 +29,35 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <PaymentProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/" element={<App />}>
-              <Route index element={<Home />} />
-              <Route path="product/:id" element={<ProductPage />} />
-              <Route path="account" element={<Account />} />
-              <Route path="carrinho" element={<Carrinho />} />
-              <Route path="minhas-compras" element={<MinhasCompras />} />
-              <Route path="/produtos/search" element={<SearchResultsPage />} />
-              <Route path="status" element={<StatusPagamento />} />
-              <Route path="checkout" element={<PaymentResum />} />
-              <Route
-                path="dashboard"
-                element={
-                  <ProtectedRoute requiredRole="admin">
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
-          </Routes>
-        </PaymentProvider>
+        <ProductProvider>
+          <PaymentProvider>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/" element={<App />}>
+                <Route index element={<Home />} />
+                <Route path="product/:id" element={<ProductPage />} />
+                <Route path="account" element={<Account />} />
+                <Route path="carrinho" element={<Carrinho />} />
+                <Route path="minhas-compras" element={<MinhasCompras />} />
+                <Route
+                  path="/produtos/search"
+                  element={<SearchResultsPage />}
+                />
+                <Route path="status" element={<StatusPagamento />} />
+                <Route path="checkout" element={<PaymentResum />} />
+                <Route
+                  path="dashboard"
+                  element={
+                    <ProtectedRoute requiredRole="admin">
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
+            </Routes>
+          </PaymentProvider>
+        </ProductProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

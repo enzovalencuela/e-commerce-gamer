@@ -54,6 +54,14 @@
   }
 }
 
+.div-row-label {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
 .product-form-container label select {
   padding: 10px;
   border-radius: 4px;

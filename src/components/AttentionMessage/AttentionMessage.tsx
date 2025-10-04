@@ -5,11 +5,15 @@ import React, { useState } from "react";
 interface AttentionMessageProps {
   message: string;
   onClose: () => void;
+  onClick?: () => void;
+  buttonContent?: string;
 }
 
 const AttentionMessage: React.FC<AttentionMessageProps> = ({
   message,
   onClose,
+  onClick,
+  buttonContent,
 }) => {
   const [isChecked, setIsChecked] = useState(false);
 
@@ -28,13 +32,20 @@ const AttentionMessage: React.FC<AttentionMessageProps> = ({
             Estou ciente de que este é um site para estudos.
           </label>
         </div>
-        <button
-          onClick={onClose}
-          className="error-message-close-button"
-          disabled={!isChecked}
-        >
-          Fechar
-        </button>
+        <div className="error-message-buttons">
+          <button
+            onClick={onClose}
+            className="error-message-close-button"
+            disabled={!isChecked}
+          >
+            Fechar
+          </button>
+          {onClick && buttonContent && (
+            <button onClick={onClick} className="error-message-close-button">
+              {buttonContent}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

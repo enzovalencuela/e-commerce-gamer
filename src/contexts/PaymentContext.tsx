@@ -4,7 +4,7 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 
-interface AuthContextType {
+interface PaymentContextType {
   onSubmit: ({ formData }: any) => Promise<void>;
   onError: (error: any) => Promise<void>;
   onReady: () => Promise<void>;
@@ -13,13 +13,14 @@ interface AuthContextType {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   showErrorMessage: boolean;
   setShowErrorMessage: React.Dispatch<React.SetStateAction<boolean>>;
+  maxParcelas: () => number;
 }
 
 interface PaymentProviderProps {
   children: ReactNode;
 }
 
-const PaymentContext = createContext<AuthContextType | undefined>(undefined);
+const PaymentContext = createContext<PaymentContextType | undefined>(undefined);
 
 export const PaymentProvider: React.FC<PaymentProviderProps> = ({
   children,
@@ -31,8 +32,6 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
 
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-  if (!user) return;
-
   const calculateTotal = () => {
     if (!cart || !selectedItems) {
       return 0;
@@ -43,6 +42,27 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
   };
 
   const totalAmount = calculateTotal();
+
+  const maxParcelas = () => {
+    if (!cart || !selectedItems || cart.length === 0) {
+      return 1;
+    }
+
+    const selectedProducts = cart.filter((item) =>
+      selectedItems.includes(item.id)
+    );
+
+    if (selectedProducts.length === 0) {
+      return 1;
+    }
+
+    const maxMaxParcelas = selectedProducts.reduce((maxLimit, item) => {
+      const itemLimit = Number(item.max_parcelas) || 1;
+      return Math.max(maxLimit, itemLimit);
+    }, 1);
+
+    return maxMaxParcelas;
+  };
 
   const onSubmit = async ({ formData }: { formData: Record<string, any> }) => {
     if (!user || totalAmount <= 0) {
@@ -101,6 +121,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
     setShowErrorMessage,
     onError,
     onReady,
+    maxParcelas,
   };
 
   return (

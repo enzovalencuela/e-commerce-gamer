@@ -78,12 +78,16 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
       >
         {products.map((product, index) => {
           const isProductInCart = cart.some((item) => item.id === product.id);
+          const desconto =
+            100 - (product.preco * 100) / (product.preco_original || 1);
 
           return (
             <SwiperSlide key={index} className="product">
               <div>
                 {isReleasesSection && <span className="span-new">novo</span>}
-                {isPromotionSection && <span className="off">10% off</span>}
+                {isPromotionSection && (
+                  <span className="off">{desconto.toFixed(2)}% off</span>
+                )}
                 <Link to={`/product/${product.id}`}>
                   <img src={product.img} alt={product.titulo} />
                 </Link>

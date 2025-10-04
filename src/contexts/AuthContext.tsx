@@ -11,16 +11,9 @@ interface User {
   role: "admin" | "user";
 }
 
-interface CartItem {
-  id: number;
-  titulo: string;
-  preco: number;
-  img: string;
-}
-
 interface AuthContextType {
   user: User | null;
-  cart: CartItem[];
+  cart: Product[];
   login: (userData: User) => void;
   logout: () => void;
   addToCart: (item: Product) => Promise<"ok" | "error">;
@@ -38,9 +31,8 @@ interface AuthProviderProps {
 }
 
 interface Items {
-  category_id: string;
-  description: string;
   id: string;
+  description: string;
   quantity: string;
   title: string;
   unit_price: string;

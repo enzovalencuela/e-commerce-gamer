@@ -19,6 +19,7 @@ const PaymentResum = () => {
     setShowErrorMessage,
     loading,
     setLoading,
+    maxParcelas,
   } = usePayment();
   const [formSubmit, setFormSubmit] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
@@ -49,7 +50,7 @@ const PaymentResum = () => {
       bankTransfer: "all",
       creditCard: "all",
       debitCard: "all",
-      maxInstallments: 12,
+      maxInstallments: maxParcelas(),
     },
   };
 

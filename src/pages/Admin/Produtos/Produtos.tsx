@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 // src/pages/Admin/Dashboard.tsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ProductForm from "../../../components/ProductForm/ProductForm";
 import "./Produtos.css";
 
@@ -10,6 +9,8 @@ import Loading from "../../../components/Loading/Loading";
 import BackButton from "../../../components/BackButton/BackButton";
 import SpanMessage from "../../../components/SpanMessage/SpanMessage";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useProduct } from "../../../contexts/ProductContext";
+import AttentionMessage from "../../../components/AttentionMessage/AttentionMessage";
 type NewProduct = Omit<Product, "id">;
 
 const navDepartments = [
@@ -24,60 +25,23 @@ const navDepartments = [
 ];
 
 const ProdutosDashboard: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showSpan, setShowSpan] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [searchProducts, setSearchProducts] = useState(false);
-  const [searchQuery, setSearchQuery] = useState<string>();
+  const [showAttentionMessage, setShowAttentionMessage] = useState(false);
+  const [deletar, setDeletar] = useState(true);
+
   const [isAdding, setIsAdding] = useState(false);
+  const {
+    loading,
+    products,
+    setProducts,
+    searchQuery,
+    setSearchQuery,
+    searchProducts,
+    setSearchProducts,
+  } = useProduct();
+
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
-  useEffect(() => {
-    setLoading(true);
-
-    const handleCategoryClick = async () => {
-      try {
-        const response = await fetch(
-          `${VITE_BACKEND_URL}/api/products/search?categoria=${searchQuery}`
-        );
-
-        if (!response.ok) {
-          throw new Error("Falha na busca de produtos.");
-        }
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Erro ao buscar produtos:", error);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    handleCategoryClick();
-  }, [searchQuery]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${VITE_BACKEND_URL}/api/products`);
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Erro ao buscar produtos.");
-        }
-        const data: Product[] = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Erro ao carregar produtos:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [searchProducts]);
 
   const handleSave = async (productData: NewProduct) => {
     const isNew = isAdding;
@@ -124,24 +88,28 @@ const ProdutosDashboard: React.FC = () => {
   };
 
   const handleDeleteProduct = async (productId: number) => {
-    if (!window.confirm("Tem certeza que deseja remover este produto?")) return;
+    setShowAttentionMessage(true);
 
-    try {
-      const response = await fetch(
-        `${VITE_BACKEND_URL}/api/products/${productId}`,
-        {
-          method: "DELETE",
+    if (!showAttentionMessage) {
+      if (!deletar) return;
+
+      try {
+        const response = await fetch(
+          `${VITE_BACKEND_URL}/api/products/${productId}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Erro ao remover produto.");
         }
-      );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Erro ao remover produto.");
+        setProducts(products.filter((p) => p.id !== productId));
+      } catch (error) {
+        console.error("Erro ao remover produto:", error);
       }
-
-      setProducts(products.filter((p) => p.id !== productId));
-    } catch (error) {
-      console.error("Erro ao remover produto:", error);
     }
   };
 
@@ -154,7 +122,14 @@ const ProdutosDashboard: React.FC = () => {
       )}
       <BackButton />
       <h1>Produtos</h1>
-
+      {showAttentionMessage && (
+        <AttentionMessage
+          message="Tem certeza que deseja excluir esse produto?"
+          onClose={() => setShowAttentionMessage(false)}
+          onClick={() => setDeletar(false)}
+          buttonContent="Sim!"
+        />
+      )}
       {isAdding ? (
         <ProductForm
           product={{} as Product}

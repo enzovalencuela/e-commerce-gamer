@@ -5,9 +5,10 @@ import "./Dashboard.css";
 import BackButton from "../../components/BackButton/BackButton";
 import ProdutosDashboard from "./Produtos/Produtos";
 import Vendas from "./Vendas/Vendas";
+import { useProduct } from "../../contexts/ProductContext";
 
 const Dashboard: React.FC = () => {
-  const [produtos, setProdutos] = useState(false);
+  const { produtos, setProdutos } = useProduct();
   const [vendas, setVendas] = useState(false);
 
   return (

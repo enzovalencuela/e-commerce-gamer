@@ -5,12 +5,11 @@ export interface Product {
   img: string;
   preco: number;
   preco_original?: number;
-  parcelamento: string;
-  desconto?: number;
+  max_parcelas: number;
+  taxa_parcela: number;
   categoria: string;
   tags?: string[];
   cores?: string[];
-  tamanhos?: string[];
   avaliacoes?: number;
   mediaAvaliacao?: number;
   salesCount?: number;
