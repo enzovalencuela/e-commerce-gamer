@@ -42,6 +42,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
     }
   };
 
+
   return (
     <div className="card_container">
       {showErrorMessage && (
@@ -80,6 +81,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
           const isProductInCart = cart.some((item) => item.id === product.id);
           const desconto =
             100 - (product.preco * 100) / (product.preco_original || 1);
+          const parcela = product.preco + product.preco * (product.taxa_parcela / 100);
 
           return (
             <SwiperSlide key={index} className="product">
@@ -98,7 +100,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
                     R$ {product.preco} <span>Ou</span>
                   </h4>
                   <span>
-                    em até <b>{product.max_parcelas}</b>
+                    em até <b>{product.max_parcelas}x de R${parcela}</b>
                   </span>
                 </div>
                 {/* Lógica para o botão */}
