@@ -134,7 +134,7 @@ const ProductPage: React.FC = () => {
     );
   }
 
-  const parcela = product.preco + product.preco * product.taxa_parcela / 100;
+  const parcela = product.preco / product.max_parcelas * (1 + product.taxa_parcela / 100);
 
   return loading ? (
     <Loading />
