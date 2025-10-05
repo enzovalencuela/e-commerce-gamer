@@ -81,7 +81,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
           const isProductInCart = cart.some((item) => item.id === product.id);
           const desconto =
             100 - (product.preco * 100) / (product.preco_original || 1);
-          const parcela = product.preco + product.preco * (product.taxa_parcela / 100);
+          const parcela = product.preco / product.max_parcelas * (1 + product.taxa_parcela / 100);
 
           return (
             <SwiperSlide key={index} className="product">

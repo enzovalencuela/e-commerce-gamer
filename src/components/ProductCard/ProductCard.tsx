@@ -35,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
   };
   
-  const parcela = product.preco + product.preco * (product.taxa_parcela / 100);
+  const parcela = product.preco / product.max_parcelas * (1 + product.taxa_parcela / 100);
 
   return (
     <div onClick={() => handleProductClick()} className="product">
