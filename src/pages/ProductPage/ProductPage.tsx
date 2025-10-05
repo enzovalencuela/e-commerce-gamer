@@ -133,6 +133,9 @@ const ProductPage: React.FC = () => {
       </div>
     );
   }
+
+  const parcela = product.preco + product.preco * product.taxa_parcela / 100;
+
   return loading ? (
     <Loading />
   ) : (
@@ -155,7 +158,7 @@ const ProductPage: React.FC = () => {
               </span>
               <h2 className="current-price">Por R$ {product.preco}</h2>
               <span className="payment-info">
-                em até <b>{product.max_parcelas}</b>
+                em até <b>{product.max_parcelas}x de R${parcela.toFixed(2)}</b>
               </span>
             </div>
             <div>

@@ -59,7 +59,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             R$ {product.preco} <span>Ou</span>
           </h4>
           <span>
-            em até <b>{product.max_parcelas}x de R${parcela}</b>
+            em até <b>{product.max_parcelas}x de R${parcela.toFixed(2)}</b>
           </span>
         </div>
         {/* Lógica para o botão */}
