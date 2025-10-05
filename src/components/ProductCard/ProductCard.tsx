@@ -35,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
   };
   
-    const parcela = product.preco + product.preco * (product.taxa_parcela / 100);
+  const parcela = product.preco + product.preco * (product.taxa_parcela / 100);
 
   return (
     <div onClick={() => handleProductClick()} className="product">
@@ -59,7 +59,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             R$ {product.preco} <span>Ou</span>
           </h4>
           <span>
-            em até <b>{product.max_parcelas}x de R${parcela.toFixed(2)}</b>
+            em até <b>{product.max_parcelas}x de R${Number(parcela).toFixed(2)}</b>
           </span>
         </div>
         {/* Lógica para o botão */}
