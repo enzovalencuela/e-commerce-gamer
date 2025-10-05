@@ -158,7 +158,7 @@ const ProductPage: React.FC = () => {
               </span>
               <h2 className="current-price">Por R$ {product.preco}</h2>
               <span className="payment-info">
-                em até <b>{product.max_parcelas}x de R${parcela.toFixed(2)}</b>
+                em até <b>{product.max_parcelas}x de R${Number(parcela).toFixed(2)}</b>
               </span>
             </div>
             <div>
