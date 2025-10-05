@@ -88,7 +88,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
               <div>
                 {isReleasesSection && <span className="span-new">novo</span>}
                 {isPromotionSection && (
-                  <span className="off">{desconto.toFixed(2)}% off</span>
+                  <span className="off">{desconto.toFixed(0)}% off</span>
                 )}
                 <Link to={`/product/${product.id}`}>
                   <img src={product.img} alt={product.titulo} />
