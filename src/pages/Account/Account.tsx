@@ -24,8 +24,8 @@ const Account: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>();
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>();
   const [loading, setLoading] = useState(true);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [formSubmit, setFormSubmit] = useState(false);
@@ -67,7 +67,8 @@ const Account: React.FC = () => {
     }
 
     setLoading(true);
-    setPasswordError("");
+    setPasswordError(null);
+    setPasswordSuccess(null);
 
     try {
       const credential = EmailAuthProvider.credential(
@@ -149,6 +150,7 @@ const Account: React.FC = () => {
                   id="current-password"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
+                  required
                 />
               </div>
               <div className="form-group">
@@ -158,6 +160,7 @@ const Account: React.FC = () => {
                   id="new-password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  required
                 />
               </div>
               <div className="form-group">
@@ -169,6 +172,7 @@ const Account: React.FC = () => {
                   id="confirm-new-password"
                   value={confirmNewPassword}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  required
                 />
               </div>
               {passwordError && (
