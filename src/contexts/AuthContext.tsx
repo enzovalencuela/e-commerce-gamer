@@ -48,7 +48,7 @@ interface AuthContextType {
   paymentStatus: PaymentStatus | null;
   purchasedProducts: Product[];
   loading: boolean;
-  isAuthReady: boolean; // Indica se a autenticação inicial foi concluída
+  isAuthReady: boolean;
   setAtualizarQuery: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -90,7 +90,6 @@ interface PaymentStatus {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-// ** FIREBASE INITIALIZATION & AUTH STATE **
 let app: any;
 let auth: any;
 let db: any;
@@ -106,7 +105,6 @@ try {
   db = getFirestore(app);
 } catch (e) {
   console.error("Erro ao inicializar Firebase:", e);
-  // Em caso de falha na inicialização, as variáveis permanecerão undefined
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
