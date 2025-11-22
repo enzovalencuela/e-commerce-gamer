@@ -49,7 +49,6 @@ const Login: React.FC = () => {
         const data = await response.json();
         localStorage.setItem("jwt_token", firebaseIdToken);
         localStorage.setItem("loggedInUserEmail", data.email || user.email);
-        console.log("DATA USUÁRIO: ", data);
         login(data.user);
         navigate("/");
       } else {
@@ -93,7 +92,6 @@ const Login: React.FC = () => {
         const data = await response.json();
         localStorage.setItem("jwt_token", firebaseIdToken);
         localStorage.setItem("loggedInUserEmail", user.email || "");
-        console.log("DATA USUÁRIO: ", data);
         login(data.user);
         navigate("/");
       } else {
