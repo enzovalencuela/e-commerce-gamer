@@ -26,6 +26,7 @@ interface User {
   photoURL: string | null;
   providerId: any;
   uid: any;
+  user?: User;
 }
 
 interface AuthContextType {

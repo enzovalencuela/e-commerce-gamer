@@ -51,7 +51,11 @@ const MainNavbar: React.FC = () => {
           <p>
             Olá,
             <br />
-            {user ? user.name : "Faça login!"}
+            {user
+              ? user.name === null || undefined
+                ? user.user?.name
+                : user.name
+              : "Faça login!"}
           </p>
         </div>
       </div>

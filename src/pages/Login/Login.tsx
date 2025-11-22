@@ -92,7 +92,7 @@ const Login: React.FC = () => {
         const data = await response.json();
         localStorage.setItem("jwt_token", firebaseIdToken);
         localStorage.setItem("loggedInUserEmail", user.email || "");
-        login(data.user);
+        login(data);
         navigate("/");
       } else {
         console.error(
