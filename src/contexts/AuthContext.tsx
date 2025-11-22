@@ -6,24 +6,24 @@ import type { ReactNode } from "react";
 import type { Product } from "../types/Product";
 
 interface User {
-  id_usuario: number;
-  name: string;
-  email: string;
-  role: "admin" | "user";
+  id_usuario?: number;
+  name?: string;
+  email: string | null;
+  role?: "admin" | "user";
   emailVerified: boolean;
   isAnonymous: boolean;
   metadata: any;
   providerData: any;
   refreshToken: any;
-  tenantId: string;
+  tenantId: string | null;
   delete: any;
   getIdToken: any;
   getIdTokenResult: any;
   reload: any;
   toJSON: any;
-  displayName: string;
-  phoneNumber: string;
-  photoURL: string;
+  displayName: string | null;
+  phoneNumber: string | null;
+  photoURL: string | null;
   providerId: any;
   uid: any;
 }

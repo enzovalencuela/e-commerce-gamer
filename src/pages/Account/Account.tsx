@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import {
+  auth,
   reauthenticateWithCredential,
   EmailAuthProvider,
   updatePassword,
@@ -18,7 +19,7 @@ import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import SpanMessage from "../../components/SpanMessage/SpanMessage";
 
 const Account: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, login } = useAuth();
   const navigate = useNavigate();
 
   const [currentPassword, setCurrentPassword] = useState("");
@@ -30,6 +31,8 @@ const Account: React.FC = () => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [formSubmit, setFormSubmit] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
+
+  const VITE_BACKEND_URL2 = import.meta.env.VITE_BACKEND_URL2;
 
   const spanMessage = "Operação, realizada com sucesso.";
 
@@ -46,6 +49,45 @@ const Account: React.FC = () => {
     logout();
     navigate("/login");
   };
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        login(user);
+
+        try {
+          setLoading(true);
+          const idToken = await user.getIdToken();
+          const response = await fetch(`${VITE_BACKEND_URL2}/user-data`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${idToken}`,
+            },
+          });
+          const data = await response.json();
+          if (response.ok) {
+            login(data);
+          } else {
+            console.error(
+              "Erro ao buscar dados do usuário no backend:",
+              data.message
+            );
+            setPasswordError(
+              `Erro ao carregar dados do perfil: ${data.message}`
+            );
+          }
+        } catch (error) {
+          console.error("Erro na requisição de dados do usuário:", error);
+          setPasswordError("Erro de rede ao carregar dados do perfil.");
+        } finally {
+          setLoading(false);
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, [VITE_BACKEND_URL2, login]);
 
   const handleChangePassword = async (e: any) => {
     e.preventDefault();
