@@ -35,9 +35,11 @@ function App() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/dashboard");
-    } else {
+      console.log("Redirecionando para dashboard");
       navigate("/");
+    } else {
+      navigate("/login");
+      console.log("Redirecionando para login");
     }
   }, [isAuthenticated]);
 
