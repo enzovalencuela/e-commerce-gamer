@@ -18,8 +18,10 @@
   --primary: #009805;
   --lightprimary: #22b724;
   --secondary: #005cff;
-  --lightsecondary: #0044bb;
+  --lightSecondary: #0044bb;
   --terciary: #6220c1;
+  --admPrimary: rgb(38, 48, 93);
+  --admPrimaryHover: rgb(28, 38, 84);
 }
 
 button,

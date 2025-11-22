@@ -11,6 +11,7 @@ import SpanMessage from "../../../components/SpanMessage/SpanMessage";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useProduct } from "../../../contexts/ProductContext";
 import AttentionMessage from "../../../components/AttentionMessage/AttentionMessage";
+import { Link } from "react-router-dom";
 type NewProduct = Omit<Product, "id">;
 
 const navDepartments = [
@@ -186,7 +187,9 @@ const ProdutosDashboard: React.FC = () => {
             <div key={product.id} className="product-item">
               <div className="product-div-info">
                 <div className="product-info">
-                  <img src={product.img} alt={product.titulo} />
+                  <Link to={`/product/${product.id}`}>
+                    <img src={product.img} alt={product.titulo} />
+                  </Link>
                   <div className="product-text">
                     <h3>{product.titulo}</h3>
                     <p>R$ {product.preco}</p>

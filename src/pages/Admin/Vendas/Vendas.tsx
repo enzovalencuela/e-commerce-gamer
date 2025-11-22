@@ -216,7 +216,14 @@ function Vendas() {
             <h2>Por Semana</h2>
             <CustomChart
               type="bar"
-              labels={salesPerWeek.map((p) => p.week)}
+              labels={salesPerWeek.map((p) => {
+                const isoDate = p.week;
+                const dateObject = new Date(isoDate);
+                const shortFormat = new Intl.DateTimeFormat("pt-BR").format(
+                  dateObject
+                );
+                return shortFormat;
+              })}
               data={salesPerWeek.map((p) => p.total)}
             />
           </div>

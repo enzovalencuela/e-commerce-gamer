@@ -134,7 +134,8 @@ const ProductPage: React.FC = () => {
     );
   }
 
-  const parcela = product.preco / product.max_parcelas * (1 + product.taxa_parcela / 100);
+  const parcela =
+    (product.preco / product.max_parcelas) * (1 + product.taxa_parcela / 100);
 
   return loading ? (
     <Loading />
@@ -153,12 +154,17 @@ const ProductPage: React.FC = () => {
           <div className="product-details-section">
             <h1>{product.titulo}</h1>
             <div className="price-info">
-              <span className="original-price">
-                De R$ {product.preco_original}
-              </span>
+              {product.preco_original && (
+                <span className="original-price">
+                  De R$ {product.preco_original}
+                </span>
+              )}
               <h2 className="current-price">Por R$ {product.preco}</h2>
               <span className="payment-info">
-                em até <b>{product.max_parcelas}x de R${Number(parcela).toFixed(2)}</b>
+                em até{" "}
+                <b>
+                  {product.max_parcelas}x de R${Number(parcela).toFixed(2)}
+                </b>
               </span>
             </div>
             <div>
@@ -192,10 +198,11 @@ const ProductPage: React.FC = () => {
               {user?.role === "admin" && (
                 <button
                   className="add-to-cart-btn"
+                  style={{ backgroundColor: `var(--admPrimary)` }}
                   onClick={() => {
                     setProdutos(true);
                     navigate("/dashboard");
-                    setSearchQuery(product.titulo);
+                    setSearchQuery(product.id);
                   }}
                 >
                   Ver no Dashboard

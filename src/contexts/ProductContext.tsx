@@ -14,8 +14,10 @@ interface ProductContextType {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   products: Product[];
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
-  searchQuery: string | undefined;
-  setSearchQuery: React.Dispatch<React.SetStateAction<string | undefined>>;
+  searchQuery: string | number | undefined;
+  setSearchQuery: React.Dispatch<
+    React.SetStateAction<string | number | undefined>
+  >;
   searchProducts: boolean;
   setSearchProducts: React.Dispatch<React.SetStateAction<boolean>>;
   produtos: boolean;
@@ -33,7 +35,7 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({
 }) => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>();
+  const [searchQuery, setSearchQuery] = useState<string | number>();
   const [searchProducts, setSearchProducts] = useState(false);
   const [produtos, setProdutos] = useState(false);
 
@@ -55,16 +57,40 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({
 
     const handleCategoryClick = async () => {
       try {
-        const response = await fetch(
-          categoria.includes(searchQuery ?? "")
-            ? `${VITE_BACKEND_URL}/api/products/search?categoria=${searchQuery}`
-            : `${VITE_BACKEND_URL}/api/products/search?q=${searchQuery}`
-        );
+        let url: string;
+        let isSingleProductFetch = false;
+
+        if (typeof searchQuery === "string") {
+          if (categoria.includes(searchQuery)) {
+            url = `${VITE_BACKEND_URL}/api/products/search?categoria=${searchQuery}`;
+          } else {
+            url = `${VITE_BACKEND_URL}/api/products/search?q=${searchQuery}`;
+          }
+        } else if (
+          typeof searchQuery === "number" &&
+          searchQuery !== undefined
+        ) {
+          url = `${VITE_BACKEND_URL}/api/products/${searchQuery}`;
+          isSingleProductFetch = true;
+        } else {
+          return;
+        }
+
+        const response = await fetch(url, {
+          method: "GET",
+        });
 
         if (!response.ok) {
           throw new Error("Falha na busca de produtos.");
         }
-        const data = await response.json();
+        let data = await response.json();
+
+        if (isSingleProductFetch && data) {
+          data = [data];
+        } else if (isSingleProductFetch && !data) {
+          data = [];
+        }
+
         setProducts(data);
       } catch (error) {
         console.error("Erro ao buscar produtos:", error);
@@ -121,7 +147,7 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({
 export const useProduct = () => {
   const context = useContext(ProductContext);
   if (context === undefined) {
-    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
+    throw new Error("useProduct deve ser usado dentro de um ProductProvider");
   }
   return context;
 };

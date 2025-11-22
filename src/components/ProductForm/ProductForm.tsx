@@ -169,28 +169,30 @@ const ProductForm: React.FC<ProductFormProps> = ({
             />
           </label>
         </div>
-        <label>
-          Desconto: (%)
-          <input
-            type="number"
-            name="preco_original"
-            value={(
-              100 -
-              (formData.preco * 100) / (formData.preco_original || 1)
-            ).toFixed(2)}
-            onChange={(e) => {
-              const desconto = parseFloat(e.target.value);
-              const novoPreco =
-                formData.preco_original -
-                (formData.preco_original * desconto) / 100;
-              setFormData((prev) => ({
-                ...prev,
-                preco: parseFloat(novoPreco.toFixed(2)),
-              }));
-            }}
-            step="0.01"
-          />
-        </label>
+        {formData.preco_original > formData.preco && (
+          <label>
+            Desconto: (%)
+            <input
+              type="number"
+              name="preco_original"
+              value={(
+                100 -
+                (formData.preco * 100) / (formData.preco_original || 1)
+              ).toFixed(2)}
+              onChange={(e) => {
+                const desconto = parseFloat(e.target.value);
+                const novoPreco =
+                  formData.preco_original -
+                  (formData.preco_original * desconto) / 100;
+                setFormData((prev) => ({
+                  ...prev,
+                  preco: parseFloat(novoPreco.toFixed(2)),
+                }));
+              }}
+              step="0.01"
+            />
+          </label>
+        )}
         <div className="div-row-label">
           <label>
             Max. de parcelas:
