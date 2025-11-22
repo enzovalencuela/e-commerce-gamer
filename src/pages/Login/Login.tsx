@@ -109,8 +109,6 @@ const Login: React.FC = () => {
     }
   };
 
-  const url = `${BACKEND_URL}/google-login`;
-
   return (
     <AuthFormLayout
       title="Entrar"
@@ -150,7 +148,6 @@ const Login: React.FC = () => {
         />
       </form>
       <GoogleLoginButton onSuccess={handleGoogleLogin} />
-      <p>Tentando POST para URL: {url}</p>
     </AuthFormLayout>
   );
 };

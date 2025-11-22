@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import SearchBar from "../SearchBar/SearchBar";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import "./MainNavBar.css";
 import Menu from "../Menu/Menu";
@@ -15,7 +15,6 @@ const MainNavbar: React.FC = () => {
   const { user, cart } = useAuth();
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const qtdItemsCart = cart.length;
-  const navigate = useNavigate();
 
   return (
     <>
@@ -43,10 +42,7 @@ const MainNavbar: React.FC = () => {
             <span>{qtdItemsCart}</span>
           </div>
         </Link>
-        <div
-          onClick={user ? () => setMenu(!menu) : () => navigate("/login")}
-          className="div-user"
-        >
+        <div onClick={() => setMenu(!menu)} className="div-user">
           <FontAwesomeIcon className="user-icon" icon={faUser} />
           <p>
             Olá,
