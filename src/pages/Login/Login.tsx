@@ -49,8 +49,7 @@ const Login: React.FC = () => {
         const data = await response.json();
         localStorage.setItem("jwt_token", firebaseIdToken);
         localStorage.setItem("loggedInUserEmail", data.email || user.email);
-        console.log("DATA USUÁRIO: ", data);
-        login(data.user);
+        login(data);
         navigate("/");
       } else {
         const errorText = await response.text();
