@@ -2,7 +2,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebaseConfig";
+import { getAuth } from "firebase/auth"; // Importado getAuth para obter a instância
+// Importes de componentes não definidos:
+// import { auth } from "../../firebaseConfig"; // Assumindo que esta linha será substituída pelo getAuth
 import Button from "../../components/Button/Button";
 import GoogleLoginButton from "../../components/ButtonGoogle/ButtonGoogle";
 import AuthFormLayout from "../../components/AuthFormLayout/AuthFormLayout";
@@ -16,11 +18,22 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  let authInstance: any;
+  try {
+    authInstance = getAuth();
+  } catch (e: any) {
+    console.warn(
+      "Não foi possível obter a instância do Firebase Auth globalmente. Certifique-se de que o Firebase está inicializado.",
+      e
+    );
+  }
+  const auth = authInstance;
+
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL2;
 
   const handleEmailLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (isLoading) return;
+    if (isLoading || !auth) return;
     setError("");
     setIsLoading(true);
 
@@ -47,8 +60,10 @@ const Login: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("jwt_token", firebaseIdToken);
-        localStorage.setItem("loggedInUserEmail", data.email || user.email);
+        // ** REMOVIDO: localStorage.setItem("jwt_token", firebaseIdToken); **
+        // ** REMOVIDO: localStorage.setItem("loggedInUserEmail", data.email || user.email); **
+
+        // Chamada a 'login' que irá sincronizar os dados do backend com o Firestore e o estado
         login(data);
         navigate("/");
       } else {
@@ -64,6 +79,7 @@ const Login: React.FC = () => {
       }
     } catch (err) {
       console.error("Erro ao fazer login com e-mail/senha (Firebase)", err);
+      setError("Falha no login. Verifique seu e-mail e senha.");
     } finally {
       setIsLoading(false);
     }
@@ -90,8 +106,10 @@ const Login: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("jwt_token", firebaseIdToken);
-        localStorage.setItem("loggedInUserEmail", user.email || "");
+        // ** REMOVIDO: localStorage.setItem("jwt_token", firebaseIdToken); **
+        // ** REMOVIDO: localStorage.setItem("loggedInUserEmail", user.email || ""); **
+
+        // Chamada a 'login' que irá sincronizar os dados do backend com o Firestore e o estado
         login(data.user);
         navigate("/");
       } else {

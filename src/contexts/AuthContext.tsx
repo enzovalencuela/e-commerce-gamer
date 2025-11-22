@@ -1,39 +1,46 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/contexts/AuthContext.tsx
 
 import React, { createContext, useState, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { Product } from "../types/Product";
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  signInAnonymously,
+  signInWithCustomToken,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
+import type { User as FirebaseAuthUser } from "firebase/auth";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  setLogLevel,
+} from "firebase/firestore";
 
-interface User {
+setLogLevel("debug");
+
+declare const __app_id: string;
+declare const __firebase_config: string;
+declare const __initial_auth_token: string | undefined;
+
+interface UserData {
   id_usuario?: number;
-  name?: string;
-  email: string | null;
+  name?: string | null;
   role?: "admin" | "user";
-  emailVerified: boolean;
-  isAnonymous: boolean;
-  metadata: any;
-  providerData: any;
-  refreshToken: any;
-  tenantId: string | null;
-  delete: any;
-  getIdToken: any;
-  getIdTokenResult: any;
-  reload: any;
-  toJSON: any;
-  displayName: string | null;
-  phoneNumber: string | null;
-  photoURL: string | null;
-  providerId: any;
-  uid: any;
-  user?: User;
 }
+
+type User = FirebaseAuthUser & UserData;
 
 interface AuthContextType {
   user: User | null | undefined;
   cart: Product[];
-  login: (userData: User) => void;
-  logout: () => void;
+  login: (userData: UserData) => void;
+  logout: () => Promise<void>;
   addToCart: (item: Product) => Promise<"ok" | "error">;
   removeFromCart: (itemId: number) => Promise<void>;
   selectedItems: number[];
@@ -41,6 +48,7 @@ interface AuthContextType {
   paymentStatus: PaymentStatus | null;
   purchasedProducts: Product[];
   loading: boolean;
+  isAuthReady: boolean; // Indica se a autenticação inicial foi concluída
   setAtualizarQuery: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -82,74 +90,216 @@ interface PaymentStatus {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
+// ** FIREBASE INITIALIZATION & AUTH STATE **
+let app: any;
+let auth: any;
+let db: any;
+let appId: string;
+
+try {
+  const firebaseConfig = JSON.parse(
+    typeof __firebase_config !== "undefined" ? __firebase_config : "{}"
+  );
+  appId = typeof __app_id !== "undefined" ? __app_id : "default-app-id";
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+} catch (e) {
+  console.error("Erro ao inicializar Firebase:", e);
+  // Em caso de falha na inicialização, as variáveis permanecerão undefined
+}
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthReady, setIsAuthReady] = useState(false); // Novo estado para prontidão da autenticação
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus | null>(
     null
   );
   const [purchasedProducts, setPurchasedProducts] = useState<Product[]>([]);
-  const [paymentId, setPaymentId] = useState<URLSearchParams>();
+  const [paymentId, setPaymentId] = useState<URLSearchParams | null>(null);
   const [atualizarQuery, setAtualizarQuery] = useState(false);
-  const [user, setUser] = useState<User | null | undefined>(() => {
-    try {
-      const storedUser = localStorage.getItem("user");
-      return storedUser ? JSON.parse(storedUser) : null;
-    } catch (error) {
-      console.error("Erro ao carregar usuário do LocalStorage:", error);
-      return null;
-    }
-  });
+  const [user, setUser] = useState<User | null | undefined>(undefined); // Começa como undefined
 
   const [cart, setCart] = useState<Product[]>([]);
 
+  // 1. **AUTENTICAÇÃO INICIAL E LISTENER DE ESTADO**
   useEffect(() => {
-    const fetchCart = async () => {
-      setLoading(true);
-      if (user) {
-        try {
-          const response = await fetch(
-            `${VITE_BACKEND_URL}/api/cart/${user.id_usuario}`
-          );
-          if (!response.ok) {
-            throw new Error("Erro ao buscar o carrinho");
-          }
-          const productIds: number[] = await response.json();
+    if (!auth || !db) return; // Se a inicialização falhou
 
-          const fetchedItems: Product[] = [];
-          for (const productId of productIds) {
-            const productResponse = await fetch(
-              `${VITE_BACKEND_URL}/api/products/${productId}`
-            );
-            const productData = await productResponse.json();
-            fetchedItems.push(productData);
-          }
-          setCart(fetchedItems);
-          setLoading(false);
-        } catch (error) {
-          console.error("Erro ao buscar carrinho:", error);
-          setLoading(false);
+    const signInAndListen = async () => {
+      try {
+        // Tenta logar com token customizado ou anonimamente
+        if (typeof __initial_auth_token !== "undefined") {
+          await signInWithCustomToken(auth, __initial_auth_token);
+          console.debug("Autenticação inicial: Custom Token usado.");
+        } else {
+          await signInAnonymously(auth);
+          console.debug("Autenticação inicial: Anônima usada.");
         }
+      } catch (error) {
+        console.error("Erro na autenticação inicial:", error);
       }
-    };
-    fetchCart();
-  }, [user]);
 
-  const login = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+      // Listener de estado de autenticação
+      const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+        if (firebaseUser) {
+          const userId = firebaseUser.uid;
+          console.debug("Usuário Firebase Autenticado:", userId);
+
+          const userDocRef = doc(
+            db,
+            "artifacts",
+            appId,
+            "users",
+            userId,
+            "user_data",
+            "profile"
+          );
+
+          const docSnap = await getDoc(userDocRef);
+          let userDataFromFirestore: UserData = {};
+
+          if (docSnap.exists()) {
+            userDataFromFirestore = docSnap.data() as UserData;
+            console.debug(
+              "Perfil do Firestore carregado:",
+              userDataFromFirestore
+            );
+          } else {
+            console.debug(
+              "Perfil do Firestore não encontrado. Usando dados básicos do Auth."
+            );
+          }
+
+          const combinedUser: User = {
+            ...firebaseUser,
+            ...userDataFromFirestore,
+          };
+          setUser(combinedUser);
+        } else {
+          setUser(null);
+          console.debug("Usuário Firebase Deslogado/Não Autenticado.");
+        }
+
+        if (!isAuthReady) {
+          setIsAuthReady(true);
+        }
+        setLoading(false);
+      });
+
+      return () => unsubscribe();
+    };
+
+    signInAndListen();
+  }, []);
+
+  const syncUserToFirestore = async (
+    firebaseUser: FirebaseAuthUser,
+    backendData: UserData
+  ) => {
+    const userId = firebaseUser.uid;
+    const userDocRef = doc(
+      db,
+      "artifacts",
+      appId,
+      "users",
+      userId,
+      "user_data",
+      "profile"
+    );
+
+    const dataToSave: UserData = {
+      name: backendData.name || firebaseUser.displayName,
+      id_usuario: backendData.id_usuario,
+      role: backendData.role,
+    };
+
+    try {
+      await setDoc(userDocRef, dataToSave, { merge: true });
+      console.debug("Dados do usuário sincronizados com o Firestore.");
+      return dataToSave;
+    } catch (e) {
+      console.error("Erro ao salvar dados no Firestore:", e);
+      return {};
+    }
   };
 
-  const logout = () => {
+  const login = async (backendData: UserData) => {
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser) {
+      console.error(
+        "Tentativa de login sem usuário autenticado no Firebase Auth."
+      );
+      return;
+    }
+
+    // Chama a sincronização para o Firestore
+    const syncedData = await syncUserToFirestore(firebaseUser, backendData);
+
+    // Atualiza o estado local do contexto
+    const combinedUser: User = { ...firebaseUser, ...syncedData };
+    setUser(combinedUser);
+  };
+
+  const logout = async () => {
+    if (auth) {
+      try {
+        await signOut(auth);
+        console.debug("Usuário deslogado via Firebase signOut.");
+      } catch (error) {
+        console.error("Erro ao fazer signOut:", error);
+      }
+    }
     setUser(null);
-    localStorage.removeItem("user");
     setCart([]);
   };
 
+  // 4. Lógica de Carregamento de Carrinho (Dependente de isAuthReady e user.uid)
+  useEffect(() => {
+    const fetchCart = async () => {
+      // Garante que a autenticação terminou e que temos um usuário
+      if (!isAuthReady || !user?.uid || !user.id_usuario) {
+        // Se não houver usuário ou a autenticação não estiver pronta, o carrinho está vazio.
+        setCart([]);
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+
+      try {
+        // Esta lógica depende do seu Backend REST, que é mantido.
+        const response = await fetch(
+          `${VITE_BACKEND_URL}/api/cart/${user.id_usuario}`
+        );
+        if (!response.ok) {
+          throw new Error("Erro ao buscar o carrinho");
+        }
+        const productIds: number[] = await response.json();
+
+        const fetchedItems: Product[] = [];
+        // Melhorar: fazer uma única requisição para produtos se o backend suportar
+        for (const productId of productIds) {
+          const productResponse = await fetch(
+            `${VITE_BACKEND_URL}/api/products/${productId}`
+          );
+          const productData = await productResponse.json();
+          fetchedItems.push(productData);
+        }
+        setCart(fetchedItems);
+      } catch (error) {
+        console.error("Erro ao buscar carrinho:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCart();
+  }, [user, isAuthReady]); // Depende do objeto user e da prontidão da auth
+
   const addToCart = async (item: Product) => {
-    if (!user) {
+    if (!user || !user.id_usuario) {
       console.error(
-        "Usuário não logado. Não é possível adicionar ao carrinho."
+        "Usuário não logado ou sem ID. Não é possível adicionar ao carrinho."
       );
       return "error";
     }
@@ -173,7 +323,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const removeFromCart = async (itemId: number) => {
-    if (!user) return;
+    if (!user || !user.id_usuario) return;
     try {
       await fetch(`${VITE_BACKEND_URL}/api/cart/remove`, {
         method: "POST",
@@ -189,9 +339,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  if (!paymentId) {
+  // Lógica para PaymentId
+  useEffect(() => {
     setPaymentId(new URLSearchParams(window.location.search));
-  }
+  }, []);
 
   useEffect(() => {
     if (atualizarQuery) {
@@ -200,9 +351,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setAtualizarQuery(false);
   }, [atualizarQuery]);
 
+  // Lógica de Status de Pagamento (Dependente de isAuthReady)
   useEffect(() => {
-    setLoading(true);
+    if (!isAuthReady || !user || !paymentId) return;
 
+    setLoading(true);
     const fetchPaymentStatus = async () => {
       try {
         const response = await fetch(
@@ -226,8 +379,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     };
     fetchPaymentStatus();
-  }, [user, paymentId]);
+  }, [user, paymentId, isAuthReady]);
 
+  // Lógica de Produtos Comprados
   useEffect(() => {
     setLoading(true);
     const fetchPurchasedProducts = async () => {
@@ -268,7 +422,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setSelectedItems,
     paymentStatus,
     purchasedProducts,
-    loading,
+    loading: loading || !isAuthReady, // Considera o app como 'loading' até a autenticação inicial terminar
+    isAuthReady,
     setAtualizarQuery,
   };
 
