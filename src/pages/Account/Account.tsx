@@ -49,32 +49,37 @@ const Account: React.FC = () => {
 
   const handleChangePassword = async (e: any) => {
     e.preventDefault();
-    if (!user) {
-      setPasswordError("Usuário não logado.");
+    setLoading(true);
+    setPasswordError(null);
+    setPasswordSuccess(null);
+
+    if (!user || !user.email) {
+      setPasswordError("Usuário não logado ou e-mail indisponível.");
+      setLoading(false);
       return;
     }
     if (!currentPassword || !newPassword || !confirmNewPassword) {
       setPasswordError("Por favor, preencha todos os campos de senha.");
+      setLoading(false);
       return;
     }
     if (newPassword !== confirmNewPassword) {
       setPasswordError("A nova senha e a confirmação não coincidem.");
+      setLoading(false);
       return;
     }
     if (newPassword.length < 6) {
       setPasswordError("A nova senha deve ter pelo menos 6 caracteres.");
+      setLoading(false);
       return;
     }
-
-    setLoading(true);
-    setPasswordError(null);
-    setPasswordSuccess(null);
 
     try {
       const credential = EmailAuthProvider.credential(
         user.email,
         currentPassword
       );
+
       await reauthenticateWithCredential(user, credential);
 
       await updatePassword(user, newPassword);
@@ -89,7 +94,10 @@ const Account: React.FC = () => {
         setPasswordError(
           "Sua sessão expirou. Por favor, faça login novamente para mudar sua senha."
         );
-      } else if (error.code === "auth/invalid-credential") {
+      } else if (
+        error.code === "auth/invalid-credential" ||
+        error.code === "auth/wrong-password"
+      ) {
         setPasswordError("Senha atual incorreta.");
       } else if (error.code === "auth/weak-password") {
         setPasswordError(
