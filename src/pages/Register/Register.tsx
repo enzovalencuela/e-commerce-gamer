@@ -8,6 +8,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 import Button from "../../components/Button/Button";
 import Loading from "../../components/Loading/Loading";
+import { useAuth } from "../../contexts/AuthContext";
 
 const VITE_BACKEND_URL2 = import.meta.env.VITE_BACKEND_URL2;
 
@@ -17,6 +18,7 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -46,8 +48,10 @@ const Register: React.FC = () => {
         });
 
         if (response.ok) {
+          const data = await response.json();
           localStorage.setItem("jwt_token", firebaseIdToken);
           localStorage.setItem("loggedInUserEmail", email);
+          login(data.user);
           navigate("/");
         }
       }
