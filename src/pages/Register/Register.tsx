@@ -1,58 +1,74 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/pages/Register.tsx
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthFormLayout from "../../components/AuthFormLayout/AuthFormLayout";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
 import Button from "../../components/Button/Button";
+import Loading from "../../components/Loading/Loading";
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const VITE_BACKEND_URL2 = import.meta.env.VITE_BACKEND_URL2;
 
 const Register: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!name || !email || !password) {
-      setError("Todos os campos são obrigatórios.");
-      return;
-    }
-    if (password.length < 8) {
-      setError("A senha deve ter pelo menos 8 caracteres.");
-      return;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError("Por favor, insira um e-mail válido.");
-      return;
-    }
-
-    setError("");
+    setLoading(true);
 
     try {
-      const response = await fetch(`${VITE_BACKEND_URL}/api/user/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Erro ao cadastrar.");
+      if (user) {
+        const firebaseIdToken = await user.getIdToken();
+        const response = await fetch(`${VITE_BACKEND_URL2}/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${firebaseIdToken}`,
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+          }),
+        });
+
+        if (response.ok) {
+          localStorage.setItem("jwt_token", firebaseIdToken);
+          localStorage.setItem("loggedInUserEmail", email);
+          navigate("/");
+        }
       }
+    } catch (error: any) {
+      console.error("Erro no cadastro (Firebase ou backend):", error);
 
-      alert("Cadastro realizado com sucesso! Faça login para continuar.");
-      navigate("/login");
-    } catch (err) {
-      setError((err as Error).message);
+      if (error.code === "auth/email-already-in-use") {
+        setError("Este e-mail já está em uso.");
+      } else if (error.code === "auth/weak-password") {
+        setError("A senha deve ter pelo menos 6 caracteres.");
+      } else {
+        setError("Erro ao cadastrar. Tente novamente.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <AuthFormLayout
       title="Cadastre-se"
       welcomeTitle="Olá, amigo!"
