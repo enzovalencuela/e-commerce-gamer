@@ -6,6 +6,7 @@ import { auth } from "../../firebaseConfig";
 import Button from "../../components/Button/Button";
 import GoogleLoginButton from "../../components/ButtonGoogle/ButtonGoogle";
 import AuthFormLayout from "../../components/AuthFormLayout/AuthFormLayout";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -13,6 +14,7 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL2;
 
@@ -47,7 +49,8 @@ const Login: React.FC = () => {
         const data = await response.json();
         localStorage.setItem("jwt_token", firebaseIdToken);
         localStorage.setItem("loggedInUserEmail", data.email || user.email);
-
+        console.log("DATA USUÁRIO: ", data);
+        login(data.user);
         navigate("/");
       } else {
         const errorText = await response.text();
