@@ -1,25 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/pages/Login.tsx
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
 import Button from "../../components/Button/Button";
 import GoogleLoginButton from "../../components/ButtonGoogle/ButtonGoogle";
 import AuthFormLayout from "../../components/AuthFormLayout/AuthFormLayout";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebaseConfig";
 
-const NEXT_PUBLIC_BACKEND_URL = import.meta.env.NEXT_PUBLIC_BACKEND_URL;
+const BACKEND_URL = import.meta.env.NEXT_PUBLIC_BACKEND_URL;
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const handleEmailLogin = async (event: any) => {
+  const handleEmailLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isLoading) return;
     setError("");
+    setIsLoading(true);
 
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -29,87 +30,82 @@ const Login: React.FC = () => {
       );
       const user = userCredential.user;
 
-      if (user) {
-        const firebaseIdToken = await user.getIdToken();
-        const response = await fetch(`${NEXT_PUBLIC_BACKEND_URL}/user-data`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${firebaseIdToken}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          localStorage.setItem("jwt_token", firebaseIdToken);
-          localStorage.setItem("loggedInUserEmail", data.email);
-
-          navigate("/");
-        } else {
-          const errorText = await response.text();
-          console.error(
-            "Erro do backend após login Firebase:",
-            response.status,
-            errorText
-          );
-          setError(
-            "Erro ao obter dados do usuário no backend. Tente novamente."
-          );
-        }
+      if (!user) {
+        throw new Error("Usuário não encontrado após login com e-mail/senha.");
       }
-    } catch (error: any) {
-      console.error("Erro ao fazer login com e-mail/senha (Firebase):", error);
-      if (
-        error.code === "auth/user-not-found" ||
-        error.code === "auth/wrong-password"
-      ) {
-        setError("E-mail ou senha inválidos.");
-      } else if (error.code === "auth/too-many-requests") {
-        setError("Muitas tentativas de login. Tente novamente mais tarde.");
+
+      const firebaseIdToken = await user.getIdToken();
+      const response = await fetch(`${BACKEND_URL}/user-data`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${firebaseIdToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("jwt_token", firebaseIdToken);
+        localStorage.setItem("loggedInUserEmail", data.email || user.email);
+
+        navigate("/");
       } else {
-        setError("Erro ao fazer login. Verifique seu e-mail e senha.");
+        const errorText = await response.text();
+        console.error(
+          "Erro do backend após login Firebase:",
+          response.status,
+          errorText
+        );
+        setError(
+          "Erro ao sincronizar dados do usuário no backend. Tente novamente."
+        );
       }
+    } catch (err) {
+      console.error("Erro ao fazer login com e-mail/senha (Firebase)", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = async (user: any) => {
-    if (user) {
-      const firebaseIdToken = await user.getIdToken();
-      try {
-        const response = await fetch(
-          `${NEXT_PUBLIC_BACKEND_URL}/google-login`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${firebaseIdToken}`,
-            },
-            body: JSON.stringify({
-              name: user.displayName,
-              email: user.email,
-            }),
-          }
-        );
+    if (isLoading || !user) return;
+    setIsLoading(true);
 
-        if (response.ok) {
-          localStorage.setItem("jwt_token", firebaseIdToken);
-          localStorage.setItem("loggedInUserEmail", user.email);
-          navigate("/");
-        } else {
-          console.error(
-            "Erro na resposta do backend ao sincronizar dados do Google:",
-            response.status,
-            await response.text()
-          );
-          setError("Erro ao sincronizar dados do Google com o servidor.");
-        }
-      } catch (error) {
+    try {
+      const firebaseIdToken = await user.getIdToken();
+
+      const response = await fetch(`${BACKEND_URL}/google-login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${firebaseIdToken}`,
+        },
+        body: JSON.stringify({
+          name: user.displayName,
+          email: user.email,
+        }),
+      });
+
+      if (response.ok) {
+        localStorage.setItem("jwt_token", firebaseIdToken);
+        localStorage.setItem("loggedInUserEmail", user.email || "");
+        navigate("/");
+      } else {
         console.error(
-          "Erro ao fazer requisição para sincronização do Google (CATCH):",
-          error
+          "Erro na resposta do backend ao sincronizar dados do Google:",
+          response.status,
+          await response.text()
         );
-        setError("Erro de conexão ao sincronizar com o servidor.");
+        setError("Erro ao sincronizar dados do Google com o servidor.");
       }
+    } catch (error) {
+      console.error(
+        "Erro ao fazer requisição para sincronização do Google (CATCH):",
+        error
+      );
+      setError("Erro de conexão ao sincronizar com o servidor.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -146,7 +142,10 @@ const Login: React.FC = () => {
           />
         </div>
         {error && <p className="error-message">{error}</p>}
-        <Button child="Entrar" />
+        <Button
+          child={isLoading ? "Carregando..." : "Entrar"}
+          disabled={isLoading}
+        />
       </form>
       <GoogleLoginButton onSuccess={handleGoogleLogin} />
     </AuthFormLayout>
