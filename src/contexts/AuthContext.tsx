@@ -29,8 +29,12 @@ interface User {
   user?: User;
 }
 
+interface Data {
+  user: User;
+}
+
 interface AuthContextType {
-  user: User | null;
+  user: User | null | undefined;
   cart: Product[];
   login: (userData: User) => void;
   logout: () => void;
@@ -91,7 +95,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [purchasedProducts, setPurchasedProducts] = useState<Product[]>([]);
   const [paymentId, setPaymentId] = useState<URLSearchParams>();
   const [atualizarQuery, setAtualizarQuery] = useState(false);
-  const [user, setUser] = useState<User | null>(() => {
+  const [user, setUser] = useState<User | null | undefined>(() => {
     try {
       const storedUser = localStorage.getItem("user");
       return storedUser ? JSON.parse(storedUser) : null;
@@ -135,9 +139,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     fetchCart();
   }, [user]);
 
-  const login = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+  const login = (userData: User | Data) => {
+    if ("name" in userData) {
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+    } else {
+      setUser(userData.user);
+      localStorage.setItem("user", JSON.stringify(userData.user));
+    }
   };
 
   const logout = () => {

@@ -51,7 +51,7 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
       if (!response.ok) {
         throw new Error(data.message || "Erro ao entrar com a conta teste.");
       }
-      login(data.user);
+      login(data);
       navigate("/");
     } catch (error) {
       console.error("Erro no login de teste:", error);
