@@ -51,6 +51,7 @@ const Register: React.FC = () => {
           const data = await response.json();
           localStorage.setItem("jwt_token", firebaseIdToken);
           localStorage.setItem("loggedInUserEmail", email);
+          console.log("DATA USUÁRIO: ", data);
           login(data.user);
           navigate("/");
         }
