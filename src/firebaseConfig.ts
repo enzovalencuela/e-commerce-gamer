@@ -11,10 +11,13 @@ import {
   updatePassword,
   updateProfile,
 } from "firebase/auth";
+
 import { getStorage } from "firebase/storage";
 
 export const auth = getAuth();
+
 export const googleAuthProvider = new GoogleAuthProvider();
+
 export const storage = getStorage();
 
 export {

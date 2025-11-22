@@ -24,8 +24,6 @@ import {
 
 setLogLevel("debug");
 
-declare const __app_id: string;
-declare const __firebase_config: string;
 declare const __initial_auth_token: string | undefined;
 
 interface UserData {
@@ -96,10 +94,20 @@ let db: any;
 let appId: string;
 
 try {
-  const firebaseConfig = JSON.parse(
-    typeof __firebase_config !== "undefined" ? __firebase_config : "{}"
-  );
-  appId = typeof __app_id !== "undefined" ? __app_id : "default-app-id";
+  const firebaseConfig = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  };
+  appId = import.meta.env.VITE_FIREBASE_APP_ID || "default-app-id";
+  if (!firebaseConfig.apiKey || firebaseConfig.apiKey.length < 10) {
+    throw new Error(
+      "VITE_FIREBASE_API_KEY não está configurada ou é inválida."
+    );
+  }
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
@@ -110,24 +118,22 @@ try {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAuthReady, setIsAuthReady] = useState(false); // Novo estado para prontidão da autenticação
+  const [isAuthReady, setIsAuthReady] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus | null>(
     null
   );
   const [purchasedProducts, setPurchasedProducts] = useState<Product[]>([]);
   const [paymentId, setPaymentId] = useState<URLSearchParams | null>(null);
   const [atualizarQuery, setAtualizarQuery] = useState(false);
-  const [user, setUser] = useState<User | null | undefined>(undefined); // Começa como undefined
+  const [user, setUser] = useState<User | null | undefined>(undefined);
 
   const [cart, setCart] = useState<Product[]>([]);
 
-  // 1. **AUTENTICAÇÃO INICIAL E LISTENER DE ESTADO**
   useEffect(() => {
-    if (!auth || !db) return; // Se a inicialização falhou
+    if (!auth || !db) return;
 
     const signInAndListen = async () => {
       try {
-        // Tenta logar com token customizado ou anonimamente
         if (typeof __initial_auth_token !== "undefined") {
           await signInWithCustomToken(auth, __initial_auth_token);
           console.debug("Autenticação inicial: Custom Token usado.");
@@ -139,7 +145,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.error("Erro na autenticação inicial:", error);
       }
 
-      // Listener de estado de autenticação
       const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
           const userId = firebaseUser.uid;
