@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/pages/Account.tsx
 
@@ -87,7 +88,7 @@ const Account: React.FC = () => {
     });
 
     return () => unsubscribe();
-  }, [VITE_BACKEND_URL2, login]);
+  }, []);
 
   const handleChangePassword = async (e: any) => {
     e.preventDefault();
