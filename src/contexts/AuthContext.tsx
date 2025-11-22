@@ -29,10 +29,6 @@ interface User {
   user?: User;
 }
 
-interface Data {
-  user: User;
-}
-
 interface AuthContextType {
   user: User | null | undefined;
   cart: Product[];
@@ -139,14 +135,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     fetchCart();
   }, [user]);
 
-  const login = (userData: User | Data) => {
-    if ("name" in userData) {
-      setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData));
-    } else {
-      setUser(userData.user);
-      localStorage.setItem("user", JSON.stringify(userData.user));
-    }
+  const login = (userData: User) => {
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const logout = () => {
