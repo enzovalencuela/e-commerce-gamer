@@ -90,8 +90,11 @@ const Login: React.FC = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
         localStorage.setItem("jwt_token", firebaseIdToken);
         localStorage.setItem("loggedInUserEmail", user.email || "");
+        console.log("DATA USUÁRIO: ", data);
+        login(data.user);
         navigate("/");
       } else {
         console.error(
