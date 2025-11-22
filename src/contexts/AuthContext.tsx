@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import type { Product } from "../types/Product";
 
 interface User {
-  id: number;
+  id_usuario: number;
   name: string;
   email: string;
   role: "admin" | "user";
@@ -91,7 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (user) {
         try {
           const response = await fetch(
-            `${VITE_BACKEND_URL}/api/cart/${user.id}`
+            `${VITE_BACKEND_URL}/api/cart/${user.id_usuario}`
           );
           if (!response.ok) {
             throw new Error("Erro ao buscar o carrinho");
@@ -144,7 +144,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await fetch(`${VITE_BACKEND_URL}/api/cart/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, productId: item.id }),
+        body: JSON.stringify({ userId: user.id_usuario, productId: item.id }),
       });
       setCart((prevCart) => [...prevCart, item]);
       return "ok";
@@ -160,7 +160,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await fetch(`${VITE_BACKEND_URL}/api/cart/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, productId: itemId }),
+        body: JSON.stringify({ userId: user.id_usuario, productId: itemId }),
       });
       setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
       setSelectedItems((prevSelected) =>
