@@ -9,7 +9,7 @@ import AuthFormLayout from "../../components/AuthFormLayout/AuthFormLayout";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const NEXT_PUBLIC_BACKEND_URL = import.meta.env.NEXT_PUBLIC_BACKEND_URL;
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -31,16 +31,13 @@ const Login: React.FC = () => {
 
       if (user) {
         const firebaseIdToken = await user.getIdToken();
-        const response = await fetch(
-          `${VITE_BACKEND_URL}/api/user/emaillogin`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${firebaseIdToken}`,
-            },
-          }
-        );
+        const response = await fetch(`${NEXT_PUBLIC_BACKEND_URL}/user-data`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${firebaseIdToken}`,
+          },
+        });
 
         if (response.ok) {
           const data = await response.json();
@@ -80,7 +77,7 @@ const Login: React.FC = () => {
       const firebaseIdToken = await user.getIdToken();
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL}/api/user/googlelogin`,
+          `${NEXT_PUBLIC_BACKEND_URL}/google-login`,
           {
             method: "POST",
             headers: {
