@@ -41,7 +41,7 @@ function MinhasCompras() {
     if (!user) return;
 
     const fetchCompras = async () => {
-      console.log("ID ENVIADO: ", user.id);
+      console.log("DADOS USUÁRIO", user);
       try {
         const response = await fetch(
           `${VITE_BACKEND_URL}/api/user/payments?id=${user.id}`,
