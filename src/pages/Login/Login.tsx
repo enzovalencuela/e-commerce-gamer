@@ -73,6 +73,8 @@ const Login: React.FC = () => {
 
     try {
       const firebaseIdToken = await user.getIdToken();
+      const url = `${BACKEND_URL}/google-login`;
+      console.log("Tentando POST para URL:", url);
 
       const response = await fetch(`${BACKEND_URL}/google-login`, {
         method: "POST",
