@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/contexts/AuthContext.tsx
 
 import React, { createContext, useState, useContext, useEffect } from "react";
@@ -9,6 +10,22 @@ interface User {
   name: string;
   email: string;
   role: "admin" | "user";
+  emailVerified: boolean;
+  isAnonymous: boolean;
+  metadata: any;
+  providerData: any;
+  refreshToken: any;
+  tenantId: string;
+  delete: any;
+  getIdToken: any;
+  getIdTokenResult: any;
+  reload: any;
+  toJSON: any;
+  displayName: string;
+  phoneNumber: string;
+  photoURL: string;
+  providerId: any;
+  uid: any;
 }
 
 interface AuthContextType {

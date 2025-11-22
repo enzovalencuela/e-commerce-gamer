@@ -1,7 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/pages/Account.tsx
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import {
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  updatePassword,
+} from "../../firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button/Button";
 import "./Account.css";
@@ -10,8 +16,6 @@ import Loading from "../../components/Loading/Loading";
 import FormDados from "../../components/FormDados/FormDados";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import SpanMessage from "../../components/SpanMessage/SpanMessage";
-
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Account: React.FC = () => {
   const { user, logout } = useAuth();
@@ -43,52 +47,60 @@ const Account: React.FC = () => {
     navigate("/login");
   };
 
-  const handleChangePassword = async (e: React.FormEvent) => {
+  const handleChangePassword = async (e: any) => {
     e.preventDefault();
-    setPasswordError("");
-    setPasswordSuccess("");
-
+    if (!user) {
+      setPasswordError("Usuário não logado.");
+      return;
+    }
     if (!currentPassword || !newPassword || !confirmNewPassword) {
-      setPasswordError("Todos os campos são obrigatórios.");
+      setPasswordError("Por favor, preencha todos os campos de senha.");
       return;
     }
-
     if (newPassword !== confirmNewPassword) {
-      setPasswordError("As novas senhas não coincidem.");
+      setPasswordError("A nova senha e a confirmação não coincidem.");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordError("A nova senha deve ter pelo menos 6 caracteres.");
       return;
     }
 
-    if (newPassword.length < 8) {
-      setPasswordError("A nova senha deve ter pelo menos 8 caracteres.");
-      return;
-    }
+    setLoading(true);
+    setPasswordError("");
 
     try {
-      const response = await fetch(
-        `${VITE_BACKEND_URL}/api/user/change-password`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: user?.id_usuario,
-            currentPassword,
-            newPassword,
-          }),
-        }
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword
       );
+      await reauthenticateWithCredential(user, credential);
 
-      const data = await response.json();
+      await updatePassword(user, newPassword);
 
-      if (!response.ok) {
-        throw new Error(data.message || "Erro ao alterar a senha.");
-      }
-
-      setPasswordSuccess("Senha alterada com sucesso!");
-      setCurrentPassword("");
+      setPasswordSuccess("Senha atualizada com sucesso!");
       setNewPassword("");
       setConfirmNewPassword("");
-    } catch (err) {
-      setPasswordError((err as Error).message);
+      setCurrentPassword("");
+    } catch (error: any) {
+      console.error("Erro ao mudar senha:", error);
+      if (error.code === "auth/requires-recent-login") {
+        setPasswordError(
+          "Sua sessão expirou. Por favor, faça login novamente para mudar sua senha."
+        );
+      } else if (error.code === "auth/invalid-credential") {
+        setPasswordError("Senha atual incorreta.");
+      } else if (error.code === "auth/weak-password") {
+        setPasswordError(
+          "A nova senha é muito fraca. Ela deve ter pelo menos 6 caracteres."
+        );
+      } else {
+        setPasswordError(
+          `Erro ao mudar senha: ${error.message || "Tente novamente."}`
+        );
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
