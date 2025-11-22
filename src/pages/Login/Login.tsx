@@ -7,14 +7,14 @@ import Button from "../../components/Button/Button";
 import GoogleLoginButton from "../../components/ButtonGoogle/ButtonGoogle";
 import AuthFormLayout from "../../components/AuthFormLayout/AuthFormLayout";
 
-const BACKEND_URL = import.meta.env.NEXT_PUBLIC_BACKEND_URL;
-
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL2;
 
   const handleEmailLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -73,8 +73,6 @@ const Login: React.FC = () => {
 
     try {
       const firebaseIdToken = await user.getIdToken();
-      const url = `${BACKEND_URL}/google-login`;
-      console.log("Tentando POST para URL:", url);
 
       const response = await fetch(`${BACKEND_URL}/google-login`, {
         method: "POST",
@@ -110,6 +108,8 @@ const Login: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  const url = `${BACKEND_URL}/google-login`;
 
   return (
     <AuthFormLayout
@@ -150,6 +150,7 @@ const Login: React.FC = () => {
         />
       </form>
       <GoogleLoginButton onSuccess={handleGoogleLogin} />
+      <p>Tentando POST para URL: {url}</p>
     </AuthFormLayout>
   );
 };
