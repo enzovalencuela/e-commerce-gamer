@@ -2,9 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { getAuth } from "firebase/auth"; // Importado getAuth para obter a instância
-// Importes de componentes não definidos:
-// import { auth } from "../../firebaseConfig"; // Assumindo que esta linha será substituída pelo getAuth
+import { getAuth } from "firebase/auth";
 import Button from "../../components/Button/Button";
 import GoogleLoginButton from "../../components/ButtonGoogle/ButtonGoogle";
 import AuthFormLayout from "../../components/AuthFormLayout/AuthFormLayout";
@@ -60,10 +58,7 @@ const Login: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // ** REMOVIDO: localStorage.setItem("jwt_token", firebaseIdToken); **
-        // ** REMOVIDO: localStorage.setItem("loggedInUserEmail", data.email || user.email); **
-
-        // Chamada a 'login' que irá sincronizar os dados do backend com o Firestore e o estado
+        console.log("============= DADOS: ", data);
         login(data);
         navigate("/");
       } else {
@@ -106,10 +101,7 @@ const Login: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // ** REMOVIDO: localStorage.setItem("jwt_token", firebaseIdToken); **
-        // ** REMOVIDO: localStorage.setItem("loggedInUserEmail", user.email || ""); **
-
-        // Chamada a 'login' que irá sincronizar os dados do backend com o Firestore e o estado
+        console.log("============= DADOS: ", data);
         login(data.user);
         navigate("/");
       } else {
