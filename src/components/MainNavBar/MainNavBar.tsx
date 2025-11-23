@@ -55,7 +55,7 @@ const MainNavbar: React.FC = () => {
           <p>
             Olá,
             <br />
-            {displayName} // Usa a variável de fallback
+            {displayName}
           </p>
         </div>
       </div>
