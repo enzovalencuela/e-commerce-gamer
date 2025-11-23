@@ -215,7 +215,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const dataToSave: UserData = {
       name: backendData.name || firebaseUser.displayName,
       id_usuario: backendData.id_usuario,
-      role: backendData.role,
+      role: backendData.role || "user",
     };
 
     try {
@@ -237,10 +237,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return;
     }
 
-    // Chama a sincronização para o Firestore
     const syncedData = await syncUserToFirestore(firebaseUser, backendData);
 
-    // Atualiza o estado local do contexto
     const combinedUser: User = { ...firebaseUser, ...syncedData };
     setUser(combinedUser);
   };
@@ -250,6 +248,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         await signOut(auth);
         console.debug("Usuário deslogado via Firebase signOut.");
+        console.log(
+          "================= Usuário deslogado via Firebase signOut."
+        );
       } catch (error) {
         console.error("Erro ao fazer signOut:", error);
       }
@@ -258,12 +259,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setCart([]);
   };
 
-  // 4. Lógica de Carregamento de Carrinho (Dependente de isAuthReady e user.uid)
   useEffect(() => {
     const fetchCart = async () => {
-      // Garante que a autenticação terminou e que temos um usuário
       if (!isAuthReady || !user?.uid || !user.id_usuario) {
-        // Se não houver usuário ou a autenticação não estiver pronta, o carrinho está vazio.
         setCart([]);
         setLoading(false);
         return;
@@ -271,7 +269,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(true);
 
       try {
-        // Esta lógica depende do seu Backend REST, que é mantido.
         const response = await fetch(
           `${VITE_BACKEND_URL}/api/cart/${user.id_usuario}`
         );
@@ -281,7 +278,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const productIds: number[] = await response.json();
 
         const fetchedItems: Product[] = [];
-        // Melhorar: fazer uma única requisição para produtos se o backend suportar
         for (const productId of productIds) {
           const productResponse = await fetch(
             `${VITE_BACKEND_URL}/api/products/${productId}`
@@ -297,7 +293,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     };
     fetchCart();
-  }, [user, isAuthReady]); // Depende do objeto user e da prontidão da auth
+  }, [user, isAuthReady]);
 
   const addToCart = async (item: Product) => {
     if (!user || !user.id_usuario) {
@@ -342,7 +338,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // Lógica para PaymentId
   useEffect(() => {
     setPaymentId(new URLSearchParams(window.location.search));
   }, []);
@@ -354,7 +349,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setAtualizarQuery(false);
   }, [atualizarQuery]);
 
-  // Lógica de Status de Pagamento (Dependente de isAuthReady)
   useEffect(() => {
     if (!isAuthReady || !user || !paymentId) return;
 
@@ -384,7 +378,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     fetchPaymentStatus();
   }, [user, paymentId, isAuthReady]);
 
-  // Lógica de Produtos Comprados
   useEffect(() => {
     setLoading(true);
     const fetchPurchasedProducts = async () => {
@@ -425,7 +418,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setSelectedItems,
     paymentStatus,
     purchasedProducts,
-    loading: loading || !isAuthReady, // Considera o app como 'loading' até a autenticação inicial terminar
+    loading: loading || !isAuthReady,
     isAuthReady,
     setAtualizarQuery,
   };
