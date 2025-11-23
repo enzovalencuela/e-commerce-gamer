@@ -1,6 +1,6 @@
 // src/components/MainNavbar.tsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../SearchBar/SearchBar";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
@@ -12,14 +12,19 @@ import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 const MainNavbar: React.FC = () => {
   const [menu, setMenu] = useState(false);
+  const [nome, setNome] = useState("");
   const { user, cart } = useAuth();
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const qtdItemsCart = cart.length;
   const navigate = useNavigate();
 
-  const displayName = user
-    ? user.name || user.displayName || user.email || "Usuário"
-    : "Faça login!";
+  useEffect(() => {
+    setNome(
+      user
+        ? user.name || user.displayName || user.email || "Usuário"
+        : "Faça login!"
+    );
+  }, [user]);
 
   return (
     <>
@@ -55,7 +60,7 @@ const MainNavbar: React.FC = () => {
           <p>
             Olá,
             <br />
-            {displayName}
+            {nome}
           </p>
         </div>
       </div>
