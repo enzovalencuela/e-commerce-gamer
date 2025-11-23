@@ -17,6 +17,10 @@ const MainNavbar: React.FC = () => {
   const qtdItemsCart = cart.length;
   const navigate = useNavigate();
 
+  const displayName = user
+    ? user.name || user.displayName || user.email || "Usuário"
+    : "Faça login!";
+
   return (
     <>
       {showErrorMessage && (
@@ -51,7 +55,7 @@ const MainNavbar: React.FC = () => {
           <p>
             Olá,
             <br />
-            {user ? user.name : "Faça login!"}
+            {displayName} // Usa a variável de fallback
           </p>
         </div>
       </div>
