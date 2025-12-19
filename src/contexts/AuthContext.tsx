@@ -249,10 +249,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (auth) {
       try {
         await signOut(auth);
-        console.debug("Usuário deslogado via Firebase signOut.");
-        console.log(
-          "================= Usuário deslogado via Firebase signOut."
-        );
+        localStorage.removeItem("user_data");
+        localStorage.removeItem("jwt_token");
+        localStorage.removeItem("loggedInUserEmail");
       } catch (error) {
         console.error("Erro ao fazer signOut:", error);
       }
