@@ -58,12 +58,15 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
         },
       });
 
-      if (!response.ok) throw new Error("Erro ao sincronizar conta teste.");
-
-      const data = await response.json();
-      if (data.token) localStorage.setItem("jwt_token", data.token);
-      login(data);
-      navigate("/");
+      if (response.ok) {
+        const data = await response.json();
+        if (data.token) localStorage.setItem("jwt_token", data.token);
+        localStorage.setItem("user_data", JSON.stringify(data));
+        login(data);
+        navigate("/");
+      } else {
+        throw new Error("Erro ao sincronizar conta teste.");
+      }
     } catch (error) {
       console.error("Erro no login de teste:", error);
       setShowErrorMessage(true);

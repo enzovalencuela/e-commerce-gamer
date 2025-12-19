@@ -6,13 +6,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { Product } from "../types/Product";
 import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  signInAnonymously,
-  signInWithCustomToken,
-  onAuthStateChanged,
-  signOut,
-} from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import type { User as FirebaseAuthUser } from "firebase/auth";
 import {
   getFirestore,
@@ -23,8 +17,6 @@ import {
 } from "firebase/firestore";
 
 setLogLevel("debug");
-
-declare const __initial_auth_token: string | undefined;
 
 interface UserData {
   id_usuario?: number;
@@ -134,57 +126,47 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!auth || !db) return;
 
-    const signInAndListen = async () => {
-      try {
-        if (typeof __initial_auth_token !== "undefined") {
-          await signInWithCustomToken(auth, __initial_auth_token);
-          console.debug("Autenticação inicial: Custom Token usado.");
-        } else {
-          await signInAnonymously(auth);
-          console.debug("Autenticação inicial: Anônima usada.");
-        }
-      } catch (error) {
-        console.error("Erro na autenticação inicial:", error);
-      }
-
+    const listenToAuth = () => {
       const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
-          const userId = firebaseUser.uid;
-          console.debug("Usuário Firebase Autenticado:", userId);
+          console.debug("Usuário Firebase detectado:", firebaseUser.uid);
 
-          const userDocRef = doc(
-            db,
-            "artifacts",
-            appId,
-            "users",
-            userId,
-            "user_data",
-            "profile"
-          );
+          const savedUserData = localStorage.getItem("user_data");
+          let extraData = savedUserData ? JSON.parse(savedUserData) : {};
 
-          const docSnap = await getDoc(userDocRef);
-          let userDataFromFirestore: UserData = {};
-
-          if (docSnap.exists()) {
-            userDataFromFirestore = docSnap.data() as UserData;
-            console.debug(
-              "Perfil do Firestore carregado:",
-              userDataFromFirestore
+          if (!extraData.id_usuario) {
+            console.debug("Buscando perfil no Firestore...");
+            const userDocRef = doc(
+              db,
+              "artifacts",
+              appId,
+              "users",
+              firebaseUser.uid,
+              "user_data",
+              "profile"
             );
-          } else {
-            console.debug(
-              "Perfil do Firestore não encontrado. Usando dados básicos do Auth."
-            );
+
+            try {
+              const docSnap = await getDoc(userDocRef);
+              if (docSnap.exists()) {
+                extraData = docSnap.data();
+                localStorage.setItem("user_data", JSON.stringify(extraData));
+              }
+            } catch (e) {
+              console.error("Erro ao buscar dados adicionais no Firestore:", e);
+            }
           }
 
           const combinedUser: User = {
             ...firebaseUser,
-            ...userDataFromFirestore,
+            ...extraData,
           };
+
           setUser(combinedUser);
         } else {
+          console.debug("Nenhum usuário logado.");
           setUser(null);
-          console.debug("Usuário Firebase Deslogado/Não Autenticado.");
+          localStorage.removeItem("user_data");
         }
 
         if (!isAuthReady) {
@@ -193,10 +175,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setLoading(false);
       });
 
-      return () => unsubscribe();
+      return unsubscribe;
     };
 
-    signInAndListen();
+    const unsubscribe = listenToAuth();
+    return () => unsubscribe();
   }, []);
 
   const syncUserToFirestore = async (
@@ -232,15 +215,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (backendData: UserData) => {
     const firebaseUser = auth.currentUser;
-    if (!firebaseUser) {
-      console.error(
-        "Tentativa de login sem usuário autenticado no Firebase Auth."
-      );
-      return;
-    }
+    if (!firebaseUser) return;
+
+    localStorage.setItem("user_data", JSON.stringify(backendData));
 
     const syncedData = await syncUserToFirestore(firebaseUser, backendData);
-
     const combinedUser: User = { ...firebaseUser, ...syncedData };
     setUser(combinedUser);
   };
