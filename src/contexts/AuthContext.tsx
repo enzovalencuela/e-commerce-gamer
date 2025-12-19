@@ -125,8 +125,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [purchasedProducts, setPurchasedProducts] = useState<Product[]>([]);
   const [paymentId, setPaymentId] = useState<URLSearchParams | null>(null);
   const [atualizarQuery, setAtualizarQuery] = useState(false);
-  const [user, setUser] = useState<User | null | undefined>(undefined);
-
+  const [user, setUser] = useState<any>(() => {
+    const savedUser = localStorage.getItem("user_data");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const [cart, setCart] = useState<Product[]>([]);
 
   useEffect(() => {
