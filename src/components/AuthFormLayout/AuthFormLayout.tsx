@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import OkMessage from "../OkMessage/OkMessage";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 interface AuthFormLayoutProps {
   title: string;
@@ -26,9 +27,9 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
   welcomeButtonLink,
   showLogo = false,
 }) => {
-  const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const [showContaTesteMessage, setShowContaTesteMessage] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -36,27 +37,37 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
     "Se for preferível você pode entrar com uma conta teste, assim não precisará se cadastrar";
 
   const handleLoginTeste = async () => {
+    setIsLoading(true);
+    const auth = getAuth();
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL2;
+
     try {
-      const response = await fetch(`${VITE_BACKEND_URL}/api/user/login`, {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        "usuarioteste@teste.com",
+        "usuarioteste"
+      );
+
+      const firebaseIdToken = await userCredential.user.getIdToken();
+
+      const response = await fetch(`${BACKEND_URL}/user-data`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: "usuarioteste@teste.com",
-          password: "usuarioteste",
-        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${firebaseIdToken}`,
+        },
       });
 
-      const data = await response.json();
+      if (!response.ok) throw new Error("Erro ao sincronizar conta teste.");
 
-      if (!response.ok) {
-        throw new Error(data.message || "Erro ao entrar com a conta teste.");
-      }
+      const data = await response.json();
       login(data);
       navigate("/");
     } catch (error) {
       console.error("Erro no login de teste:", error);
       setShowErrorMessage(true);
     } finally {
+      setIsLoading(false);
       setShowContaTesteMessage(false);
     }
   };
@@ -88,8 +99,9 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
           <button
             onClick={() => setShowContaTesteMessage(true)}
             className="conta-teste-button"
+            disabled={isLoading}
           >
-            Entrar com conta teste
+            {isLoading ? "Carregando..." : "Entrar com conta teste"}
           </button>
           <Link to={welcomeButtonLink} className="welcome-button">
             {welcomeButtonText}

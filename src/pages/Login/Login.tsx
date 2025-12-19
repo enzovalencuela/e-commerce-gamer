@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { getAuth } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Button from "../../components/Button/Button";
 import GoogleLoginButton from "../../components/ButtonGoogle/ButtonGoogle";
 import AuthFormLayout from "../../components/AuthFormLayout/AuthFormLayout";
