@@ -227,12 +227,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async () => {
     if (auth) {
       try {
+        await fetch(`${VITE_BACKEND_URL}/api/logout`, {
+          method: "POST",
+          credentials: "include",
+        });
         await signOut(auth);
         localStorage.removeItem("user_data");
-        localStorage.removeItem("jwt_token");
-        localStorage.removeItem("loggedInUserEmail");
       } catch (error) {
-        console.error("Erro ao fazer signOut:", error);
+        console.error("Erro ao fazer logout:", error);
       }
     }
     setUser(null);
@@ -250,7 +252,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL}/api/cart/${user.id_usuario}`
+          `${VITE_BACKEND_URL}/api/cart/${user.id_usuario}`,
+          { credentials: "include" }
         );
         if (!response.ok) {
           throw new Error("Erro ao buscar o carrinho");

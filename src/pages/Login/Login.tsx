@@ -51,13 +51,13 @@ const Login: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${firebaseIdToken}`,
         },
+        body: JSON.stringify({ firebaseToken: firebaseIdToken }),
+        credentials: "include",
       });
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("jwt_token", firebaseIdToken);
         localStorage.setItem("user_data", JSON.stringify(data));
         login(data);
         navigate("/");
@@ -89,14 +89,13 @@ const Login: React.FC = () => {
 
       const response = await fetch(`${BACKEND_URL}/google-login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${firebaseIdToken}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          firebaseToken: firebaseIdToken,
           name: user.displayName,
           email: user.email,
         }),
+        credentials: "include",
       });
 
       if (response.ok) {
