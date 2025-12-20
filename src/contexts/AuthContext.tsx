@@ -252,8 +252,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL}/api/cart/${user.id_usuario}`,
-          { credentials: "include" }
+          `${VITE_BACKEND_URL}/api/cart/${user.id_usuario}`
         );
         if (!response.ok) {
           throw new Error("Erro ao buscar o carrinho");
