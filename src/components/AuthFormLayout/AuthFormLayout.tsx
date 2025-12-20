@@ -54,13 +54,13 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${firebaseIdToken}`,
         },
+        body: JSON.stringify({ firebaseIdToken: firebaseIdToken }),
+        credentials: "include",
       });
 
       if (response.ok) {
         const data = await response.json();
-        if (data.token) localStorage.setItem("jwt_token", data.token);
         localStorage.setItem("user_data", JSON.stringify(data));
         login(data);
         navigate("/");
