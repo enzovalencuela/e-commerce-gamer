@@ -129,8 +129,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const listenToAuth = () => {
       const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
-          console.debug("Usuário Firebase detectado:", firebaseUser.uid);
-
           const savedUserData = localStorage.getItem("user_data");
           let extraData = savedUserData ? JSON.parse(savedUserData) : {};
 
