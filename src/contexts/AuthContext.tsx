@@ -79,6 +79,7 @@ interface PaymentStatus {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const VITE_BACKEND_URL2 = import.meta.env.VITE_BACKEND_URL2;
 
 let app: any;
 let auth: any;
@@ -225,7 +226,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async () => {
     if (auth) {
       try {
-        await fetch(`${VITE_BACKEND_URL}/api/logout`, {
+        await fetch(`${VITE_BACKEND_URL2}/logout`, {
           method: "POST",
           credentials: "include",
         });
