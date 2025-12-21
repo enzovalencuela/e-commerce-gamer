@@ -58,7 +58,6 @@ const Login: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("user_data", JSON.stringify(data));
         login(data);
         navigate("/");
       } else {

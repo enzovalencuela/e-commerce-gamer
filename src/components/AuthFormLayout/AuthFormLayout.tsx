@@ -61,7 +61,6 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("user_data", JSON.stringify(data));
         login(data);
         navigate("/");
       } else {

@@ -8,16 +8,9 @@ import type { Product } from "../types/Product";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import type { User as FirebaseAuthUser } from "firebase/auth";
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  setLogLevel,
-} from "firebase/firestore";
+import { getFirestore, doc, setDoc, setLogLevel } from "firebase/firestore";
 
 setLogLevel("debug");
-
 interface UserData {
   id_usuario?: number;
   name?: string | null;
@@ -118,10 +111,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [purchasedProducts, setPurchasedProducts] = useState<Product[]>([]);
   const [paymentId, setPaymentId] = useState<URLSearchParams | null>(null);
   const [atualizarQuery, setAtualizarQuery] = useState(false);
-  const [user, setUser] = useState<any>(() => {
-    const savedUser = localStorage.getItem("user_data");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const [user, setUser] = useState<any>();
   const [cart, setCart] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -130,42 +120,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const listenToAuth = () => {
       const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
-          const savedUserData = localStorage.getItem("user_data");
-          let extraData = savedUserData ? JSON.parse(savedUserData) : {};
-
-          if (!extraData.id_usuario) {
-            console.debug("Buscando perfil no Firestore...");
-            const userDocRef = doc(
-              db,
-              "artifacts",
-              appId,
-              "users",
-              firebaseUser.uid,
-              "user_data",
-              "profile"
-            );
-
-            try {
-              const docSnap = await getDoc(userDocRef);
-              if (docSnap.exists()) {
-                extraData = docSnap.data();
-                localStorage.setItem("user_data", JSON.stringify(extraData));
-              }
-            } catch (e) {
-              console.error("Erro ao buscar dados adicionais no Firestore:", e);
-            }
-          }
-
           const combinedUser: User = {
             ...firebaseUser,
-            ...extraData,
           };
-
           setUser(combinedUser);
         } else {
           console.debug("Nenhum usuário logado.");
           setUser(null);
-          localStorage.removeItem("user_data");
         }
 
         if (!isAuthReady) {
