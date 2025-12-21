@@ -49,8 +49,6 @@ const Register: React.FC = () => {
 
         if (response.ok) {
           const data = await response.json();
-          localStorage.setItem("jwt_token", firebaseIdToken);
-          localStorage.setItem("loggedInUserEmail", email);
           login(data);
           navigate("/");
         }

@@ -100,8 +100,6 @@ const Login: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("jwt_token", firebaseIdToken);
-        localStorage.setItem("user_data", JSON.stringify(data));
         login(data.user);
         navigate("/");
       } else {
