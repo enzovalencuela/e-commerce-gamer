@@ -177,8 +177,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const firebaseUser = auth.currentUser;
     if (!firebaseUser) return;
 
-    localStorage.setItem("user_data", JSON.stringify(backendData));
-
     const syncedData = await syncUserToFirestore(firebaseUser, backendData);
     const combinedUser: User = { ...firebaseUser, ...syncedData };
     setUser(combinedUser);
@@ -192,7 +190,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           credentials: "include",
         });
         await signOut(auth);
-        localStorage.removeItem("user_data");
       } catch (error) {
         console.error("Erro ao fazer logout:", error);
       }
