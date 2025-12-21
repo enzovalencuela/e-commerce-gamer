@@ -211,7 +211,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL2}/api/cart/${user.id_usuario}`,
+          `${VITE_BACKEND_URL2}/cart/${user.id_usuario}`,
           { credentials: "include" }
         );
         if (!response.ok) {
@@ -250,7 +250,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return "error";
     }
     try {
-      await fetch(`${VITE_BACKEND_URL2}/api/cart/add`, {
+      await fetch(`${VITE_BACKEND_URL2}/cart/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id_usuario, productId: item.id }),
@@ -267,7 +267,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const removeFromCart = async (itemId: number) => {
     if (!user || !user.id_usuario) return;
     try {
-      await fetch(`${VITE_BACKEND_URL2}/api/cart/remove`, {
+      await fetch(`${VITE_BACKEND_URL2}/cart/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id_usuario, productId: itemId }),
