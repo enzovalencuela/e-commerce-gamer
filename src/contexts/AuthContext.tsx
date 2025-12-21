@@ -115,6 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [cart, setCart] = useState<Product[]>([]);
 
   useEffect(() => {
+    localStorage.clear();
     if (!auth || !db) return;
 
     const listenToAuth = () => {
