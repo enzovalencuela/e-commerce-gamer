@@ -200,17 +200,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
+    setLoading(true);
+
     const fetchCart = async () => {
       if (!isAuthReady || !user?.uid || !user.id_usuario) {
         setCart([]);
         setLoading(false);
         return;
       }
-      setLoading(true);
 
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL}/api/cart/${user.id_usuario}`
+          `${VITE_BACKEND_URL2}/api/cart/${user.id_usuario}`,
+          { credentials: "include" }
         );
         if (!response.ok) {
           throw new Error("Erro ao buscar o carrinho");
@@ -248,10 +250,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return "error";
     }
     try {
-      await fetch(`${VITE_BACKEND_URL}/api/cart/add`, {
+      await fetch(`${VITE_BACKEND_URL2}/api/cart/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id_usuario, productId: item.id }),
+        credentials: "include",
       });
       setCart((prevCart) => [...prevCart, item]);
       return "ok";
@@ -264,10 +267,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const removeFromCart = async (itemId: number) => {
     if (!user || !user.id_usuario) return;
     try {
-      await fetch(`${VITE_BACKEND_URL}/api/cart/remove`, {
+      await fetch(`${VITE_BACKEND_URL2}/api/cart/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id_usuario, productId: itemId }),
+        credentials: "include",
       });
       setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
       setSelectedItems((prevSelected) =>
