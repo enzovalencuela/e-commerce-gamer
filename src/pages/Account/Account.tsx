@@ -30,7 +30,7 @@ const Account: React.FC = () => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [formSubmit, setFormSubmit] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
-
+  const [nome, setNome] = useState("");
   const spanMessage = "Operação, realizada com sucesso.";
 
   useEffect(() => {
@@ -41,6 +41,10 @@ const Account: React.FC = () => {
       setLoading(false);
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    setNome(user ? user.name || user.displayName || "Usuário" : "Faça login!");
+  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -134,7 +138,7 @@ const Account: React.FC = () => {
           <h2>Minha Conta</h2>
           <div className="user-info">
             <p>
-              <strong>Nome:</strong> {user.name}
+              <strong>Nome:</strong> {nome}
             </p>
             <p>
               <strong>Email:</strong> {user.email}
