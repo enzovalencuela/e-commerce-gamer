@@ -26,7 +26,7 @@ const Login: React.FC = () => {
   }
   const auth = authInstance;
 
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL2;
+  const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleEmailLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -47,7 +47,7 @@ const Login: React.FC = () => {
       }
 
       const firebaseIdToken = await user.getIdToken();
-      const response = await fetch(`${BACKEND_URL}/user-data`, {
+      const response = await fetch(`${VITE_BACKEND_URL}/user-data`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +86,7 @@ const Login: React.FC = () => {
     try {
       const firebaseIdToken = await user.getIdToken();
 
-      const response = await fetch(`${BACKEND_URL}/google-login`, {
+      const response = await fetch(`${VITE_BACKEND_URL}/google-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

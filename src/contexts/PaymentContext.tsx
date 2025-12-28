@@ -79,7 +79,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
         body: JSON.stringify({
           ...formData,
           product_ids: selectedItems,
-          user_id: user.id_usuario,
+          user_id: user.id,
         }),
       })
         .then((response) => {

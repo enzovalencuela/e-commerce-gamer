@@ -43,7 +43,7 @@ function MinhasCompras() {
     const fetchCompras = async () => {
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL}/api/user/payments?id=${user.id_usuario}`,
+          `${VITE_BACKEND_URL}/api/user/payments?id=${user.id}`,
           {
             method: "GET",
           }

@@ -56,9 +56,7 @@ const ProductPage: React.FC = () => {
 
   const checkIfProductInCart = async (productId: number) => {
     try {
-      const response = await fetch(
-        `${VITE_BACKEND_URL}/api/cart/${user?.id_usuario}`
-      );
+      const response = await fetch(`${VITE_BACKEND_URL}/api/cart/${user?.id}`);
       const cart = await response.json();
       setIsAddedToCart(cart.some((item: any) => item === productId));
     } catch (error) {
@@ -78,7 +76,7 @@ const ProductPage: React.FC = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId: user?.id_usuario,
+            userId: user?.id,
             productId: product.id,
           }),
         });
@@ -101,7 +99,7 @@ const ProductPage: React.FC = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId: user.id_usuario,
+            userId: user.id,
             productId: product.id,
           }),
         });

@@ -10,7 +10,7 @@ import Button from "../../components/Button/Button";
 import Loading from "../../components/Loading/Loading";
 import { useAuth } from "../../contexts/AuthContext";
 
-const VITE_BACKEND_URL2 = import.meta.env.VITE_BACKEND_URL2;
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Register: React.FC = () => {
   const [name, setName] = useState("");
@@ -35,7 +35,7 @@ const Register: React.FC = () => {
 
       if (user) {
         const firebaseIdToken = await user.getIdToken();
-        const response = await fetch(`${VITE_BACKEND_URL2}/register`, {
+        const response = await fetch(`${VITE_BACKEND_URL}/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

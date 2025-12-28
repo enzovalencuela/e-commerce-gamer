@@ -4,25 +4,20 @@
 
 import React, { createContext, useState, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
-import type { Product } from "../types/Product";
+import type { Product, User } from "../types";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import type { User as FirebaseAuthUser } from "firebase/auth";
 import { getFirestore, doc, setDoc, setLogLevel } from "firebase/firestore";
 
 setLogLevel("debug");
-interface UserData {
-  id_usuario?: number;
-  name?: string | null;
-  role?: "admin" | "user";
-}
 
-type User = FirebaseAuthUser & UserData;
+type UserData = FirebaseAuthUser & User;
 
 interface AuthContextType {
-  user: User | null | undefined;
+  user: UserData | null | undefined;
   cart: Product[];
-  login: (userData: UserData) => void;
+  login: (userData: User) => void;
   logout: () => Promise<void>;
   addToCart: (item: Product) => Promise<"ok" | "error">;
   removeFromCart: (itemId: number) => Promise<void>;
@@ -72,7 +67,6 @@ interface PaymentStatus {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-const VITE_BACKEND_URL2 = import.meta.env.VITE_BACKEND_URL2;
 
 let app: any;
 let auth: any;
@@ -121,7 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const listenToAuth = () => {
       const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
-          const combinedUser: User = {
+          const combinedUser: UserData = {
             ...firebaseUser,
           };
           setUser(combinedUser);
@@ -145,7 +139,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const syncUserToFirestore = async (
     firebaseUser: FirebaseAuthUser,
-    backendData: UserData
+    backendData: User
   ) => {
     const userId = firebaseUser.uid;
     const userDocRef = doc(
@@ -158,9 +152,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       "profile"
     );
 
-    const dataToSave: UserData = {
+    const dataToSave: User = {
       name: backendData.name || firebaseUser.displayName,
-      id_usuario: backendData.id_usuario,
+      id: backendData.id,
       role: backendData.role || "user",
     };
 
@@ -174,19 +168,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const login = async (backendData: UserData) => {
+  const login = async (backendData: User) => {
     const firebaseUser = auth.currentUser;
     if (!firebaseUser) return;
 
     const syncedData = await syncUserToFirestore(firebaseUser, backendData);
-    const combinedUser: User = { ...firebaseUser, ...syncedData };
+    const combinedUser: UserData = { ...firebaseUser, ...syncedData };
     setUser(combinedUser);
   };
 
   const logout = async () => {
     if (auth) {
       try {
-        await fetch(`${VITE_BACKEND_URL2}/logout`, {
+        await fetch(`${VITE_BACKEND_URL}/api/logout`, {
           method: "POST",
           credentials: "include",
         });
@@ -203,7 +197,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
 
     const fetchCart = async () => {
-      if (!isAuthReady || !user?.uid || !user.id_usuario) {
+      if (!isAuthReady || !user?.uid || !user.id) {
         setCart([]);
         setLoading(false);
         return;
@@ -211,8 +205,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL2}/cart/${user.id_usuario}`,
-          { credentials: "include" }
+          `${VITE_BACKEND_URL}/api/cart/${user.id}`,
+          {
+            credentials: "include",
+          }
         );
         if (!response.ok) {
           throw new Error("Erro ao buscar o carrinho");
@@ -238,7 +234,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [user, isAuthReady]);
 
   const addToCart = async (item: Product) => {
-    if (!user || !user.id_usuario) {
+    if (!user || !user.id) {
       console.error(
         "Usuário não logado ou sem ID. Não é possível adicionar ao carrinho."
       );
@@ -250,10 +246,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return "error";
     }
     try {
-      await fetch(`${VITE_BACKEND_URL2}/cart/add`, {
+      await fetch(`${VITE_BACKEND_URL}/api/cart/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id_usuario, productId: item.id }),
+        body: JSON.stringify({ userId: user.id, productId: item.id }),
         credentials: "include",
       });
       setCart((prevCart) => [...prevCart, item]);
@@ -265,12 +261,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const removeFromCart = async (itemId: number) => {
-    if (!user || !user.id_usuario) return;
+    if (!user || !user.id) return;
     try {
-      await fetch(`${VITE_BACKEND_URL2}/cart/remove`, {
+      await fetch(`${VITE_BACKEND_URL}/api/cart/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id_usuario, productId: itemId }),
+        body: JSON.stringify({ userId: user.id, productId: itemId }),
         credentials: "include",
       });
       setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
