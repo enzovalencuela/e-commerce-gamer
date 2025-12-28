@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/contexts/AuthContext.tsx
 
@@ -110,31 +109,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [cart, setCart] = useState<Product[]>([]);
 
   useEffect(() => {
-    localStorage.clear();
     if (!auth || !db) return;
 
-    const listenToAuth = () => {
-      const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-        if (firebaseUser) {
-          const combinedUser: UserData = {
-            ...firebaseUser,
-          };
-          setUser(combinedUser);
-        } else {
-          console.debug("Nenhum usuário logado.");
-          setUser(null);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const response = await fetch(`${VITE_BACKEND_URL2}/user-data`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              firebaseIdToken: await firebaseUser.getIdToken(),
+            }),
+            credentials: "include",
+          });
+
+          if (response.ok) {
+            const backendData = await response.json();
+            const combinedUser: UserData = {
+              ...firebaseUser,
+              ...backendData,
+              id: backendData.id,
+            };
+            setUser(combinedUser);
+          } else {
+            setUser(firebaseUser as UserData);
+          }
+        } catch (error) {
+          console.error("Erro ao recuperar dados do backend no reload:", error);
+          setUser(firebaseUser as UserData);
         }
+      } else {
+        setUser(null);
+      }
+      setIsAuthReady(true);
+      setLoading(false);
+    });
 
-        if (!isAuthReady) {
-          setIsAuthReady(true);
-        }
-        setLoading(false);
-      });
-
-      return unsubscribe;
-    };
-
-    const unsubscribe = listenToAuth();
     return () => unsubscribe();
   }, []);
 
@@ -198,7 +208,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
 
     const fetchCart = async () => {
-      if (!isAuthReady || !user?.uid || !user.id) {
+      if (!isAuthReady || !user?.firebase_uid || !user.id) {
         setCart([]);
         setLoading(false);
         return;

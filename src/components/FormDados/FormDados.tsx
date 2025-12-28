@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import "./FormDados.css";
+import BackButton from "../BackButton/BackButton";
 
 function FormDados({
   setShowErrorMessage,
@@ -56,74 +57,80 @@ function FormDados({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="input_container">
-      <input
-        name="phone"
-        placeholder="Telefone"
-        value={formData.phone}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="address"
-        placeholder="Endereço"
-        value={formData.address}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="number"
-        placeholder="Número"
-        value={formData.number}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="neighborhood"
-        placeholder="Bairro"
-        value={formData.neighborhood}
-        onChange={handleChange}
-      />
-      <input
-        name="city"
-        placeholder="Cidade"
-        value={formData.city}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="state"
-        placeholder="Estado"
-        value={formData.state}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="zip"
-        placeholder="CEP"
-        value={formData.zip}
-        onChange={handleChange}
-        required
-      />
-      <button
-        type="submit"
-        className="submit-button"
-        disabled={
-          !formData.address ||
-          !formData.city ||
-          !formData.neighborhood ||
-          !formData.number ||
-          !formData.phone ||
-          !formData.state ||
-          !formData.zip
-        }
-      >
-        Salvar informações
-      </button>
-      <button className="add-to-cart-btn" onClick={() => setFormSubmit(false)}>
-        Voltar
-      </button>
-    </form>
+    <>
+      <BackButton />
+      <form onSubmit={handleSubmit} className="input_container">
+        <input
+          name="phone"
+          placeholder="Telefone"
+          value={formData.phone}
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="address"
+          placeholder="Endereço"
+          value={formData.address}
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="number"
+          placeholder="Número"
+          value={formData.number}
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="neighborhood"
+          placeholder="Bairro"
+          value={formData.neighborhood}
+          onChange={handleChange}
+        />
+        <input
+          name="city"
+          placeholder="Cidade"
+          value={formData.city}
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="state"
+          placeholder="Estado"
+          value={formData.state}
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="zip"
+          placeholder="CEP"
+          value={formData.zip}
+          onChange={handleChange}
+          required
+        />
+        <button
+          type="submit"
+          className="submit-button"
+          disabled={
+            !formData.address ||
+            !formData.city ||
+            !formData.neighborhood ||
+            !formData.number ||
+            !formData.phone ||
+            !formData.state ||
+            !formData.zip
+          }
+        >
+          Salvar informações
+        </button>
+        <button
+          className="add-to-cart-btn"
+          onClick={() => setFormSubmit(false)}
+        >
+          Voltar
+        </button>
+      </form>
+    </>
   );
 }
 
