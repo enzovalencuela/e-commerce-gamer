@@ -67,6 +67,7 @@ interface PaymentStatus {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const VITE_BACKEND_URL2 = import.meta.env.VITE_BACKEND_URL2;
 
 let app: any;
 let auth: any;
@@ -180,7 +181,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async () => {
     if (auth) {
       try {
-        await fetch(`${VITE_BACKEND_URL}/api/logout`, {
+        await fetch(`${VITE_BACKEND_URL2}/logout`, {
           method: "POST",
           credentials: "include",
         });
@@ -204,12 +205,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       try {
-        const response = await fetch(
-          `${VITE_BACKEND_URL}/api/cart/${user.id}`,
-          {
-            credentials: "include",
-          }
-        );
+        const response = await fetch(`${VITE_BACKEND_URL2}/cart/${user.id}`, {
+          credentials: "include",
+        });
         if (!response.ok) {
           throw new Error("Erro ao buscar o carrinho");
         }
@@ -246,7 +244,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return "error";
     }
     try {
-      await fetch(`${VITE_BACKEND_URL}/api/cart/add`, {
+      await fetch(`${VITE_BACKEND_URL2}/cart/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id, productId: item.id }),
@@ -263,7 +261,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const removeFromCart = async (itemId: number) => {
     if (!user || !user.id) return;
     try {
-      await fetch(`${VITE_BACKEND_URL}/api/cart/remove`, {
+      await fetch(`${VITE_BACKEND_URL2}/cart/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id, productId: itemId }),

@@ -116,14 +116,6 @@ const ProductPage: React.FC = () => {
     }
   };
 
-  /*
-  const handleBuyNow = () => {
-    alert(
-      "Funcionalidade de compra direta não implementada. Por favor, adicione ao carrinho primeiro."
-    );
-  };
-   */
-
   if (error || !product) {
     return (
       <div
