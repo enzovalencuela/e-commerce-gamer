@@ -208,7 +208,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
 
     const fetchCart = async () => {
-      if (!isAuthReady || !user?.firebase_uid || !user.id) {
+      if (!isAuthReady || !user || !user.id) {
         setCart([]);
         setLoading(false);
         return;
