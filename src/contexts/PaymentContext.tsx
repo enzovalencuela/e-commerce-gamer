@@ -71,7 +71,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
     }
 
     return new Promise<void>((resolve, reject) => {
-      fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
+      fetch(`${VITE_BACKEND_URL}/api/user/payments/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
