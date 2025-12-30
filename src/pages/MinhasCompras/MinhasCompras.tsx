@@ -43,7 +43,7 @@ function MinhasCompras() {
     const fetchCompras = async () => {
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL}/api/user/payments?id=${user.id}`,
+          `${VITE_BACKEND_URL}/api/payments?id=${user.id}`,
           {
             method: "GET",
           }
@@ -69,12 +69,9 @@ function MinhasCompras() {
     if (!user) return;
 
     try {
-      const response = await fetch(
-        `${VITE_BACKEND_URL}/api/user/payments/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${VITE_BACKEND_URL}/api/payments/${id}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         console.log("Erro ao cancelar compra");
