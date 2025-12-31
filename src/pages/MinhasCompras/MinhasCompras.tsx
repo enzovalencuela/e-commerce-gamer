@@ -55,7 +55,6 @@ function MinhasCompras() {
           console.log("Erro ao buscar suas compras");
         }
 
-        console.log(data);
         setMinhasCompras(data);
         setLoading(false);
       } catch (error) {
