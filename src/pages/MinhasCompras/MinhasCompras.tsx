@@ -71,6 +71,7 @@ function MinhasCompras() {
     try {
       const response = await fetch(`${VITE_BACKEND_URL2}/user/payments/${id}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       if (!response.ok) {
