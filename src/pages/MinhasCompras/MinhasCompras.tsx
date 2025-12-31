@@ -28,13 +28,15 @@ function MinhasCompras() {
   const navigate = useNavigate();
   const VITE_BACKEND_URL2 = import.meta.env.VITE_BACKEND_URL2;
 
-  if (!user || user === null) {
-    setLoading(false);
-    setShowErrorMessage(true);
-    setTimeout(() => {
-      navigate("/");
-    }, 3000);
-  }
+  useEffect(() => {
+    if (!loading && !user) {
+      setShowErrorMessage(true);
+      const timer = setTimeout(() => {
+        navigate("/");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [user, loading, navigate]);
 
   useEffect(() => {
     setLoading(true);
