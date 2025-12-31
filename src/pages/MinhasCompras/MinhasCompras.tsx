@@ -69,7 +69,7 @@ function MinhasCompras() {
     if (!user) return;
 
     try {
-      const response = await fetch(`${VITE_BACKEND_URL2}/payments/${id}`, {
+      const response = await fetch(`${VITE_BACKEND_URL2}/user/payments/${id}`, {
         method: "DELETE",
       });
 
