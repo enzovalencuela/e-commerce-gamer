@@ -27,6 +27,7 @@ function MinhasCompras() {
   const { user, setAtualizarQuery } = useAuth();
   const navigate = useNavigate();
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const VITE_BACKEND_URL2 = import.meta.env.VITE_BACKEND_URL2;
 
   if (!user || user === null) {
     setLoading(false);
@@ -43,7 +44,7 @@ function MinhasCompras() {
     const fetchCompras = async () => {
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL}/api/user/payments?id=${user.id}`,
+          `${VITE_BACKEND_URL2}/api/user/payments?id=${user.id}`,
           {
             method: "GET",
             credentials: "include",
