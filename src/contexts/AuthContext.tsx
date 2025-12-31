@@ -5,7 +5,13 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { Product, User } from "../types";
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+  setPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
 import type { User as FirebaseAuthUser } from "firebase/auth";
 import { getFirestore, doc, setDoc, setLogLevel } from "firebase/firestore";
 
@@ -90,6 +96,10 @@ try {
   }
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
+  setPersistence(auth, browserLocalPersistence).catch((error) =>
+    console.error("Erro ao definir persistência:", error)
+  );
+
   db = getFirestore(app);
 } catch (e) {
   console.error("Erro ao inicializar Firebase:", e);
