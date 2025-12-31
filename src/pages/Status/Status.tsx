@@ -33,8 +33,8 @@ const StatusPagamento: React.FC = () => {
 
   return (
     <div className="status-container">
+      <BackButton />
       <header className="status-header">
-        <BackButton />
         <div className={`status-badge ${paymentStatus.status}`}>
           <FontAwesomeIcon
             icon={
