@@ -103,23 +103,22 @@ function MinhasCompras() {
         <h1>Minhas Compras</h1>
         {minhasCompras ? (
           minhasCompras.map((compra) => (
-            <div
-              className="div-compra"
-              key={compra.id}
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/status?payment_id=${compra.provider_payment_id}`);
-                setAtualizarQuery(true);
-              }}
-            >
-              <div className="div-info">
+            <div className="div-compra" key={compra.id}>
+              <div
+                className="div-info"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/status?payment_id=${compra.provider_payment_id}`);
+                  setAtualizarQuery(true);
+                }}
+              >
                 <p>Valor: R${compra.amount}</p>
                 <p>
                   Status:{" "}
                   {compra.status === "approved" ? "Aprovado" : "Rejeitado"}
                 </p>
               </div>
-              {compra.status === "rejected" ? (
+              {compra.status !== "approved" ? (
                 <button
                   onClick={() => CancelPurchase(compra.id)}
                   className="cancelar-compra-button"
