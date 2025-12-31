@@ -26,7 +26,6 @@ function MinhasCompras() {
   const [showSpanOkMessage, setShowSpanOkMessage] = useState(false);
   const { user, setAtualizarQuery } = useAuth();
   const navigate = useNavigate();
-  const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const VITE_BACKEND_URL2 = import.meta.env.VITE_BACKEND_URL2;
 
   if (!user || user === null) {
@@ -44,7 +43,7 @@ function MinhasCompras() {
     const fetchCompras = async () => {
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL2}/api/user/payments?id=${user.id}`,
+          `${VITE_BACKEND_URL2}/user/payments?id=${user.id}`,
           {
             method: "GET",
             credentials: "include",
@@ -71,7 +70,7 @@ function MinhasCompras() {
     if (!user) return;
 
     try {
-      const response = await fetch(`${VITE_BACKEND_URL}/api/payments/${id}`, {
+      const response = await fetch(`${VITE_BACKEND_URL2}/payments/${id}`, {
         method: "DELETE",
       });
 
