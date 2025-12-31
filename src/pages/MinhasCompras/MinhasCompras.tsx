@@ -69,6 +69,7 @@ function MinhasCompras() {
   }, []);
 
   const CancelPurchase = async (id: number) => {
+    setLoading(true);
     if (!user) return;
 
     try {
@@ -89,6 +90,8 @@ function MinhasCompras() {
       }, 2000);
     } catch (error) {
       console.error("Erro ao cancelar compra", error);
+    } finally {
+      setLoading(false);
     }
   };
 
