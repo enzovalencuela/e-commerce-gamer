@@ -46,6 +46,7 @@ function MinhasCompras() {
           `${VITE_BACKEND_URL}/api/user/payments?id=${user.id}`,
           {
             method: "GET",
+            credentials: "include",
           }
         );
         const data = await response.json();
