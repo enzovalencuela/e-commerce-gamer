@@ -67,7 +67,9 @@ interface PaymentStatus {
   date_approved?: string;
   additional_info?: AdditionalInfo;
   installments?: number;
-  pix?: PixInfo;
+  point_of_interaction?: {
+    transaction_data?: PixInfo;
+  };
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
