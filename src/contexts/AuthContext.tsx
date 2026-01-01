@@ -67,9 +67,7 @@ interface PaymentStatus {
   date_approved?: string;
   additional_info?: AdditionalInfo;
   installments?: number;
-  point_of_interaction?: {
-    transaction_data?: PixInfo;
-  };
+  pix?: PixInfo;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -321,7 +319,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         const data = await response.json();
         if (response.ok && data.payment) {
-          setPaymentStatus(data.payment);
+          const p = data.payment;
+
+          const updatedStatus = {
+            ...p,
+            total_amount: p.transaction_amount,
+            pix: {
+              qr_code: p.point_of_interaction?.transaction_data?.qr_code,
+              qr_code_base64:
+                p.point_of_interaction?.transaction_data?.qr_code_base64,
+              ticket_url: p.point_of_interaction?.transaction_data?.ticket_url,
+            },
+          };
+
+          setPaymentStatus(updatedStatus);
         } else {
           console.error("Erro ao obter status do pagamento:", data.error);
           setPaymentStatus(null);

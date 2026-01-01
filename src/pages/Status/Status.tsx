@@ -21,9 +21,7 @@ const StatusPagamento: React.FC = () => {
   if (loading || !paymentStatus) return <Loading />;
 
   const handleCopyPix = () => {
-    navigator.clipboard.writeText(
-      paymentStatus.point_of_interaction?.transaction_data?.qr_code || ""
-    );
+    navigator.clipboard.writeText(paymentStatus.pix?.qr_code || "");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -73,50 +71,40 @@ const StatusPagamento: React.FC = () => {
             )}
           </div>
 
-          {isPending &&
-            paymentStatus.point_of_interaction?.transaction_data && (
-              <div className="pix-section">
-                <div className="qr-wrapper">
-                  <img
-                    src={`data:image/png;base64,${paymentStatus.point_of_interaction.transaction_data.qr_code_base64}`}
-                    alt="QR Code"
-                  />
-                </div>
-                <div className="pix-copy-box">
-                  <p className="pix-label">Código Copia e Cola</p>
-                  <div className="copy-action">
-                    <span className="truncate">
-                      {
-                        paymentStatus.point_of_interaction.transaction_data
-                          .qr_code
-                      }
-                    </span>
-                    <button
-                      onClick={handleCopyPix}
-                      className={copied ? "copied" : ""}
-                    >
-                      <FontAwesomeIcon icon={faCopy} />
-                      {copied ? "Copiado!" : "Copiar"}
-                    </button>
-                  </div>
-                </div>
-                {paymentStatus.point_of_interaction.transaction_data
-                  .ticket_url && (
-                  <a
-                    href={
-                      paymentStatus.point_of_interaction.transaction_data
-                        .ticket_url
-                    }
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bank-link"
-                  >
-                    Pagar no App do Banco{" "}
-                    <FontAwesomeIcon icon={faExternalLinkAlt} />
-                  </a>
-                )}
+          {isPending && paymentStatus.pix?.qr_code_base64 && (
+            <div className="pix-section">
+              <div className="qr-wrapper">
+                <img
+                  src={`data:image/png;base64,${paymentStatus.pix.qr_code_base64}`}
+                  alt="QR Code PIX"
+                />
               </div>
-            )}
+              <div className="pix-copy-box">
+                <p className="pix-label">Código Copia e Cola</p>
+                <div className="copy-action">
+                  <span className="truncate">{paymentStatus.pix.qr_code}</span>
+                  <button
+                    onClick={handleCopyPix}
+                    className={copied ? "copied" : ""}
+                  >
+                    <FontAwesomeIcon icon={faCopy} />
+                    {copied ? "Copiado!" : "Copiar"}
+                  </button>
+                </div>
+              </div>
+              {paymentStatus.pix.ticket_url && (
+                <a
+                  href={paymentStatus.pix.ticket_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bank-link"
+                >
+                  Pagar no App do Banco{" "}
+                  <FontAwesomeIcon icon={faExternalLinkAlt} />
+                </a>
+              )}
+            </div>
+          )}
 
           <div className="transaction-info">
             <div className="info-row">
