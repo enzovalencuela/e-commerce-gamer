@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Product } from "../../types";
 import "./MenuSearchSort.css";
 import Loading from "../Loading/Loading";
@@ -20,6 +20,21 @@ function MenuSearchSort({
 }: MenuSearchSortProps) {
   const [loading, setLoading] = useState(false);
   const searchSort = ["Preço", "Pedidos"];
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
 
   const sortSearchBy = (sortBy: string) => {
     setLoading(true);
@@ -47,12 +62,19 @@ function MenuSearchSort({
   return loading ? (
     <Loading />
   ) : (
-    <div className="menu-search-sort">
+    <div className="menu-search-sort" ref={menuRef}>
       {searchSort.map((sortBy, index) => (
-        <div key={index} onClick={() => sortSearchBy(sortBy)}>
-          <p>
-            {sortBy} {sortBy === "Preço" ? (isAscending ? "↑" : "↓") : ""}
-          </p>
+        <div
+          key={index}
+          className="sort-item"
+          onClick={() => sortSearchBy(sortBy)}
+        >
+          <span>{sortBy}</span>
+          {sortBy === "Preço" && (
+            <span className="sort-direction">
+              {isAscending ? "Menor ↑" : "Maior ↓"}
+            </span>
+          )}
         </div>
       ))}
     </div>
