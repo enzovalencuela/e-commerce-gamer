@@ -31,9 +31,10 @@ function MenuSearchSort({ results, setResults, onClose }: MenuSearchSortProps) {
     }, 1000);
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="menu-search-sort">
-      {loading && <Loading />}
       {searchSort.map((sortBy, index) => (
         <div key={index} onClick={() => sortSearchBy(sortBy)}>
           <p>{sortBy}</p>
