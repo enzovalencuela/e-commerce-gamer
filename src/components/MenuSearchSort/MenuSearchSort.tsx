@@ -6,12 +6,19 @@ import Loading from "../Loading/Loading";
 interface MenuSearchSortProps {
   results: Product[];
   setResults: (products: Product[]) => void;
+  isAscending: boolean;
+  setIsAscending: React.Dispatch<React.SetStateAction<boolean>>;
   onClose: () => void;
 }
 
-function MenuSearchSort({ results, setResults, onClose }: MenuSearchSortProps) {
+function MenuSearchSort({
+  results,
+  setResults,
+  isAscending,
+  setIsAscending,
+  onClose,
+}: MenuSearchSortProps) {
   const [loading, setLoading] = useState(false);
-  const [isAscending, setIsAscending] = useState(true);
   const searchSort = ["Preço", "Pedidos"];
 
   const sortSearchBy = (sortBy: string) => {
@@ -20,7 +27,7 @@ function MenuSearchSort({ results, setResults, onClose }: MenuSearchSortProps) {
     setTimeout(() => {
       const newResults = [...results];
 
-      if (sortBy == "Preço") {
+      if (sortBy === "Preço") {
         if (isAscending) {
           newResults.sort((a, b) => a.preco - b.preco);
         } else {

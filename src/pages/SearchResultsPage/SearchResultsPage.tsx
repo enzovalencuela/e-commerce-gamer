@@ -15,6 +15,7 @@ const SearchResultsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, SetSearchQuery] = useState("");
   const [showMenuSort, setShowMenuSort] = useState(false);
+  const [isAscending, setIsAscending] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -82,6 +83,8 @@ const SearchResultsPage: React.FC = () => {
             <MenuSearchSort
               results={results}
               setResults={setResults}
+              isAscending={isAscending}
+              setIsAscending={setIsAscending}
               onClose={() => setShowMenuSort(false)}
             />
           )}
