@@ -32,8 +32,8 @@ function MenuSearchSort({ results, setResults, onClose }: MenuSearchSortProps) {
       }
 
       setResults(newResults);
-      onClose();
       setLoading(false);
+      onClose();
     }, 500);
   };
 
