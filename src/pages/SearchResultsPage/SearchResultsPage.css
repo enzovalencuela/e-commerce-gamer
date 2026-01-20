@@ -57,6 +57,7 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
   padding-top: 10px;
+  margin-bottom: 100px;
 }
 
 /* Estilo para a mensagem de "Nenhum produto encontrado" */
