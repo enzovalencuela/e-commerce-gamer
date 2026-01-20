@@ -11,6 +11,7 @@ interface MenuSearchSortProps {
 
 function MenuSearchSort({ results, setResults, onClose }: MenuSearchSortProps) {
   const [loading, setLoading] = useState(false);
+  const [isAscending, setIsAscending] = useState(true);
   const searchSort = ["Preço", "Pedidos"];
 
   const sortSearchBy = (sortBy: string) => {
@@ -20,7 +21,12 @@ function MenuSearchSort({ results, setResults, onClose }: MenuSearchSortProps) {
       const newResults = [...results];
 
       if (sortBy == "Preço") {
-        newResults.sort((a, b) => a.preco - b.preco);
+        if (isAscending) {
+          newResults.sort((a, b) => a.preco - b.preco);
+        } else {
+          newResults.sort((a, b) => b.preco - a.preco);
+        }
+        setIsAscending(!isAscending);
       } else if (sortBy === "Pedidos") {
         newResults.sort((a, b) => (b.salesCount || 0) - (a.salesCount || 0));
       }
@@ -28,7 +34,7 @@ function MenuSearchSort({ results, setResults, onClose }: MenuSearchSortProps) {
       setResults(newResults);
       onClose();
       setLoading(false);
-    }, 1000);
+    }, 500);
   };
 
   return loading ? (
@@ -37,7 +43,9 @@ function MenuSearchSort({ results, setResults, onClose }: MenuSearchSortProps) {
     <div className="menu-search-sort">
       {searchSort.map((sortBy, index) => (
         <div key={index} onClick={() => sortSearchBy(sortBy)}>
-          <p>{sortBy}</p>
+          <p>
+            {sortBy} {sortBy === "Preço" ? (isAscending ? "↑" : "↓") : ""}
+          </p>
         </div>
       ))}
     </div>
