@@ -1,0 +1,41 @@
+.menu-search-sort {
+  position: absolute;
+  bottom: -50px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  min-width: 100px;
+  padding: 8px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  animation: fadeInSlide 0.25s ease-out forwards;
+  opacity: 0;
+  transform: translateY(-10px);
+
+  & div {
+    cursor: pointer;
+    width: 100%;
+    padding-inline: 16px;
+  }
+
+  & div:hover {
+    background-color: aliceblue;
+  }
+}
+
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

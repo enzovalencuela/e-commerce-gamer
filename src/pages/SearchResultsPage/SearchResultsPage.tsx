@@ -6,11 +6,15 @@ import type { Product } from "../../types/Product";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import Loading from "../../components/Loading/Loading";
 import "./SearchResultsPage.css";
+import { faSort } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import MenuSearchSort from "../../components/MenuSearchSort/MenuSearchSort";
 
 const SearchResultsPage: React.FC = () => {
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, SetSearchQuery] = useState("");
+  const [showMenuSort, setShowMenuSort] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -63,9 +67,24 @@ const SearchResultsPage: React.FC = () => {
   ) : (
     <div className="search-results-container">
       {searchQuery && (
-        <div className="active-filter-tag">
-          <span>{searchQuery}</span>
-          <button onClick={handleClearSearch}>&times;</button>
+        <div className="nav-search-result">
+          <div className="active-filter-tag">
+            <span>{searchQuery}</span>
+            <button onClick={handleClearSearch}>&times;</button>
+          </div>
+          <div className="active-sort-result">
+            <FontAwesomeIcon
+              icon={faSort}
+              onClick={() => setShowMenuSort(!showMenuSort)}
+            />
+          </div>
+          {showMenuSort && (
+            <MenuSearchSort
+              results={results}
+              setResults={setResults}
+              onClose={() => setShowMenuSort(false)}
+            />
+          )}
         </div>
       )}
       {results.length > 0 ? (

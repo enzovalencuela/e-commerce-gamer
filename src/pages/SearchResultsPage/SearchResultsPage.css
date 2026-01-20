@@ -6,7 +6,14 @@
   min-height: 70vh; /* Garante que a página tenha uma altura mínima */
 }
 
-/* Estilos para a tag de filtro ativo (ex: "notebooks X") */
+.nav-search-result {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .active-filter-tag {
   display: inline-flex;
   align-items: center;
@@ -38,6 +45,10 @@
 
 .active-filter-tag button:hover {
   color: #000;
+}
+
+.active-sort-result {
+  cursor: pointer;
 }
 
 /* Layout de grid para os produtos */
