@@ -82,43 +82,32 @@ const Login: React.FC = () => {
   const handleGoogleLogin = async (user: any) => {
     if (isLoading || !user) return;
     setIsLoading(true);
-
     try {
       const firebaseIdToken = await user.getIdToken();
-
+      // Agora basta chamar /google-login: o backend irá criar session cookie seguro!
       const response = await fetch(`${VITE_BACKEND_URL2}/google-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           firebaseToken: firebaseIdToken,
           name: user.displayName,
-          email: user.email,
         }),
         credentials: "include",
       });
-
       if (response.ok) {
         const data = await response.json();
         login(data.user);
         navigate("/");
       } else {
-        console.error(
-          "Erro na resposta do backend ao sincronizar dados do Google:",
-          response.status,
-          await response.text()
-        );
-        setError("Erro ao sincronizar dados do Google com o servidor.");
+        setError("Erro ao autenticar via Google no backend.");
       }
     } catch (error) {
-      console.error(
-        "Erro ao fazer requisição para sincronização do Google (CATCH):",
-        error
-      );
       setError("Erro de conexão ao sincronizar com o servidor.");
     } finally {
       setIsLoading(false);
     }
   };
+
 
   return (
     <AuthFormLayout

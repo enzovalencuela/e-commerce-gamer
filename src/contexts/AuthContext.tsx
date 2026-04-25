@@ -124,12 +124,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
+          // Não envie mais o token manualmente!
+          // Agora só faz um fetch normal usando o cookie gerado pelo backend_user
           const response = await fetch(`${VITE_BACKEND_URL2}/user-data`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              firebaseIdToken: await firebaseUser.getIdToken(),
-            }),
             credentials: "include",
           });
 
@@ -189,7 +187,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const login = async (backendData: User) => {
+  // Após login Google/back, apenas sincronize Firestore local e prepare estado react;
+// Não precisamos armazenar tokens/segredos!
+const login = async (backendData: User) => {
     const firebaseUser = auth.currentUser;
     if (!firebaseUser) return;
 
@@ -197,6 +197,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const combinedUser: UserData = { ...firebaseUser, ...syncedData };
     setUser(combinedUser);
   };
+
 
   const logout = async () => {
     if (auth) {
