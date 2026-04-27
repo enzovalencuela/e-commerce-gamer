@@ -9,6 +9,7 @@ import BackButton from "../../components/BackButton/BackButton";
 import Button from "../../components/Button/Button";
 import Loading from "../../components/Loading/Loading";
 import { usePayment } from "../../contexts/PaymentContext";
+import { motion } from "framer-motion";
 
 const CartPage: React.FC = () => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -50,9 +51,14 @@ const CartPage: React.FC = () => {
   };
 
   return loading ? (
-    <Loading />
+    <Loading variant="cart" />
   ) : (
-    <div className="cart-page-container">
+    <motion.div
+      className="cart-page-container"
+      initial={{ opacity: 0, x: 60 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.34, ease: "easeOut" }}
+    >
       {showErrorMessage && (
         <ErrorMessage onClose={() => setShowErrorMessage(false)} />
       )}
@@ -68,8 +74,14 @@ const CartPage: React.FC = () => {
       ) : (
         <div className="cart-content">
           <div className="cart-items-list">
-            {cart.map((item) => (
-              <div key={item.id} className="cart-item-card">
+            {cart.map((item, index) => (
+              <motion.div
+                key={item.id}
+                className="cart-item-card"
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05, duration: 0.24 }}
+              >
                 <input
                   type="checkbox"
                   checked={selectedItems.includes(item.id)}
@@ -86,16 +98,22 @@ const CartPage: React.FC = () => {
                     <span>R$ {item.preco}</span>
                   </div>
                 </Link>
-                <button
+                <motion.button
                   className="cart-remove-btn"
                   onClick={() => handleRemoveFromCart(item.id)}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <FontAwesomeIcon icon={faTrashCan} /> Remover
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             ))}
           </div>
-          <div className="cart-summary">
+          <motion.div
+            className="cart-summary"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 0.08 }}
+          >
             <h2>Resumo da Compra</h2>
             <div className="summary-item">
               <span>Total de itens selecionados:</span>
@@ -110,13 +128,14 @@ const CartPage: React.FC = () => {
                 <Button
                   disabled={selectedItems.length <= 0}
                   child="Ir para Checkout"
+                  type="button"
                 />
               </Link>
             )}
-          </div>
+          </motion.div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

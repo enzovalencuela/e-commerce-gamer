@@ -14,6 +14,7 @@ interface PaymentContextType {
   showErrorMessage: boolean;
   setShowErrorMessage: React.Dispatch<React.SetStateAction<boolean>>;
   maxParcelas: () => number;
+  paymentProcessing: boolean;
 }
 
 interface PaymentProviderProps {
@@ -29,6 +30,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
 
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -70,6 +72,9 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
       return;
     }
 
+    setLoading(true);
+    setPaymentProcessing(true);
+
     return new Promise<void>((resolve, reject) => {
       fetch(`${VITE_BACKEND_URL}/api/payments/create`, {
         method: "POST",
@@ -89,6 +94,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
         .then((data) => {
           console.log("Pagamento processado:", data);
           setLoading(false);
+          setPaymentProcessing(false);
           const id = data.payment.id;
           navigate(`/status?payment_id=${id}`);
           setAtualizarQuery(true);
@@ -96,6 +102,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
         })
         .catch((error) => {
           setLoading(false);
+          setPaymentProcessing(false);
           setShowErrorMessage(true);
           console.error("Erro ao processar pagamento", error);
           reject();
@@ -105,11 +112,13 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
 
   const onError = async (error: any) => {
     setLoading(false);
+    setPaymentProcessing(false);
     console.log("Erro:", error);
   };
 
   const onReady = async () => {
     setLoading(false);
+    setPaymentProcessing(false);
   };
 
   const contextValue = {
@@ -122,6 +131,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
     onError,
     onReady,
     maxParcelas,
+    paymentProcessing,
   };
 
   return (

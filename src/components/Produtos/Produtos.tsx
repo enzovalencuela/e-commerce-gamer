@@ -118,7 +118,7 @@ const Produtos: React.FC<ProdutosProps> = ({
   }
 
   return loading ? (
-    <Loading />
+    <Loading variant="products" />
   ) : (
     <section className="py-10">
       <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-8">

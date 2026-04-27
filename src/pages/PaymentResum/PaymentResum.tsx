@@ -8,6 +8,7 @@ import Loading from "../../components/Loading/Loading";
 import FormDados from "../../components/FormDados/FormDados";
 import SpanMessage from "../../components/SpanMessage/SpanMessage";
 import { usePayment } from "../../contexts/PaymentContext";
+import Button from "../../components/Button/Button";
 
 const PaymentResum = () => {
   const {
@@ -20,6 +21,7 @@ const PaymentResum = () => {
     loading,
     setLoading,
     maxParcelas,
+    paymentProcessing,
   } = usePayment();
   const [formSubmit, setFormSubmit] = useState(false);
   const [showOkMessage, setShowOkMessage] = useState(false);
@@ -56,7 +58,9 @@ const PaymentResum = () => {
 
   return (
     <div className="cart-resum-container">
-      {loading && <Loading />}
+      {(loading || paymentProcessing) && (
+        <Loading message="Processando pagamento..." />
+      )}
       {showOkMessage && <SpanMessage message={spanMessage} status="ok" />}
       <BackButton />
       {showErrorMessage && (
@@ -72,9 +76,11 @@ const PaymentResum = () => {
         />
       ) : (
         <div className="content-resum">
-          <button className="submit-button" onClick={() => setFormSubmit(true)}>
-            Atualizar dados pessoais
-          </button>
+          <Button
+            child="Atualizar dados pessoais"
+            type="button"
+            onClick={() => setFormSubmit(true)}
+          />
           {totalAmount > 0 && (
             <Payment
               initialization={initialization}

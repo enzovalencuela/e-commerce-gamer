@@ -6,6 +6,7 @@ import {
   signInWithPopup,
 } from "../../firebaseConfig";
 import "./ButtonGoogle.css";
+import { motion } from "framer-motion";
 
 function GoogleLoginButton({ onSuccess, onError }: any) {
   const handleGoogleSignIn = async () => {
@@ -26,10 +27,14 @@ function GoogleLoginButton({ onSuccess, onError }: any) {
   };
 
   return (
-    <button onClick={handleGoogleSignIn} className="button-google">
+    <motion.button
+      onClick={handleGoogleSignIn}
+      className="button-google"
+      whileTap={{ scale: 0.97 }}
+    >
       <img src={GoogleIcon} alt="" />
       <span>Entre com sua conta Google</span>
-    </button>
+    </motion.button>
   );
 }
 

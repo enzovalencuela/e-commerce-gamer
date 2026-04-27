@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import SpanMessage from "../SpanMessage/SpanMessage";
 import { ArrowRight, ShoppingBag, Sparkles, Tag } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface ProductCardProps {
   product: Product;
@@ -102,7 +103,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, sectionTitle }) => {
           </div>
         </div>
         <div className="mt-auto flex items-center gap-2">
-          <button
+          <motion.button
             onClick={() =>
               isProductInCart
                 ? navigate("/carrinho")
@@ -113,12 +114,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, sectionTitle }) => {
                 ? "bg-slate-100 text-slate-900 hover:bg-slate-200"
                 : "bg-primary text-white hover:bg-lightprimary"
             }`}
+            whileTap={{ scale: 0.97 }}
           >
             <span className="inline-flex items-center gap-2">
               <ShoppingBag className="h-4 w-4" />
               {isProductInCart ? "Ver no carrinho" : "Adicionar"}
             </span>
-          </button>
+          </motion.button>
           <Link
             to={`/product/${product.id}`}
             className="rounded-full border border-slate-200 p-3 text-secondary transition hover:border-secondary/30 hover:text-secondary"

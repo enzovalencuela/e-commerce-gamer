@@ -5,12 +5,14 @@ import { useAuth } from "../../contexts/AuthContext";
 import Menu from "../Menu/Menu";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import { Menu as MenuIcon, ShoppingBag, UserRound } from "lucide-react";
+import { motion } from "framer-motion";
 
 const MainNavbar: React.FC = () => {
   const [menu, setMenu] = useState(false);
   const [nome, setNome] = useState("");
   const { user, cart } = useAuth();
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [cartBump, setCartBump] = useState(false);
   const qtdItemsCart = cart.length;
   const navigate = useNavigate();
 
@@ -21,6 +23,13 @@ const MainNavbar: React.FC = () => {
         : "Faça login!"
     );
   }, [user]);
+
+  useEffect(() => {
+    if (qtdItemsCart <= 0) return;
+    setCartBump(true);
+    const timer = setTimeout(() => setCartBump(false), 550);
+    return () => clearTimeout(timer);
+  }, [qtdItemsCart]);
 
   return (
     <>
@@ -49,12 +58,20 @@ const MainNavbar: React.FC = () => {
           }}
           className="hidden sm:block"
         >
-          <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <motion.div
+            className="relative flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            animate={
+              cartBump
+                ? { scale: [1, 1.18, 0.96, 1.08, 1] }
+                : { scale: 1 }
+            }
+            transition={{ duration: 0.52, ease: "easeOut" }}
+          >
             <ShoppingBag className="h-5 w-5 text-secondary" />
             <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-white">
               {qtdItemsCart}
             </span>
-          </div>
+          </motion.div>
         </Link>
         <div
           onClick={user ? () => setMenu(!menu) : () => navigate("/login")}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useProduct } from "../../contexts/ProductContext";
 import {
   ArrowRight,
@@ -11,6 +11,9 @@ import {
 } from "lucide-react";
 import type { Product } from "../../types/Product";
 import { Link } from "react-router-dom";
+import ProdutosDashboard from "./Produtos/Produtos";
+import Loading from "../../components/Loading/Loading";
+import { motion } from "framer-motion";
 
 type DashboardView = "overview" | "catalog";
 
@@ -21,13 +24,20 @@ const formatCurrency = (value: number) =>
   }).format(value || 0);
 
 const Dashboard: React.FC = () => {
-  const { produtos, setProdutos, products } = useProduct();
+  const { produtos, setProdutos, products, loading } = useProduct();
   const [activeView, setActiveView] = useState<DashboardView>(
     produtos ? "catalog" : "overview"
   );
 
-  const availableProducts = products.filter((product) => product.disponivel);
-  const pendingProducts = products.filter((product) => !product.disponivel);
+  const availableProducts = useMemo(
+    () => products.filter((product) => product.disponivel),
+    [products]
+  );
+  const pendingProducts = useMemo(
+    () => products.filter((product) => !product.disponivel),
+    [products]
+  );
+
   const totalBalance = availableProducts.reduce(
     (accumulator, product) => accumulator + Number(product.preco || 0),
     0
@@ -78,8 +88,12 @@ const Dashboard: React.FC = () => {
     { id: "catalog" as const, label: "Catálogo", icon: Package },
   ];
 
+  if (loading && activeView === "overview") {
+    return <Loading variant="dashboard" />;
+  }
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+    <div className="grid gap-6 px-4 sm:px-6 lg:grid-cols-[280px_1fr] lg:px-8">
       <aside className="rounded-[32px] border border-slate-200 bg-slate-950 p-6 text-white shadow-soft">
         <div className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
@@ -94,12 +108,13 @@ const Dashboard: React.FC = () => {
         </div>
         <nav className="space-y-2">
           {navItems.map((item) => (
-            <button
+            <motion.button
               key={item.id}
               onClick={() => {
                 setActiveView(item.id);
                 setProdutos(item.id === "catalog");
               }}
+              whileTap={{ scale: 0.98 }}
               className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${
                 activeView === item.id
                   ? "bg-white text-slate-950"
@@ -108,7 +123,7 @@ const Dashboard: React.FC = () => {
             >
               <item.icon className="h-4 w-4" />
               {item.label}
-            </button>
+            </motion.button>
           ))}
         </nav>
         <div className="mt-8 rounded-[24px] border border-white/10 bg-white/5 p-5">
@@ -147,7 +162,7 @@ const Dashboard: React.FC = () => {
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
                 {activeView === "overview"
                   ? "Resumo executivo com métricas essenciais e histórico de atividade para tomada de decisão."
-                  : "Lista de produtos com foco em disponibilidade, preço e acesso direto à página pública de cada item."}
+                  : "O catálogo segue exibindo todos os produtos e permite editar, adicionar e remover itens normalmente."}
               </p>
             </div>
             <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-600">
@@ -160,10 +175,13 @@ const Dashboard: React.FC = () => {
         {activeView === "overview" ? (
           <>
             <div className="grid gap-5 xl:grid-cols-3">
-              {stats.map((stat) => (
-                <article
+              {stats.map((stat, index) => (
+                <motion.article
                   key={stat.title}
                   className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm"
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.06, duration: 0.24 }}
                 >
                   <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-900">
                     <stat.icon className="h-5 w-5" />
@@ -177,7 +195,7 @@ const Dashboard: React.FC = () => {
                   <p className="mt-2 text-sm leading-7 text-slate-600">
                     {stat.description}
                   </p>
-                </article>
+                </motion.article>
               ))}
             </div>
 
@@ -201,10 +219,13 @@ const Dashboard: React.FC = () => {
                   <span>Detalhe</span>
                   <span>Status</span>
                 </div>
-                {activities.map((activity) => (
-                  <div
+                {activities.map((activity, index) => (
+                  <motion.div
                     key={activity.id}
                     className="grid grid-cols-1 gap-3 border-t border-slate-200 px-5 py-4 text-sm text-slate-700 sm:grid-cols-[1.4fr_1.4fr_140px]"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.04, duration: 0.2 }}
                   >
                     <span className="font-semibold text-slate-950">
                       {activity.title}
@@ -221,58 +242,16 @@ const Dashboard: React.FC = () => {
                         {activity.status}
                       </span>
                     </span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
           </>
+        ) : loading ? (
+          <Loading variant="dashboard" />
         ) : (
-          <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <div className="overflow-hidden rounded-[24px] border border-slate-200">
-              <div className="grid grid-cols-[1.8fr_120px_130px] bg-slate-50 px-5 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                <span>Produto</span>
-                <span>Preço</span>
-                <span>Status</span>
-              </div>
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  className="grid grid-cols-1 gap-4 border-t border-slate-200 px-5 py-5 sm:grid-cols-[1.8fr_120px_130px]"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="h-16 w-16 overflow-hidden rounded-2xl bg-slate-100 p-2">
-                      <img
-                        src={product.img}
-                        alt={product.titulo}
-                        className="h-full w-full object-contain"
-                      />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-slate-950">
-                        {product.titulo}
-                      </p>
-                      <p className="text-sm text-slate-500">
-                        {product.categoria}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center text-sm font-semibold text-slate-700">
-                    {formatCurrency(Number(product.preco))}
-                  </div>
-                  <div className="flex items-center">
-                    <span
-                      className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                        product.disponivel
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-amber-100 text-amber-800"
-                      }`}
-                    >
-                      {product.disponivel ? "Sucesso" : "Pendente"}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="rounded-[32px] border border-slate-200 bg-white p-2 shadow-sm sm:p-4">
+            <ProdutosDashboard embedded />
           </div>
         )}
       </section>

@@ -64,7 +64,7 @@ const SearchResultsPage: React.FC = () => {
   };
 
   return loading ? (
-    <Loading />
+    <Loading variant="products" />
   ) : (
     <div className="search-results-container">
       {searchQuery && (

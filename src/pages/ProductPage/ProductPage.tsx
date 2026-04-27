@@ -120,7 +120,7 @@ const ProductPage: React.FC = () => {
   };
 
   if (loading) {
-    return <Loading />;
+    return <Loading variant="products" />;
   }
 
   if (error || !product) {

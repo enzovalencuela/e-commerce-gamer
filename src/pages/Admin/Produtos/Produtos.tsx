@@ -1,5 +1,3 @@
-// src/pages/Admin/Dashboard.tsx
-
 import React, { useState } from "react";
 import ProductForm from "../../../components/ProductForm/ProductForm";
 import "./Produtos.css";
@@ -12,7 +10,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { useProduct } from "../../../contexts/ProductContext";
 import AttentionMessage from "../../../components/AttentionMessage/AttentionMessage";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+
 type NewProduct = Omit<Product, "id">;
+
+interface ProdutosDashboardProps {
+  embedded?: boolean;
+}
 
 const navDepartments = [
   { id: "1", name: "Setups" },
@@ -25,12 +29,13 @@ const navDepartments = [
   { id: "8", name: "Áudio" },
 ];
 
-const ProdutosDashboard: React.FC = () => {
+const ProdutosDashboard: React.FC<ProdutosDashboardProps> = ({
+  embedded = false,
+}) => {
   const [showSpan, setShowSpan] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showAttentionMessage, setShowAttentionMessage] = useState(false);
-  const [deletar, setDeletar] = useState(true);
-
+  const [productToDelete, setProductToDelete] = useState<number | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const {
     loading,
@@ -58,7 +63,7 @@ const ProdutosDashboard: React.FC = () => {
 
     try {
       const response = await fetch(`${url}`, {
-        method: method,
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -89,45 +94,50 @@ const ProdutosDashboard: React.FC = () => {
   };
 
   const handleDeleteProduct = async (productId: number) => {
-    setShowAttentionMessage(true);
+    try {
+      const response = await fetch(`${VITE_BACKEND_URL}/api/products/${productId}`, {
+        method: "DELETE",
+      });
 
-    if (!showAttentionMessage) {
-      if (!deletar) return;
-
-      try {
-        const response = await fetch(
-          `${VITE_BACKEND_URL}/api/products/${productId}`,
-          {
-            method: "DELETE",
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Erro ao remover produto.");
-        }
-
-        setProducts(products.filter((p) => p.id !== productId));
-      } catch (error) {
-        console.error("Erro ao remover produto:", error);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erro ao remover produto.");
       }
+
+      setProducts(products.filter((p) => p.id !== productId));
+      setShowAttentionMessage(false);
+      setProductToDelete(null);
+    } catch (error) {
+      console.error("Erro ao remover produto:", error);
     }
   };
 
+  const filteredProducts =
+    searchQuery === undefined
+      ? products
+      : products.filter((product) =>
+          typeof searchQuery === "number"
+            ? product.id === searchQuery
+            : product.categoria === searchQuery || product.titulo.includes(searchQuery)
+        );
+
   return loading ? (
-    <Loading />
+    <Loading variant="dashboard" />
   ) : (
     <div className="products-container">
       {showSpan && (
         <SpanMessage message="Produto salvo com sucesso!" status="ok" />
       )}
-      <BackButton />
-      <h1>Produtos</h1>
-      {showAttentionMessage && (
+      {!embedded && <BackButton />}
+      {!embedded && <h1>Produtos</h1>}
+      {showAttentionMessage && productToDelete !== null && (
         <AttentionMessage
           message="Tem certeza que deseja excluir esse produto?"
-          onClose={() => setShowAttentionMessage(false)}
-          onClick={() => setDeletar(false)}
+          onClose={() => {
+            setShowAttentionMessage(false);
+            setProductToDelete(null);
+          }}
+          onClick={() => handleDeleteProduct(productToDelete)}
           buttonContent="Sim!"
         />
       )}
@@ -138,9 +148,13 @@ const ProdutosDashboard: React.FC = () => {
           onCancel={() => setIsAdding(false)}
         />
       ) : (
-        <button onClick={() => setIsAdding(true)} className="add-product-btn">
+        <motion.button
+          onClick={() => setIsAdding(true)}
+          className="add-product-btn"
+          whileTap={{ scale: 0.98 }}
+        >
           Adicionar Novo Produto
-        </button>
+        </motion.button>
       )}
       <ul className="div-ul">
         <Swiper
@@ -148,15 +162,12 @@ const ProdutosDashboard: React.FC = () => {
             0: { slidesPerView: 3 },
             660: { slidesPerView: 5 },
             950: { slidesPerView: 6 },
-            1290: {
-              slidesPerView: 8,
-            },
+            1290: { slidesPerView: 8 },
           }}
         >
           {navDepartments.map((dept) => (
-            <SwiperSlide>
+            <SwiperSlide key={dept.id}>
               <li
-                key={dept.id}
                 className="li-departamento"
                 onClick={() => setSearchQuery(dept.name)}
               >
@@ -181,10 +192,16 @@ const ProdutosDashboard: React.FC = () => {
           </button>
         </div>
       )}
-      {products.length > 0 ? (
+      {filteredProducts.length > 0 ? (
         <div className="product-list">
-          {products.map((product) => (
-            <div key={product.id} className="product-item">
+          {filteredProducts.map((product, index) => (
+            <motion.div
+              key={product.id}
+              className="product-item"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.03, duration: 0.2 }}
+            >
               <div className="product-div-info">
                 <div className="product-info">
                   <Link to={`/product/${product.id}`}>
@@ -196,12 +213,21 @@ const ProdutosDashboard: React.FC = () => {
                   </div>
                 </div>
                 <div className="product-actions">
-                  <button onClick={() => setEditingProduct(product)}>
+                  <motion.button
+                    onClick={() => setEditingProduct(product)}
+                    whileTap={{ scale: 0.97 }}
+                  >
                     Editar
-                  </button>
-                  <button onClick={() => handleDeleteProduct(product.id)}>
+                  </motion.button>
+                  <motion.button
+                    onClick={() => {
+                      setProductToDelete(product.id);
+                      setShowAttentionMessage(true);
+                    }}
+                    whileTap={{ scale: 0.97 }}
+                  >
                     Remover
-                  </button>
+                  </motion.button>
                 </div>
               </div>
               {editingProduct?.id === product.id && (
@@ -211,7 +237,7 @@ const ProdutosDashboard: React.FC = () => {
                   onCancel={() => setEditingProduct(null)}
                 />
               )}
-            </div>
+            </motion.div>
           ))}
         </div>
       ) : (
