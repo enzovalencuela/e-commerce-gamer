@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
 import "swiper/swiper-bundle.css";
 import "./ProductCarousel.css";
 import { useNavigate } from "react-router-dom";
@@ -32,13 +31,11 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
         />
       )}
       <Swiper
-        modules={[Pagination]}
         grabCursor
         loop={true}
         initialSlide={2}
         speed={800}
         slideToClickedSlide
-        pagination={{ clickable: true }}
         breakpoints={{
           0: { slidesPerView: 2, spaceBetween: 10 },
           660: { slidesPerView: 3 },
