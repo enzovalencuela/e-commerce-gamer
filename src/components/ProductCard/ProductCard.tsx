@@ -43,7 +43,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, sectionTitle }) => {
     : sectionTitle === "Novidades";
 
   return (
-    <div className="group relative flex h-full flex-col overflow-hidden rounded-[22px] border border-slate-200/80 bg-white p-2.5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-2xl select-none sm:rounded-[28px] sm:p-4">
+    <div className="group relative flex h-full flex-col overflow-hidden rounded-[22px] border border-slate-200/80 bg-white p-2.5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-2xl select-none sm:rounded-[24px] sm:p-3">
       {showSpanOkMessage && (
         <SpanMessage message="Produto adicionado ao carrinho!" status="ok" />
       )}
@@ -71,7 +71,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, sectionTitle }) => {
 
       <Link
         to={`/product/${product.id}`}
-        className="relative flex aspect-[4/4.15] items-center justify-center overflow-hidden rounded-[18px] bg-gradient-to-br from-slate-50 via-white to-slate-100 sm:aspect-[4/4.2] sm:rounded-[24px]"
+        className="relative flex aspect-[4/3.4] items-center justify-center overflow-hidden rounded-[18px] bg-gradient-to-br from-slate-50 via-white to-slate-100 sm:aspect-[4/3.45] sm:rounded-[20px]"
       >
         <img
           src={product.img}
@@ -86,24 +86,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, sectionTitle }) => {
         />
       </Link>
 
-      <div className="flex flex-1 flex-col pt-3 sm:pt-5">
-        <div className="mb-2.5 space-y-1 sm:mb-4 sm:space-y-2">
+      <div className="flex flex-1 flex-col pt-2.5 sm:pt-3.5">
+        <div className="mb-2 space-y-1 sm:mb-3 sm:space-y-1.5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400 sm:text-xs sm:tracking-[0.18em]">
             {product.categoria}
           </p>
-          <h3 className="line-clamp-2 min-h-[2.7rem] text-[15px] font-semibold leading-snug text-slate-950 sm:min-h-[3.5rem] sm:text-lg sm:leading-tight">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-[15px] font-semibold leading-snug text-slate-950 sm:min-h-[3rem] sm:text-[1.05rem] sm:leading-tight">
             {product.titulo}
           </h3>
-          <div className="min-h-[4.7rem] space-y-0.5 sm:min-h-[5.5rem]">
+          <div className="min-h-[4.25rem] space-y-0.5 sm:min-h-[4.85rem]">
             {product.preco_original && (
               <p className="text-[11px] text-slate-400 line-through sm:text-sm">
                 R$ {product.preco_original}
               </p>
             )}
-            <h4 className="text-[18px] font-extrabold tracking-tight text-slate-950 sm:text-2xl">
+            <h4 className="text-[18px] font-extrabold tracking-tight text-slate-950 sm:text-[2rem]">
               R$ {product.preco}
             </h4>
-            <span className="block text-[11px] leading-4 text-slate-500 sm:text-sm sm:leading-6">
+            <span className="block text-[11px] leading-4 text-slate-500 sm:text-sm sm:leading-5">
               em até{" "}
               <b className="text-slate-700">
                 {product.max_parcelas}x de R$ {Number(parcela).toFixed(2)}
@@ -119,7 +119,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, sectionTitle }) => {
                 ? navigate("/carrinho")
                 : handleAddToCart(product)
             }
-            className={`flex min-h-10 flex-1 items-center justify-center rounded-full px-2.5 py-2 text-[13px] font-semibold transition active:scale-[0.98] sm:min-h-11 sm:px-4 sm:py-3 sm:text-sm ${
+            className={`flex min-h-10 flex-1 items-center justify-center rounded-full px-2.5 py-2 text-[13px] font-semibold transition active:scale-[0.98] sm:min-h-10 sm:px-3.5 sm:py-2.5 sm:text-sm ${
               isProductInCart
                 ? "bg-slate-100 text-slate-900 hover:bg-slate-200"
                 : "bg-primary text-white hover:bg-lightprimary"
@@ -136,7 +136,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, sectionTitle }) => {
 
           <Link
             to={`/product/${product.id}`}
-            className="flex min-h-10 min-w-10 items-center justify-center rounded-full border border-slate-200 p-2 text-secondary transition hover:border-secondary/30 hover:text-secondary active:scale-[0.98] sm:min-h-11 sm:min-w-11 sm:p-3"
+            className="flex min-h-10 min-w-10 items-center justify-center rounded-full border border-slate-200 p-2 text-secondary transition hover:border-secondary/30 hover:text-secondary active:scale-[0.98] sm:min-h-10 sm:min-w-10 sm:p-2.5"
           >
             <ArrowRight className="h-4 w-4" />
           </Link>
