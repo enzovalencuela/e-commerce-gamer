@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -18,10 +18,25 @@ export default function Menu({ onClose }: MenuProps) {
   const [userAdmin, setUserAdmin] = useState(false);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const panelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setUserAdmin(Boolean(user && user.role === "admin"));
   }, [user]);
+
+  useEffect(() => {
+    const handlePointerDown = (event: PointerEvent) => {
+      if (
+        panelRef.current &&
+        !panelRef.current.contains(event.target as Node)
+      ) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [onClose]);
 
   const handleLogout = () => {
     logout();
@@ -39,6 +54,7 @@ export default function Menu({ onClose }: MenuProps) {
         onClick={onClose}
       >
         <motion.div
+          ref={panelRef}
           initial={{ y: 36, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 36, opacity: 0 }}

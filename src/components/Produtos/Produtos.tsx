@@ -134,11 +134,11 @@ const Produtos: React.FC<ProdutosProps> = ({
         </div>
 
         <div className="md:hidden">
-          <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {productsToShow.map((product) => (
               <div
                 key={product.id}
-                className="min-w-[43%] snap-start sm:min-w-[31%]"
+                className="min-w-[78vw] max-w-[320px] snap-center first:ml-[4vw] last:mr-[8vw] sm:min-w-[46vw] sm:max-w-none sm:first:ml-0 sm:last:mr-6"
               >
                 <ProductCard product={product} sectionTitle={sectionTitle} />
               </div>
