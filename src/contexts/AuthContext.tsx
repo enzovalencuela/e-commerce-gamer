@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/contexts/AuthContext.tsx
 
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 import type { ReactNode } from "react";
 import type { Product, User } from "../types";
 import { initializeApp } from "firebase/app";
@@ -14,6 +20,7 @@ import {
 } from "firebase/auth";
 import type { User as FirebaseAuthUser } from "firebase/auth";
 import { getFirestore, doc, setDoc, setLogLevel } from "firebase/firestore";
+import { fetchProductsByIdsCached } from "../utils/productCache";
 
 setLogLevel("debug");
 
@@ -216,15 +223,13 @@ const login = async (backendData: User) => {
   };
 
   useEffect(() => {
-    setLoading(true);
-
     const fetchCart = async () => {
       if (!isAuthReady || !user || !user.id) {
         setCart([]);
-        setLoading(false);
         return;
       }
 
+      setLoading(true);
       try {
         const response = await fetch(`${VITE_BACKEND_URL2}/cart/${user.id}`, {
           credentials: "include",
@@ -233,15 +238,10 @@ const login = async (backendData: User) => {
           throw new Error("Erro ao buscar o carrinho");
         }
         const productIds: number[] = await response.json();
-
-        const fetchedItems: Product[] = [];
-        for (const productId of productIds) {
-          const productResponse = await fetch(
-            `${VITE_BACKEND_URL}/api/products/${productId}`
-          );
-          const productData = await productResponse.json();
-          fetchedItems.push(productData);
-        }
+        const fetchedItems = await fetchProductsByIdsCached(
+          VITE_BACKEND_URL,
+          productIds
+        );
         setCart(fetchedItems);
       } catch (error) {
         console.error("Erro ao buscar carrinho:", error);
@@ -355,21 +355,18 @@ const login = async (backendData: User) => {
   }, [user, paymentId, isAuthReady]);
 
   useEffect(() => {
-    setLoading(true);
     const fetchPurchasedProducts = async () => {
-      if (!paymentStatus?.additional_info?.items) return;
+      if (!paymentStatus?.additional_info?.items) {
+        setPurchasedProducts([]);
+        return;
+      }
 
+      setLoading(true);
       try {
-        const products: Product[] = [];
-        for (const item of paymentStatus.additional_info.items) {
-          const response = await fetch(
-            `${VITE_BACKEND_URL}/api/products/${item.id}`
-          );
-          if (response.ok) {
-            const data = await response.json();
-            products.push(data);
-          }
-        }
+        const ids = paymentStatus.additional_info.items
+          .map((item) => Number(item.id))
+          .filter((id) => Number.isFinite(id));
+        const products = await fetchProductsByIdsCached(VITE_BACKEND_URL, ids);
         setPurchasedProducts(products);
         setTimeout(() => {
           setLoading(false);
@@ -383,21 +380,32 @@ const login = async (backendData: User) => {
     fetchPurchasedProducts();
   }, [paymentStatus]);
 
-  const contextValue = {
-    user,
-    cart,
-    login,
-    logout,
-    addToCart,
-    removeFromCart,
-    selectedItems,
-    setSelectedItems,
-    paymentStatus,
-    purchasedProducts,
-    loading: loading || !isAuthReady,
-    isAuthReady,
-    setAtualizarQuery,
-  };
+  const contextValue = useMemo(
+    () => ({
+      user,
+      cart,
+      login,
+      logout,
+      addToCart,
+      removeFromCart,
+      selectedItems,
+      setSelectedItems,
+      paymentStatus,
+      purchasedProducts,
+      loading: loading || !isAuthReady,
+      isAuthReady,
+      setAtualizarQuery,
+    }),
+    [
+      user,
+      cart,
+      selectedItems,
+      paymentStatus,
+      purchasedProducts,
+      loading,
+      isAuthReady,
+    ]
+  );
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

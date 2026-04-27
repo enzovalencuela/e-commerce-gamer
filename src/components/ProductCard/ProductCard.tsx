@@ -74,6 +74,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, sectionTitle }) => {
         <img
           src={product.img}
           alt={product.titulo}
+          loading="lazy"
+          decoding="async"
+          width={640}
+          height={672}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           className="max-h-full w-full object-contain transition duration-300 group-hover:scale-105"
         />
       </Link>

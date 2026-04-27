@@ -1,7 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  BadgeCheck,
+  ShieldCheck,
+  ShoppingBag,
+  Sparkles,
+  Truck,
+} from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Produtos from "../../components/Produtos/Produtos";
@@ -10,13 +16,7 @@ import SpanMessage from "../../components/SpanMessage/SpanMessage";
 import Loading from "../../components/Loading/Loading";
 import type { Product } from "../../types/Product";
 import { useProduct } from "../../contexts/ProductContext";
-import {
-  BadgeCheck,
-  ShieldCheck,
-  ShoppingBag,
-  Sparkles,
-  Truck,
-} from "lucide-react";
+import { fetchProductByIdCached } from "../../utils/productCache";
 
 const ProductPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,7 +26,7 @@ const ProductPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showErrorMessage, setsShowErrorMessage] = useState(false);
   const [showOkMessage, setsShowOkMessage] = useState(false);
-  const { user } = useAuth();
+  const { user, cart, addToCart, removeFromCart } = useAuth();
   const { setSearchQuery, setProdutos } = useProduct();
   const navigate = useNavigate();
 
@@ -36,16 +36,12 @@ const ProductPage: React.FC = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`${VITE_BACKEND_URL}/api/products/${id}`);
-        if (!response.ok) {
-          throw new Error("Erro ao buscar o produto.");
+        if (!id) {
+          throw new Error("Produto inválido.");
         }
-        const data = await response.json();
-        setProduct(data);
 
-        if (user) {
-          checkIfProductInCart(data.id);
-        }
+        const data = await fetchProductByIdCached(VITE_BACKEND_URL, Number(id));
+        setProduct(data);
       } catch (err) {
         console.error("Erro ao buscar produto:", err);
         setError("Não foi possível carregar o produto. Tente novamente.");
@@ -55,36 +51,28 @@ const ProductPage: React.FC = () => {
     };
 
     fetchProduct();
-  }, [id, user]);
+  }, [id, VITE_BACKEND_URL]);
 
-  const checkIfProductInCart = async (productId: number) => {
-    try {
-      const response = await fetch(`${VITE_BACKEND_URL}/api/cart/${user?.id}`);
-      const cart = await response.json();
-      setIsAddedToCart(cart.some((item: any) => item === productId));
-    } catch (checkError) {
-      console.error("Erro ao verificar carrinho:", checkError);
-    }
-  };
+  useEffect(() => {
+    setIsAddedToCart(
+      product ? cart.some((item) => item.id === product.id) : false
+    );
+  }, [cart, product]);
 
   const handleAddToCart = async () => {
     if (!user) {
       setsShowErrorMessage(true);
+      return;
     }
+
     if (product) {
       try {
-        await fetch(`${VITE_BACKEND_URL}/api/cart/add`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: user?.id,
-            productId: product.id,
-          }),
-        });
-        setIsAddedToCart(true);
-        setsShowOkMessage(true);
+        const status = await addToCart(product);
+        if (status === "ok") {
+          setsShowOkMessage(true);
+          return;
+        }
+        setsShowErrorMessage(true);
       } catch (requestError) {
         console.error("Erro ao adicionar produto:", requestError);
         setsShowErrorMessage(true);
@@ -93,29 +81,14 @@ const ProductPage: React.FC = () => {
   };
 
   const handleRemoveFromCart = async () => {
-    if (!user) return;
-    if (product) {
-      try {
-        const response = await fetch(`${VITE_BACKEND_URL}/api/cart/remove`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: user.id,
-            productId: product.id,
-          }),
-        });
+    if (!user || !product) return;
 
-        if (!response.ok) {
-          throw new Error("Erro ao remover produto do carrinho.");
-        }
-        setIsAddedToCart(false);
-        setsShowOkMessage(true);
-      } catch (requestError) {
-        console.error("Erro ao remover produto:", requestError);
-        setsShowErrorMessage(true);
-      }
+    try {
+      await removeFromCart(product.id);
+      setsShowOkMessage(true);
+    } catch (requestError) {
+      console.error("Erro ao remover produto:", requestError);
+      setsShowErrorMessage(true);
     }
   };
 
@@ -146,17 +119,20 @@ const ProductPage: React.FC = () => {
     {
       icon: ShieldCheck,
       title: "Garantia premium",
-      description: "Apresentação clara das condições e mais confiança no checkout.",
+      description:
+        "Apresentação clara das condições e mais confiança no checkout.",
     },
     {
       icon: Truck,
       title: "Entrega monitorada",
-      description: "Comunicação pensada para reduzir fricção e ansiedade do cliente.",
+      description:
+        "Comunicação pensada para reduzir fricção e ansiedade do cliente.",
     },
     {
       icon: BadgeCheck,
       title: "Curadoria validada",
-      description: "Seleção com ênfase em desempenho, design e percepção de valor.",
+      description:
+        "Seleção com ênfase em desempenho, design e percepção de valor.",
     },
   ];
 
@@ -187,6 +163,10 @@ const ProductPage: React.FC = () => {
               <img
                 src={product.img}
                 alt={product.titulo}
+                loading="eager"
+                decoding="async"
+                width={720}
+                height={720}
                 className="max-h-[420px] w-full object-contain"
               />
             </div>

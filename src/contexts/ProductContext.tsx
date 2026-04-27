@@ -3,6 +3,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
@@ -85,18 +86,21 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({
     }
   }, [products]);
 
-  const contextValue = {
-    loading,
-    setLoading,
-    products,
-    setProducts,
-    searchQuery,
-    setSearchQuery,
-    searchProducts,
-    setSearchProducts,
-    produtos,
-    setProdutos,
-  };
+  const contextValue = useMemo(
+    () => ({
+      loading,
+      setLoading,
+      products,
+      setProducts,
+      searchQuery,
+      setSearchQuery,
+      searchProducts,
+      setSearchProducts,
+      produtos,
+      setProdutos,
+    }),
+    [loading, products, searchQuery, searchProducts, produtos]
+  );
 
   return (
     <ProductContext.Provider value={contextValue}>

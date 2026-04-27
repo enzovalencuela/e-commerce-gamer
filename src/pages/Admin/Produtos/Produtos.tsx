@@ -11,6 +11,10 @@ import { useProduct } from "../../../contexts/ProductContext";
 import AttentionMessage from "../../../components/AttentionMessage/AttentionMessage";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import {
+  removeCachedProduct,
+  upsertCachedProduct,
+} from "../../../utils/productCache";
 
 type NewProduct = Omit<Product, "id">;
 
@@ -78,12 +82,16 @@ const ProdutosDashboard: React.FC<ProdutosDashboardProps> = ({
       const updatedProduct = await response.json();
 
       if (isNew) {
-        setProducts([...products, updatedProduct]);
+        setProducts((currentProducts) => [...currentProducts, updatedProduct]);
       } else {
-        setProducts(
-          products.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+        setProducts((currentProducts) =>
+          currentProducts.map((p) =>
+            p.id === updatedProduct.id ? updatedProduct : p
+          )
         );
       }
+
+      upsertCachedProduct(updatedProduct);
 
       setEditingProduct(null);
       setIsAdding(false);
@@ -104,7 +112,10 @@ const ProdutosDashboard: React.FC<ProdutosDashboardProps> = ({
         throw new Error(errorData.message || "Erro ao remover produto.");
       }
 
-      setProducts(products.filter((p) => p.id !== productId));
+      setProducts((currentProducts) =>
+        currentProducts.filter((p) => p.id !== productId)
+      );
+      removeCachedProduct(productId);
       setShowAttentionMessage(false);
       setProductToDelete(null);
     } catch (error) {
@@ -205,7 +216,14 @@ const ProdutosDashboard: React.FC<ProdutosDashboardProps> = ({
               <div className="product-div-info">
                 <div className="product-info">
                   <Link to={`/product/${product.id}`}>
-                    <img src={product.img} alt={product.titulo} />
+                    <img
+                      src={product.img}
+                      alt={product.titulo}
+                      loading="lazy"
+                      decoding="async"
+                      width={160}
+                      height={160}
+                    />
                   </Link>
                   <div className="product-text">
                     <h3>{product.titulo}</h3>

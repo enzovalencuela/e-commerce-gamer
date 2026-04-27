@@ -1,14 +1,18 @@
 // src/pages/SearchResultsPage/SearchResultsPage.tsx
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSort } from "@fortawesome/free-solid-svg-icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { Product } from "../../types/Product";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import Loading from "../../components/Loading/Loading";
-import "./SearchResultsPage.css";
-import { faSort } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MenuSearchSort from "../../components/MenuSearchSort/MenuSearchSort";
+import {
+  fetchProductsWithCache,
+  filterCachedProducts,
+} from "../../utils/productCache";
+import "./SearchResultsPage.css";
 
 const SearchResultsPage: React.FC = () => {
   const [results, setResults] = useState<Product[]>([]);
@@ -30,24 +34,8 @@ const SearchResultsPage: React.FC = () => {
     const fetchResults = async () => {
       setLoading(true);
       try {
-        let url = `${VITE_BACKEND_URL}/api/products/search`;
-        const queryParams = new URLSearchParams();
-
-        if (query) {
-          queryParams.append("q", query);
-        }
-        if (category) {
-          queryParams.append("categoria", category);
-        }
-
-        url += `?${queryParams.toString()}`;
-
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Falha na busca de produtos.");
-        }
-        const data = await response.json();
-        setResults(data);
+        await fetchProductsWithCache(VITE_BACKEND_URL);
+        setResults(filterCachedProducts(query, category));
       } catch (error) {
         console.error("Erro ao buscar produtos:", error);
         setResults([]);
