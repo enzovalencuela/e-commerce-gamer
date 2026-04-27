@@ -21,7 +21,7 @@ const Login: React.FC = () => {
   } catch (e: any) {
     console.warn(
       "Não foi possível obter a instância do Firebase Auth globalmente. Certifique-se de que o Firebase está inicializado.",
-      e
+      e,
     );
   }
   const auth = authInstance;
@@ -38,7 +38,7 @@ const Login: React.FC = () => {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       const user = userCredential.user;
 
@@ -65,10 +65,10 @@ const Login: React.FC = () => {
         console.error(
           "Erro do backend após login Firebase:",
           response.status,
-          errorText
+          errorText,
         );
         setError(
-          "Erro ao sincronizar dados do usuário no backend. Tente novamente."
+          "Erro ao sincronizar dados do usuário no backend. Tente novamente.",
         );
       }
     } catch (err) {
@@ -103,11 +103,14 @@ const Login: React.FC = () => {
       }
     } catch (error) {
       setError("Erro de conexão ao sincronizar com o servidor.");
+      console.error(
+        "Erro ao fazer login com Google (Firebase ou backend)",
+        error,
+      );
     } finally {
       setIsLoading(false);
     }
   };
-
 
   return (
     <AuthFormLayout
