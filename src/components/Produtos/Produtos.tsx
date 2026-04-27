@@ -4,6 +4,7 @@ import Loading from "../Loading/Loading";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../ProductCard/ProductCard";
 import { ArrowRight } from "lucide-react";
+import { fetchProductsWithCache } from "../../utils/productCache";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -38,12 +39,8 @@ const Produtos: React.FC<ProdutosProps> = ({
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${VITE_BACKEND_URL}/api/products`);
-        if (!response.ok) {
-          throw new Error("Erro ao buscar produtos.");
-        }
-        const data = await response.json();
-        const sortedData = data.sort(
+        const { products } = await fetchProductsWithCache(VITE_BACKEND_URL);
+        const sortedData = [...products].sort(
           (a: Product, b: Product) => (b.salesCount || 0) - (a.salesCount || 0)
         );
         setAllProducts(sortedData);

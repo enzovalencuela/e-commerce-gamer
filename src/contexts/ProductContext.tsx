@@ -8,6 +8,11 @@ import {
   type ReactNode,
 } from "react";
 import type { Product } from "../types/Product";
+import {
+  fetchProductsWithCache,
+  loadProductCache,
+  saveProductCache,
+} from "../utils/productCache";
 
 interface ProductContextType {
   loading: boolean;
@@ -53,45 +58,62 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({
   ];
 
   useEffect(() => {
-    setLoading(true);
+    const cache = loadProductCache();
+    if (cache?.products?.length) {
+      setProducts(cache.products);
+      setLoading(false);
+    }
+  }, []);
 
+  useEffect(() => {
     const handleCategoryClick = async () => {
+      if (searchQuery === undefined) return;
+
+      setLoading(true);
       try {
-        let url: string;
-        let isSingleProductFetch = false;
+        const cache = loadProductCache();
+        const cachedProducts = cache?.products || [];
 
         if (typeof searchQuery === "string") {
           if (categoria.includes(searchQuery)) {
-            url = `${VITE_BACKEND_URL}/api/products/search?categoria=${searchQuery}`;
+            setProducts(
+              cachedProducts.filter((product) => product.categoria === searchQuery)
+            );
           } else {
-            url = `${VITE_BACKEND_URL}/api/products/search?q=${searchQuery}`;
+            const normalizedQuery = searchQuery.toLowerCase();
+            setProducts(
+              cachedProducts.filter((product) =>
+                `${product.titulo} ${product.descricao} ${product.categoria}`
+                  .toLowerCase()
+                  .includes(normalizedQuery)
+              )
+            );
           }
         } else if (
           typeof searchQuery === "number" &&
           searchQuery !== undefined
         ) {
-          url = `${VITE_BACKEND_URL}/api/products/${searchQuery}`;
-          isSingleProductFetch = true;
-        } else {
-          return;
+          const cachedMatch = cachedProducts.find(
+            (product) => product.id === searchQuery
+          );
+
+          if (cachedMatch) {
+            setProducts([cachedMatch]);
+          } else {
+            const response = await fetch(
+              `${VITE_BACKEND_URL}/api/products/${searchQuery}`,
+              {
+                method: "GET",
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error("Falha na busca de produtos.");
+            }
+            const data = await response.json();
+            setProducts(data ? [data] : []);
+          }
         }
-
-        const response = await fetch(url, {
-          method: "GET",
-        });
-
-        if (!response.ok) {
-          throw new Error("Falha na busca de produtos.");
-        }
-        let data = await response.json();
-
-        if (isSingleProductFetch && data) {
-          data = [data];
-        } else if (isSingleProductFetch && !data) {
-          data = [];
-        }
-
-        setProducts(data);
       } catch (error) {
         console.error("Erro ao buscar produtos:", error);
         setProducts([]);
@@ -105,15 +127,19 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true);
       try {
-        const response = await fetch(`${VITE_BACKEND_URL}/api/products`);
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Erro ao buscar produtos.");
+        const cached = loadProductCache();
+        if (!searchProducts && cached?.products?.length) {
+          setProducts(cached.products);
+          setLoading(false);
+        } else {
+          setLoading(true);
         }
-        const data: Product[] = await response.json();
-        setProducts(data);
+
+        const { products: fetchedProducts } = await fetchProductsWithCache(
+          VITE_BACKEND_URL
+        );
+        setProducts(fetchedProducts);
       } catch (error) {
         console.error("Erro ao carregar produtos:", error);
       } finally {
@@ -123,6 +149,12 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({
 
     fetchProducts();
   }, [searchProducts]);
+
+  useEffect(() => {
+    if (products.length > 0) {
+      saveProductCache(products);
+    }
+  }, [products]);
 
   const contextValue = {
     loading,

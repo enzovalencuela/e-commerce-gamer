@@ -9,7 +9,6 @@ import {
   Package,
   Wallet,
 } from "lucide-react";
-import type { Product } from "../../types/Product";
 import { Link } from "react-router-dom";
 import ProdutosDashboard from "./Produtos/Produtos";
 import Loading from "../../components/Loading/Loading";
@@ -47,21 +46,6 @@ const Dashboard: React.FC = () => {
       accumulator + Number(product.salesCount || 0) * Number(product.preco),
     0
   );
-  const activities = [
-    ...availableProducts.slice(0, 4).map((product: Product) => ({
-      id: `success-${product.id}`,
-      title: product.titulo,
-      detail: "Produto ativo com vitrine pronta para conversão.",
-      status: "Sucesso",
-    })),
-    ...pendingProducts.slice(0, 4).map((product: Product) => ({
-      id: `pending-${product.id}`,
-      title: product.titulo,
-      detail: "Revisão pendente antes de voltar ao catálogo.",
-      status: "Pendente",
-    })),
-  ];
-
   const stats = [
     {
       title: "Saldo Total",
@@ -161,7 +145,7 @@ const Dashboard: React.FC = () => {
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
                 {activeView === "overview"
-                  ? "Resumo executivo com métricas essenciais e histórico de atividade para tomada de decisão."
+                  ? "Resumo executivo com métricas essenciais do catálogo e da operação."
                   : "O catálogo segue exibindo todos os produtos e permite editar, adicionar e remover itens normalmente."}
               </p>
             </div>
@@ -199,53 +183,6 @@ const Dashboard: React.FC = () => {
               ))}
             </div>
 
-            <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-              <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
-                    Histórico
-                  </p>
-                  <h3 className="font-display text-2xl font-semibold text-slate-950">
-                    Atividades recentes
-                  </h3>
-                </div>
-                <p className="text-sm text-slate-500">
-                  Sucesso em verde e pendências em amarelo.
-                </p>
-              </div>
-              <div className="overflow-hidden rounded-[24px] border border-slate-200">
-                <div className="grid grid-cols-[1.4fr_1.4fr_140px] bg-slate-50 px-5 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  <span>Atividade</span>
-                  <span>Detalhe</span>
-                  <span>Status</span>
-                </div>
-                {activities.map((activity, index) => (
-                  <motion.div
-                    key={activity.id}
-                    className="grid grid-cols-1 gap-3 border-t border-slate-200 px-5 py-4 text-sm text-slate-700 sm:grid-cols-[1.4fr_1.4fr_140px]"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.04, duration: 0.2 }}
-                  >
-                    <span className="font-semibold text-slate-950">
-                      {activity.title}
-                    </span>
-                    <span>{activity.detail}</span>
-                    <span>
-                      <span
-                        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                          activity.status === "Sucesso"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-amber-100 text-amber-800"
-                        }`}
-                      >
-                        {activity.status}
-                      </span>
-                    </span>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
           </>
         ) : loading ? (
           <Loading variant="dashboard" />

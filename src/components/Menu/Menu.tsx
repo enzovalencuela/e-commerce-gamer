@@ -32,7 +32,7 @@ export default function Menu({ onClose }: MenuProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-end bg-slate-950/35 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-end bg-slate-950/15 p-4 backdrop-blur-[2px]"
       onClick={onClose}
     >
       <div
@@ -57,6 +57,7 @@ export default function Menu({ onClose }: MenuProps) {
           {userAdmin && (
             <Link
               to="/dashboard"
+              onClick={onClose}
               className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
             >
               <LayoutDashboard className="h-4 w-4" />
@@ -65,6 +66,7 @@ export default function Menu({ onClose }: MenuProps) {
           )}
           <Link
             to="/account"
+            onClick={onClose}
             className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
           >
             <User className="h-4 w-4" />
@@ -72,6 +74,7 @@ export default function Menu({ onClose }: MenuProps) {
           </Link>
           <Link
             to="/minhas-compras"
+            onClick={onClose}
             className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
           >
             <Package className="h-4 w-4" />
