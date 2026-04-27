@@ -1,17 +1,19 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faDoorOpen,
-  faUser,
-  faDashboard,
-  faBagShopping,
-} from "@fortawesome/free-solid-svg-icons";
-import "./Menu.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useEffect, useState } from "react";
+import {
+  LayoutDashboard,
+  LogOut,
+  Package,
+  User,
+  X,
+} from "lucide-react";
 
-export default function Menu() {
-  const [showMenu, setShowMenu] = useState("");
+interface MenuProps {
+  onClose: () => void;
+}
+
+export default function Menu({ onClose }: MenuProps) {
   const [userAdmin, setUserAdmin] = useState(false);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
@@ -24,39 +26,65 @@ export default function Menu() {
 
   const handleLogout = () => {
     logout();
+    onClose();
     navigate("/");
   };
 
   return (
     <div
-      className={`${showMenu} menu-container`}
-      onClick={() => setShowMenu("true")}
+      className="fixed inset-0 z-50 flex items-start justify-end bg-slate-950/35 p-4 backdrop-blur-sm"
+      onClick={onClose}
     >
-      <div className="div-menu">
-        {userAdmin && (
-          <Link to={"/dashboard"}>
-            <button>
-              <FontAwesomeIcon icon={faDashboard} />
+      <div
+        className="w-full max-w-xs rounded-[28px] border border-slate-200 bg-white p-5 shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-slate-900">Sua área</p>
+            <p className="text-sm text-slate-500">
+              Acesse conta, pedidos e gestão.
+            </p>
+          </div>
+          <button
+            className="rounded-full border border-slate-200 p-2 text-slate-500"
+            onClick={onClose}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="space-y-2">
+          {userAdmin && (
+            <Link
+              to="/dashboard"
+              className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+            >
+              <LayoutDashboard className="h-4 w-4" />
               Dashboard
-            </button>
-          </Link>
-        )}
-        <Link to={"/account"}>
-          <button>
-            <FontAwesomeIcon icon={faUser} />
+            </Link>
+          )}
+          <Link
+            to="/account"
+            className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+          >
+            <User className="h-4 w-4" />
             Minha Conta
-          </button>
-        </Link>
-        <Link to={"/minhas-compras"}>
-          <button>
-            <FontAwesomeIcon icon={faBagShopping} />
+          </Link>
+          <Link
+            to="/minhas-compras"
+            className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+          >
+            <Package className="h-4 w-4" />
             Minhas Compras
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+          >
+            <LogOut className="h-4 w-4" />
+            Sair
           </button>
-        </Link>
-        <button onClick={() => handleLogout()}>
-          <FontAwesomeIcon icon={faDoorOpen} />
-          Sair
-        </button>
+        </div>
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ import PaymentResum from "./pages/PaymentResum/PaymentResum.tsx";
 import MinhasCompras from "./pages/MinhasCompras/MinhasCompras.tsx";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 import { ProductProvider } from "./contexts/ProductContext.tsx";
+import "./App.css";
 
 initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
   locale: "pt-BR",

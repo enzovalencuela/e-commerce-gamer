@@ -1,5 +1,3 @@
-// src/components/AuthFormLayout.tsx
-
 import React, { useState } from "react";
 import "./AuthFormLayout.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -78,7 +76,7 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
   return (
     <div className="auth-page-container">
       {showErrorMessage && (
-        <ErrorMessage onClose={() => setShowContaTesteMessage(false)} />
+        <ErrorMessage onClose={() => setShowErrorMessage(false)} />
       )}
       {showContaTesteMessage && (
         <OkMessage

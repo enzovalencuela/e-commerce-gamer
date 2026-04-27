@@ -1,6 +1,5 @@
-// src/components/ErrorMessage.tsx
-
 import React from "react";
+import { createPortal } from "react-dom";
 
 interface ErrorMessageProps {
   onClose: () => void;
@@ -13,10 +12,13 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
   onClick,
   buttonContent,
 }) => {
-  return (
+  const modal = (
     <div className="error-message-overlay">
       <div className="error-message-container">
-        <p className="error-message-text">Erro ao realizar operação, verifique se está logado e tente novamente mais tarde</p>
+        <p className="error-message-text">
+          Erro ao realizar operação, verifique se está logado e tente
+          novamente mais tarde.
+        </p>
         <div className="error-message-buttons">
           <button onClick={onClose} className="error-message-close-button">
             Fechar
@@ -30,6 +32,8 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 };
 
 export default ErrorMessage;

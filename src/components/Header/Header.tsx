@@ -1,11 +1,5 @@
-// src/components/Header.tsx
-
-import React from "react";
 import TopBar from "../TopBar/TopBar";
 import MainNavbar from "../MainNavBar/MainNavBar";
-import "./Header.css";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper-bundle.css";
 import { useNavigate } from "react-router-dom";
 
 const navDepartments = [
@@ -19,7 +13,7 @@ const navDepartments = [
   { id: "8", name: "Áudio" },
 ];
 
-const Header: React.FC = () => {
+const Header = () => {
   const navigate = useNavigate();
 
   const handleCategoryClick = (categoryName: string) => {
@@ -27,34 +21,21 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header>
+    <header className="sticky top-0 z-40 mb-6 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
       <TopBar />
-      <div className="div-nav">
+      <div className="mx-auto max-w-[1440px] px-4 py-3 sm:px-6 lg:px-8">
         <MainNavbar />
-
-        <ul className="div-ul">
-          <Swiper
-            breakpoints={{
-              0: { slidesPerView: 3 },
-              660: { slidesPerView: 5 },
-              950: { slidesPerView: 6 },
-              1290: {
-                slidesPerView: 8,
-              },
-            }}
-          >
-            {navDepartments.map((dept) => (
-              <SwiperSlide>
-                <li
-                  key={dept.id}
-                  className="li-departamento"
-                  onClick={() => handleCategoryClick(dept.name)}
-                >
-                  {dept.name}
-                </li>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <ul className="mt-3 flex gap-2 overflow-x-auto pb-1">
+          {navDepartments.map((dept) => (
+            <li key={dept.id}>
+              <button
+                className="whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-primary/30 hover:bg-white hover:text-primary"
+                onClick={() => handleCategoryClick(dept.name)}
+              >
+                {dept.name}
+              </button>
+            </li>
+          ))}
         </ul>
       </div>
     </header>

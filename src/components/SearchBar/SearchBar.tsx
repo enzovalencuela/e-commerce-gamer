@@ -1,8 +1,6 @@
-// src/components/SearchBar.tsx
-
 import React, { useState } from "react";
-import "./SearchBar.css";
 import { useNavigate } from "react-router-dom";
+import { Search } from "lucide-react";
 
 const SearchBar: React.FC = () => {
   const [query, setQuery] = useState<string>("");
@@ -18,20 +16,26 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <>
-      <form className="form-input" onSubmit={handleSearch}>
-        <input
-          type="text"
-          id="nav-form__input"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Digite sua busca..."
-        />
-        <button type="submit">
-          <img src="/img/search.svg" alt="" />
-        </button>
-      </form>
-    </>
+    <form
+      className="flex h-11 w-full items-center rounded-full border border-slate-200 bg-white px-4 shadow-sm transition focus-within:border-slate-300 focus-within:shadow-md"
+      onSubmit={handleSearch}
+    >
+      <Search className="h-4 w-4 text-slate-400" />
+      <input
+        type="text"
+        id="nav-form__input"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Buscar setups, periféricos e novidades"
+        className="h-full w-full border-none bg-transparent px-3 text-sm text-slate-700 outline-none placeholder:text-slate-400"
+      />
+      <button
+        type="submit"
+        className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+      >
+        Buscar
+      </button>
+    </form>
   );
 };
 

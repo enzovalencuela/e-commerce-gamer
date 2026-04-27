@@ -1,15 +1,13 @@
-// src/components/TopBar.tsx
-
-import React from "react";
-import "./TopBar.css";
-
-const TopBar: React.FC = () => {
+const TopBar = () => {
   return (
-    <div className="div-span">
-      <p>
-        Ganhe <b>R$10,00</b> de desconto no seu primeiro pedido. Utilize o cupom
-        <span> DESCONTO10</span>
-      </p>
+    <div className="border-b border-slate-200/80 bg-white/90 backdrop-blur">
+      <div className="mx-auto flex max-w-[1440px] items-center justify-center px-4 py-2 text-center text-xs font-semibold text-slate-700 sm:px-6 lg:px-8">
+        <p>
+          Ganhe <span className="text-primary">R$10,00</span> de desconto no
+          seu primeiro pedido. Utilize o cupom{" "}
+          <span className="text-secondary">DESCONTO10</span>
+        </p>
+      </div>
     </div>
   );
 };

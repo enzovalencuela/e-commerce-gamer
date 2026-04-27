@@ -1,14 +1,10 @@
-// src/components/MainNavbar.tsx
-
 import React, { useEffect, useState } from "react";
 import SearchBar from "../SearchBar/SearchBar";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import "./MainNavBar.css";
 import Menu from "../Menu/Menu";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faUser } from "@fortawesome/free-solid-svg-icons";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { Menu as MenuIcon, ShoppingBag, UserRound } from "lucide-react";
 
 const MainNavbar: React.FC = () => {
   const [menu, setMenu] = useState(false);
@@ -31,13 +27,18 @@ const MainNavbar: React.FC = () => {
       {showErrorMessage && (
         <ErrorMessage onClose={() => setShowErrorMessage(false)} />
       )}
-      {menu && <Menu />}
-      <div className="div-search">
-        <Link to={"/"} className="logo_marca">
-          <img src="/LOGO_MARCA.png" alt="Logo" />
+      {menu && <Menu onClose={() => setMenu(false)} />}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+        <Link to="/" className="flex items-center gap-3">
+          <img
+            src="/LOGO_MARCA.png"
+            alt="Nexgen E-commerce"
+            className="h-9 w-auto sm:h-10"
+          />
         </Link>
-        <SearchBar />
-
+        <div className="flex-1">
+          <SearchBar />
+        </div>
         <Link
           to={user ? "/carrinho" : ""}
           onClick={(e) => {
@@ -46,22 +47,30 @@ const MainNavbar: React.FC = () => {
               setShowErrorMessage(true);
             }
           }}
+          className="hidden sm:block"
         >
-          <div className="cart">
-            <FontAwesomeIcon className="cart-icon" icon={faCartShopping} />
-            <span>{qtdItemsCart}</span>
+          <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <ShoppingBag className="h-5 w-5 text-secondary" />
+            <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-white">
+              {qtdItemsCart}
+            </span>
           </div>
         </Link>
         <div
           onClick={user ? () => setMenu(!menu) : () => navigate("/login")}
-          className="div-user"
+          className="flex min-w-[180px] items-center justify-between rounded-full border border-slate-200 bg-white px-4 py-1.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
         >
-          <FontAwesomeIcon className="user-icon" icon={faUser} />
-          <p>
-            Olá,
-            <br />
-            {nome}
-          </p>
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-secondary">
+              <UserRound className="h-4 w-4" />
+            </div>
+            <p className="text-sm leading-tight text-slate-500">
+              Olá,
+              <br />
+              <span className="font-semibold text-slate-900">{nome}</span>
+            </p>
+          </div>
+          <MenuIcon className="h-4 w-4 text-primary" />
         </div>
       </div>
     </>

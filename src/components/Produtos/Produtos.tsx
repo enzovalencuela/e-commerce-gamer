@@ -1,10 +1,9 @@
-// src/components/Produtos/Produtos.tsx
 import { useState, useEffect } from "react";
-import ProductCarousel from "../ProductCarousel/ProductCarousel";
 import type { Product } from "../../types/Product";
-import "./Produtos.css";
 import Loading from "../Loading/Loading";
 import { useNavigate } from "react-router-dom";
+import ProductCard from "../ProductCard/ProductCard";
+import { ArrowRight } from "lucide-react";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -65,7 +64,7 @@ const Produtos: React.FC<ProdutosProps> = ({
       <div
         style={{
           display: "flex",
-          height: "100vh",
+          minHeight: "50vh",
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -84,56 +83,74 @@ const Produtos: React.FC<ProdutosProps> = ({
       (tipoSessao === "maisVendidos"
         ? "Mais Vendidos"
         : tipoSessao === "emPromocao"
-        ? "Em Promoção"
-        : "Recomendados");
+          ? "Em Promoção"
+          : "Recomendados");
 
     switch (tipoSessao) {
       case "maisVendidos":
-        productsToShow = allProducts.slice(0, 10);
+        productsToShow = allProducts.slice(0, 8);
         break;
       case "emPromocao":
         productsToShow = allProducts
           .filter((p) => p.preco !== p.preco_original)
-          .slice(0, 10);
+          .slice(0, 8);
         break;
       case "recomendados":
         productsToShow = allProducts
-          .filter((p) =>
-            (p.avaliacoes || 1) > 1 && (p.mediaAvaliacao || 1) > 4
-              ? (p.avaliacoes || 1) > 1 && (p.mediaAvaliacao || 1) > 4
-              : allProducts
-          )
-          .slice(0, 10);
+          .filter((p) => (p.avaliacoes || 0) > 1 && (p.mediaAvaliacao || 0) >= 4)
+          .slice(0, 8);
+        if (productsToShow.length === 0) {
+          productsToShow = allProducts.slice(0, 8);
+        }
         break;
       default:
-        productsToShow = allProducts.slice(0, 10);
+        productsToShow = allProducts.slice(0, 8);
         break;
     }
   } else if (categoria) {
     productsToShow = allProducts
       .filter((p) => p.categoria === categoria)
-      .slice(0, 10);
+      .slice(0, 8);
     sectionTitle = titulo || categoria;
   } else {
-    productsToShow = allProducts.slice(0, 10);
+    productsToShow = allProducts.slice(0, 8);
     sectionTitle = titulo || "Produtos";
   }
 
   return loading ? (
     <Loading />
   ) : (
-    <section className="section-produtos">
-      <div className="div-produtos__title">
-        <h2>{sectionTitle}</h2>
-        {!tipoSessao && (
-          <button
-            onClick={() => navigate(`/produtos/search/?q=${sectionTitle}`)}
-          >
-            ver mais
-          </button>
-        )}
+    <section className="py-10">
+      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-8">
+        <div className="mb-6 flex items-end justify-between gap-4">
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
+              Curadoria
+            </p>
+            <h2 className="font-display text-2xl font-semibold text-slate-950 sm:text-3xl">
+              {sectionTitle}
+            </h2>
+          </div>
+          {!tipoSessao && (
+            <button
+              onClick={() => navigate(`/produtos/search/?q=${sectionTitle}`)}
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-primary/30 hover:text-primary"
+            >
+              Ver mais
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          {productsToShow.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              sectionTitle={sectionTitle}
+            />
+          ))}
+        </div>
       </div>
-      <ProductCarousel products={productsToShow} sectionTitle={sectionTitle} />
     </section>
   );
 };

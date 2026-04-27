@@ -1,4 +1,3 @@
-// src/components/Footer.jsx
 import "./Footer.css";
 import LinkSection from "../LinkSection/LinkSection";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,21 +21,28 @@ function Footer() {
               <a
                 href="https://enzovalencuela-meu-portifolio.netlify.app"
                 target="_blank"
+                rel="noreferrer"
               >
                 <FontAwesomeIcon icon={faCircleUser} />
               </a>
               <a
                 href="https://www.instagram.com/_enzovalencuela"
                 target="_blank"
+                rel="noreferrer"
               >
                 <FontAwesomeIcon icon={faInstagram} />
               </a>
-              <a href="https://github.com/enzovalencuela" target="_blank">
+              <a
+                href="https://github.com/enzovalencuela"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <FontAwesomeIcon icon={faGithub} />
               </a>
               <a
                 href="https://www.linkedin.com/in/enzo-silva10"
                 target="_blank"
+                rel="noreferrer"
               >
                 <FontAwesomeIcon icon={faLinkedin} />
               </a>
@@ -90,13 +96,7 @@ function Footer() {
           aprimoramento em tecnologias web. Ele serve como um laboratório para a
           aplicação de conceitos de front-end e back-end, focando em algumas das
           ferramentas e técnicas mais relevantes do mercado. Nosso principal
-          objetivo com este site é simular um ambiente de e-commerce real. Para
-          isso, exploramos a integração de sistemas de pagamento, a manipulação
-          de dados de produtos, a criação de interfaces de usuário responsivas e
-          dinâmicas, e a otimização de performance para garantir uma experiência
-          de navegação fluida. Todas as funcionalidades e produtos são para fins
-          educacionais, permitindo que as tecnologias sejam testadas e
-          compreendidas em um contexto prático.
+          objetivo com este site é simular um ambiente de e-commerce real.
         </p>
         <div className="parceiros">
           <img className="logo" src="/LOGO_MARCA.png" alt="" />

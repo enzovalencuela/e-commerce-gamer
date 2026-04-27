@@ -1,4 +1,3 @@
-// src/pages/Home/Home.tsx
 import React, { useEffect, useState } from "react";
 import Outdoor from "../../components/Outdoor/Outdoor.tsx";
 import Produtos from "../../components/Produtos/Produtos.tsx";
@@ -31,15 +30,13 @@ const Home: React.FC = () => {
         />
       )}
       <Outdoor />
-
-      {/* Sessões por categoria */}
       <Produtos tipoSessao="emPromocao" />
       <Produtos tipoSessao="maisVendidos" />
       <Produtos categoria="Setups" />
-      <Produtos categoria="Periféricos" />
+      <Produtos categoria={"Periféricos" as never} />
       <Produtos categoria="Consoles" />
       <About />
-      <Produtos categoria="Acessórios" />
+      <Produtos categoria={"Acessórios" as never} />
       <Banner />
     </>
   );
