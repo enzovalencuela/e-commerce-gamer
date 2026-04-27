@@ -10,7 +10,7 @@ function App() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-transparent text-slate-900">
+    <div className="min-h-screen overflow-x-hidden bg-transparent text-slate-900">
       <ScrollToTop />
       <Header />
       <main className="w-full overflow-x-hidden pb-28 xl:pb-16">
