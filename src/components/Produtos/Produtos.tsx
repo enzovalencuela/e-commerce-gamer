@@ -105,7 +105,7 @@ const Produtos: React.FC<ProdutosProps> = ({
           </button>
         </div>
 
-        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:gap-5 md:pr-10">
+        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-6 select-none touch-pan-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:gap-5 md:pr-10">
           {productsToShow.map((product) => (
             <div
               key={product.id}
