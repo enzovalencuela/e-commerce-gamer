@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import type { Product } from "../../types/Product";
 import Loading from "../Loading/Loading";
-import ProductCard from "../ProductCard/ProductCard";
 import { fetchProductsWithCache } from "../../utils/productCache";
+import ProductCarousel from "../ProductCarousel/ProductCarousel";
 import {
   getCollectionProducts,
   getCollectionTitle,
@@ -30,12 +30,6 @@ const Produtos: React.FC<ProdutosProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const sliderRef = useRef<HTMLDivElement | null>(null);
-  const dragStateRef = useRef({
-    isDragging: false,
-    startX: 0,
-    startScrollLeft: 0,
-  });
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -53,18 +47,6 @@ const Produtos: React.FC<ProdutosProps> = ({
     };
 
     fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    const handlePointerUp = () => {
-      dragStateRef.current.isDragging = false;
-      if (sliderRef.current) {
-        sliderRef.current.classList.remove("cursor-grabbing");
-      }
-    };
-
-    window.addEventListener("pointerup", handlePointerUp);
-    return () => window.removeEventListener("pointerup", handlePointerUp);
   }, []);
 
   if (error) {
@@ -100,33 +82,6 @@ const Produtos: React.FC<ProdutosProps> = ({
     navigate(`/produtos/search?q=${encodeURIComponent(sectionTitle)}`);
   };
 
-  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!sliderRef.current || event.pointerType === "touch") return;
-
-    dragStateRef.current = {
-      isDragging: true,
-      startX: event.clientX,
-      startScrollLeft: sliderRef.current.scrollLeft,
-    };
-
-    sliderRef.current.classList.add("cursor-grabbing");
-  };
-
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!sliderRef.current || !dragStateRef.current.isDragging) return;
-
-    event.preventDefault();
-    const deltaX = event.clientX - dragStateRef.current.startX;
-    sliderRef.current.scrollLeft = dragStateRef.current.startScrollLeft - deltaX;
-  };
-
-  const handlePointerUp = () => {
-    dragStateRef.current.isDragging = false;
-    if (sliderRef.current) {
-      sliderRef.current.classList.remove("cursor-grabbing");
-    }
-  };
-
   return loading ? (
     <Loading variant="products" />
   ) : productsToShow.length === 0 ? null : (
@@ -150,23 +105,10 @@ const Produtos: React.FC<ProdutosProps> = ({
           </button>
         </div>
 
-        <div
-          ref={sliderRef}
-          className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-6 select-none touch-pan-x cursor-grab [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:gap-5 md:pr-10"
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerLeave={handlePointerUp}
-        >
-          {productsToShow.map((product) => (
-            <div
-              key={product.id}
-              className="min-w-[calc(50%-0.375rem)] max-w-[calc(50%-0.375rem)] snap-start first:ml-0 last:mr-4 sm:min-w-[calc(50%-0.5rem)] sm:max-w-[calc(50%-0.5rem)] md:min-w-[280px] md:max-w-[280px] md:first:ml-0 md:last:mr-0 xl:min-w-[300px] xl:max-w-[300px]"
-            >
-              <ProductCard product={product} sectionTitle={sectionTitle} />
-            </div>
-          ))}
-        </div>
+        <ProductCarousel
+          products={productsToShow}
+          sectionTitle={sectionTitle}
+        />
 
         <button
           onClick={handleViewMore}

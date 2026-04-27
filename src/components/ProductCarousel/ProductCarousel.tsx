@@ -40,7 +40,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
         slideToClickedSlide
         pagination={{ clickable: true }}
         breakpoints={{
-          0: { slidesPerView: 2 },
+          0: { slidesPerView: 2, spaceBetween: 10 },
           660: { slidesPerView: 3 },
           950: { slidesPerView: 4 },
           1290: { slidesPerView: 5 },
