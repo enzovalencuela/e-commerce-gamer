@@ -25,7 +25,7 @@ const Header = () => {
       <TopBar />
       <div className="mx-auto max-w-[1440px] px-4 py-3 sm:px-6 lg:px-8">
         <MainNavbar />
-        <ul className="mt-3 flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 pr-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden xl:pr-0">
+        <ul className="mt-3 hidden snap-x snap-mandatory gap-2 overflow-x-auto pb-1 pr-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden xl:flex xl:pr-0">
           {navDepartments.map((dept) => (
             <li key={dept.id} className="snap-start">
               <button

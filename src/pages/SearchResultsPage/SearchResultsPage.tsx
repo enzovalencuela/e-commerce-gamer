@@ -10,11 +10,17 @@ import {
   fetchProductsWithCache,
   filterCachedProducts,
 } from "../../utils/productCache";
+import {
+  getCollectionProducts,
+  getCollectionTitle,
+  type ProductCategory,
+  type ProductCollectionType,
+} from "../../utils/productCollections";
 
 const SearchResultsPage: React.FC = () => {
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchLabel, setSearchLabel] = useState("");
   const [showMenuSort, setShowMenuSort] = useState(false);
   const [isAscending, setIsAscending] = useState(true);
   const location = useLocation();
@@ -25,14 +31,41 @@ const SearchResultsPage: React.FC = () => {
     const params = new URLSearchParams(location.search);
     const query = params.get("q") || "";
     const category = params.get("categoria") || "";
+    const session = params.get("sessao") as ProductCollectionType | null;
+    const title = params.get("titulo") || "";
 
-    setSearchQuery(query || category);
+    setSearchLabel(
+      title ||
+        getCollectionTitle({
+          categoria: (category || undefined) as ProductCategory | undefined,
+          tipoSessao: session || undefined,
+          titulo: query || undefined,
+        })
+    );
 
     const fetchResults = async () => {
       setLoading(true);
       try {
-        await fetchProductsWithCache(VITE_BACKEND_URL);
-        setResults(filterCachedProducts(query, category));
+        const { products } = await fetchProductsWithCache(VITE_BACKEND_URL);
+
+        if (session) {
+          setResults(
+            getCollectionProducts({
+              products,
+              tipoSessao: session,
+              titulo: title || undefined,
+            })
+          );
+        } else if (category) {
+          setResults(
+            getCollectionProducts({
+              products,
+              categoria: category as ProductCategory,
+            })
+          );
+        } else {
+          setResults(filterCachedProducts(query, category));
+        }
       } catch (error) {
         console.error("Erro ao buscar produtos:", error);
         setResults([]);
@@ -54,10 +87,10 @@ const SearchResultsPage: React.FC = () => {
 
   return (
     <div className="mx-auto min-h-[70vh] w-full max-w-[1440px] px-4 pb-10 sm:px-6 lg:px-8">
-      {searchQuery && (
+      {searchLabel && (
         <div className="relative mb-6 flex items-center justify-between gap-3">
           <div className="inline-flex min-h-11 items-center gap-2 rounded-full bg-slate-100 px-4 text-sm font-medium text-slate-700 shadow-sm">
-            <span className="capitalize">{searchQuery}</span>
+            <span className="capitalize">{searchLabel}</span>
             <button
               onClick={handleClearSearch}
               className="flex min-h-8 min-w-8 items-center justify-center rounded-full text-slate-500 transition hover:text-slate-900 active:scale-[0.98]"

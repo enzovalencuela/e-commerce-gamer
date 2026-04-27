@@ -5,24 +5,19 @@ import type { Product } from "../../types/Product";
 import Loading from "../Loading/Loading";
 import ProductCard from "../ProductCard/ProductCard";
 import { fetchProductsWithCache } from "../../utils/productCache";
+import {
+  getCollectionProducts,
+  getCollectionTitle,
+  type ProductCategory,
+  type ProductCollectionType,
+} from "../../utils/productCollections";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
-type Categoria =
-  | "Setups"
-  | "Notebooks"
-  | "Periféricos"
-  | "Consoles"
-  | "Acessórios"
-  | "Monitores"
-  | "Realidade VR"
-  | "Áudio";
-
-type TipoSessao = "maisVendidos" | "recomendados" | "emPromocao";
+const SECTION_PREVIEW_LIMIT = 15;
 
 interface ProdutosProps {
-  categoria?: Categoria;
-  tipoSessao?: TipoSessao;
+  categoria?: ProductCategory;
+  tipoSessao?: ProductCollectionType;
   titulo?: string;
 }
 
@@ -40,10 +35,7 @@ const Produtos: React.FC<ProdutosProps> = ({
     const fetchProducts = async () => {
       try {
         const { products } = await fetchProductsWithCache(VITE_BACKEND_URL);
-        const sortedData = [...products].sort(
-          (a: Product, b: Product) => (b.salesCount || 0) - (a.salesCount || 0)
-        );
-        setAllProducts(sortedData);
+        setAllProducts(products);
       } catch (err) {
         console.error("Erro ao buscar produtos:", err);
         setError(
@@ -65,52 +57,34 @@ const Produtos: React.FC<ProdutosProps> = ({
     );
   }
 
-  let productsToShow: Product[] = [];
-  let sectionTitle = titulo || "";
+  const sectionTitle = getCollectionTitle({ categoria, tipoSessao, titulo });
+  const sectionProducts = getCollectionProducts({
+    products: allProducts,
+    categoria,
+    tipoSessao,
+    titulo,
+  });
+  const productsToShow = sectionProducts.slice(0, SECTION_PREVIEW_LIMIT);
 
-  if (tipoSessao) {
-    sectionTitle =
-      titulo ||
-      (tipoSessao === "maisVendidos"
-        ? "Mais Vendidos"
-        : tipoSessao === "emPromocao"
-          ? "Em Promoção"
-          : "Recomendados");
-
-    switch (tipoSessao) {
-      case "maisVendidos":
-        productsToShow = allProducts.slice(0, 8);
-        break;
-      case "emPromocao":
-        productsToShow = allProducts
-          .filter((p) => p.preco !== p.preco_original)
-          .slice(0, 8);
-        break;
-      case "recomendados":
-        productsToShow = allProducts
-          .filter((p) => (p.avaliacoes || 0) > 1 && (p.mediaAvaliacao || 0) >= 4)
-          .slice(0, 8);
-        if (productsToShow.length === 0) {
-          productsToShow = allProducts.slice(0, 8);
-        }
-        break;
-      default:
-        productsToShow = allProducts.slice(0, 8);
-        break;
+  const handleViewMore = () => {
+    if (tipoSessao) {
+      navigate(
+        `/produtos/search?sessao=${tipoSessao}&titulo=${encodeURIComponent(sectionTitle)}`
+      );
+      return;
     }
-  } else if (categoria) {
-    productsToShow = allProducts
-      .filter((p) => p.categoria === categoria)
-      .slice(0, 8);
-    sectionTitle = titulo || categoria;
-  } else {
-    productsToShow = allProducts.slice(0, 8);
-    sectionTitle = titulo || "Produtos";
-  }
+
+    if (categoria) {
+      navigate(`/produtos/search?categoria=${encodeURIComponent(categoria)}`);
+      return;
+    }
+
+    navigate(`/produtos/search?q=${encodeURIComponent(sectionTitle)}`);
+  };
 
   return loading ? (
     <Loading variant="products" />
-  ) : (
+  ) : productsToShow.length === 0 ? null : (
     <section className="py-8 sm:py-10">
       <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <div className="mb-5 flex items-end justify-between gap-4">
@@ -122,49 +96,33 @@ const Produtos: React.FC<ProdutosProps> = ({
               {sectionTitle}
             </h2>
           </div>
-          {!tipoSessao && (
-            <button
-              onClick={() => navigate(`/produtos/search/?q=${sectionTitle}`)}
-              className="hidden min-h-11 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-primary/30 hover:text-primary active:scale-[0.98] md:inline-flex"
-            >
-              Ver mais
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          )}
+          <button
+            onClick={handleViewMore}
+            className="hidden min-h-11 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-primary/30 hover:text-primary active:scale-[0.98] md:inline-flex"
+          >
+            Ver mais
+            <ArrowRight className="h-4 w-4" />
+          </button>
         </div>
 
-        <div className="md:hidden">
-          <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            {productsToShow.map((product) => (
-              <div
-                key={product.id}
-                className="min-w-[78vw] max-w-[320px] snap-center first:ml-[4vw] last:mr-[8vw] sm:min-w-[46vw] sm:max-w-none sm:first:ml-0 sm:last:mr-6"
-              >
-                <ProductCard product={product} sectionTitle={sectionTitle} />
-              </div>
-            ))}
-          </div>
-
-          {!tipoSessao && (
-            <button
-              onClick={() => navigate(`/produtos/search/?q=${sectionTitle}`)}
-              className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-primary/30 hover:text-primary active:scale-[0.98]"
-            >
-              Ver mais
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-
-        <div className="hidden grid-cols-2 gap-5 md:grid lg:grid-cols-4 2xl:grid-cols-5">
+        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:gap-5 md:pr-10">
           {productsToShow.map((product) => (
-            <ProductCard
+            <div
               key={product.id}
-              product={product}
-              sectionTitle={sectionTitle}
-            />
+              className="min-w-[calc(50%-0.375rem)] max-w-[calc(50%-0.375rem)] snap-start first:ml-0 last:mr-4 sm:min-w-[calc(50%-0.5rem)] sm:max-w-[calc(50%-0.5rem)] md:min-w-[280px] md:max-w-[280px] md:first:ml-0 md:last:mr-0 xl:min-w-[300px] xl:max-w-[300px]"
+            >
+              <ProductCard product={product} sectionTitle={sectionTitle} />
+            </div>
           ))}
         </div>
+
+        <button
+          onClick={handleViewMore}
+          className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-primary/30 hover:text-primary active:scale-[0.98] md:hidden"
+        >
+          Ver mais
+          <ArrowRight className="h-4 w-4" />
+        </button>
       </div>
     </section>
   );
