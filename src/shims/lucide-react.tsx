@@ -93,6 +93,23 @@ export const ArrowRight = createIcon(
   </>
 );
 
+export const Home = createIcon(
+  <>
+    <path d="m3 11 9-7 9 7" />
+    <path d="M5 10v10h14V10" />
+    <path d="M10 20v-6h4v6" />
+  </>
+);
+
+export const Grid2X2 = createIcon(
+  <>
+    <rect x="4" y="4" width="6" height="6" rx="1.5" />
+    <rect x="14" y="4" width="6" height="6" rx="1.5" />
+    <rect x="4" y="14" width="6" height="6" rx="1.5" />
+    <rect x="14" y="14" width="6" height="6" rx="1.5" />
+  </>
+);
+
 export const Sparkles = createIcon(
   <>
     <path d="m12 3 1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3Z" />

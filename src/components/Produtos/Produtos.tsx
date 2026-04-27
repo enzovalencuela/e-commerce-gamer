@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import type { Product } from "../../types/Product";
 import Loading from "../Loading/Loading";
-import { useNavigate } from "react-router-dom";
 import ProductCard from "../ProductCard/ProductCard";
-import { ArrowRight } from "lucide-react";
 import { fetchProductsWithCache } from "../../utils/productCache";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -53,19 +53,13 @@ const Produtos: React.FC<ProdutosProps> = ({
         setLoading(false);
       }
     };
+
     fetchProducts();
   }, []);
 
   if (error) {
     return (
-      <div
-        style={{
-          display: "flex",
-          minHeight: "50vh",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <div className="flex min-h-[50vh] items-center justify-center px-4 text-center text-slate-600">
         {error}
       </div>
     );
@@ -117,9 +111,9 @@ const Produtos: React.FC<ProdutosProps> = ({
   return loading ? (
     <Loading variant="products" />
   ) : (
-    <section className="py-10">
+    <section className="py-8 sm:py-10">
       <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-end justify-between gap-4">
+        <div className="mb-5 flex items-end justify-between gap-4">
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
               Curadoria
@@ -131,14 +125,38 @@ const Produtos: React.FC<ProdutosProps> = ({
           {!tipoSessao && (
             <button
               onClick={() => navigate(`/produtos/search/?q=${sectionTitle}`)}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-primary/30 hover:text-primary"
+              className="hidden min-h-11 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-primary/30 hover:text-primary active:scale-[0.98] md:inline-flex"
             >
               Ver mais
               <ArrowRight className="h-4 w-4" />
             </button>
           )}
         </div>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+
+        <div className="md:hidden">
+          <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            {productsToShow.map((product) => (
+              <div
+                key={product.id}
+                className="min-w-[43%] snap-start sm:min-w-[31%]"
+              >
+                <ProductCard product={product} sectionTitle={sectionTitle} />
+              </div>
+            ))}
+          </div>
+
+          {!tipoSessao && (
+            <button
+              onClick={() => navigate(`/produtos/search/?q=${sectionTitle}`)}
+              className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-primary/30 hover:text-primary active:scale-[0.98]"
+            >
+              Ver mais
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        <div className="hidden grid-cols-2 gap-5 md:grid lg:grid-cols-4 2xl:grid-cols-5">
           {productsToShow.map((product) => (
             <ProductCard
               key={product.id}

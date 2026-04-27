@@ -69,7 +69,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, sectionTitle }) => {
       </div>
       <Link
         to={`/product/${product.id}`}
-        className="relative flex aspect-[4/4.2] items-center justify-center overflow-hidden rounded-[24px] bg-gradient-to-br from-slate-50 via-white to-slate-100"
+        className="relative flex aspect-square items-center justify-center overflow-hidden rounded-[24px] bg-gradient-to-br from-slate-50 via-white to-slate-100 sm:aspect-[4/4.2]"
       >
         <img
           src={product.img}
@@ -114,7 +114,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, sectionTitle }) => {
                 ? navigate("/carrinho")
                 : handleAddToCart(product)
             }
-            className={`flex-1 rounded-full px-4 py-3 text-sm font-semibold transition ${
+            className={`flex min-h-11 flex-1 items-center justify-center rounded-full px-4 py-3 text-sm font-semibold transition active:scale-[0.98] ${
               isProductInCart
                 ? "bg-slate-100 text-slate-900 hover:bg-slate-200"
                 : "bg-primary text-white hover:bg-lightprimary"
@@ -128,7 +128,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, sectionTitle }) => {
           </motion.button>
           <Link
             to={`/product/${product.id}`}
-            className="rounded-full border border-slate-200 p-3 text-secondary transition hover:border-secondary/30 hover:text-secondary"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200 p-3 text-secondary transition hover:border-secondary/30 hover:text-secondary active:scale-[0.98]"
           >
             <ArrowRight className="h-4 w-4" />
           </Link>

@@ -1,8 +1,6 @@
-// src/pages/SearchResultsPage/SearchResultsPage.tsx
-
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { Product } from "../../types/Product";
 import ProductCard from "../../components/ProductCard/ProductCard";
@@ -12,12 +10,11 @@ import {
   fetchProductsWithCache,
   filterCachedProducts,
 } from "../../utils/productCache";
-import "./SearchResultsPage.css";
 
 const SearchResultsPage: React.FC = () => {
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, SetSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [showMenuSort, setShowMenuSort] = useState(false);
   const [isAscending, setIsAscending] = useState(true);
   const location = useLocation();
@@ -29,7 +26,7 @@ const SearchResultsPage: React.FC = () => {
     const query = params.get("q") || "";
     const category = params.get("categoria") || "";
 
-    SetSearchQuery(query || category);
+    setSearchQuery(query || category);
 
     const fetchResults = async () => {
       setLoading(true);
@@ -51,22 +48,30 @@ const SearchResultsPage: React.FC = () => {
     navigate("/");
   };
 
-  return loading ? (
-    <Loading variant="products" />
-  ) : (
-    <div className="search-results-container">
+  if (loading) {
+    return <Loading variant="products" />;
+  }
+
+  return (
+    <div className="mx-auto min-h-[70vh] w-full max-w-[1440px] px-4 pb-10 sm:px-6 lg:px-8">
       {searchQuery && (
-        <div className="nav-search-result">
-          <div className="active-filter-tag">
-            <span>{searchQuery}</span>
-            <button onClick={handleClearSearch}>&times;</button>
+        <div className="relative mb-6 flex items-center justify-between gap-3">
+          <div className="inline-flex min-h-11 items-center gap-2 rounded-full bg-slate-100 px-4 text-sm font-medium text-slate-700 shadow-sm">
+            <span className="capitalize">{searchQuery}</span>
+            <button
+              onClick={handleClearSearch}
+              className="flex min-h-8 min-w-8 items-center justify-center rounded-full text-slate-500 transition hover:text-slate-900 active:scale-[0.98]"
+            >
+              &times;
+            </button>
           </div>
-          <div className="active-sort-result">
-            <FontAwesomeIcon
-              icon={faSort}
-              onClick={() => setShowMenuSort(!showMenuSort)}
-            />
-          </div>
+          <button
+            type="button"
+            onClick={() => setShowMenuSort(!showMenuSort)}
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition active:scale-[0.98]"
+          >
+            <FontAwesomeIcon icon={faSort} />
+          </button>
           {showMenuSort && (
             <MenuSearchSort
               results={results}
@@ -78,14 +83,17 @@ const SearchResultsPage: React.FC = () => {
           )}
         </div>
       )}
+
       {results.length > 0 ? (
-        <div className="product-grid">
+        <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4 2xl:grid-cols-5">
           {results.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       ) : (
-        <p>Nenhum produto encontrado.</p>
+        <p className="mt-16 text-center text-base text-slate-500">
+          Nenhum produto encontrado.
+        </p>
       )}
     </div>
   );

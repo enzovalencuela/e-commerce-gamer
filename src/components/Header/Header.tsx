@@ -25,11 +25,11 @@ const Header = () => {
       <TopBar />
       <div className="mx-auto max-w-[1440px] px-4 py-3 sm:px-6 lg:px-8">
         <MainNavbar />
-        <ul className="mt-3 flex gap-2 overflow-x-auto pb-1">
+        <ul className="mt-3 flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 pr-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden xl:pr-0">
           {navDepartments.map((dept) => (
-            <li key={dept.id}>
+            <li key={dept.id} className="snap-start">
               <button
-                className="whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-primary/30 hover:bg-white hover:text-primary"
+                className="flex min-h-11 items-center whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-600 transition hover:border-primary/30 hover:bg-white hover:text-primary active:scale-[0.98] active:bg-white"
                 onClick={() => handleCategoryClick(dept.name)}
               >
                 {dept.name}

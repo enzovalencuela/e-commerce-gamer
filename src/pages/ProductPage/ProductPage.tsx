@@ -136,8 +136,12 @@ const ProductPage: React.FC = () => {
     },
   ];
 
+  const mobileActionLabel = isAddedToCart
+    ? "Ir para o carrinho"
+    : "Adicionar ao carrinho";
+
   return (
-    <div className="space-y-10 py-4">
+    <div className="space-y-10 px-4 py-4 pb-32 sm:px-6 lg:px-8 lg:pb-4">
       {showErrorMessage && (
         <ErrorMessage onClose={() => setsShowErrorMessage(false)} />
       )}
@@ -159,7 +163,7 @@ const ProductPage: React.FC = () => {
                 </span>
               )}
             </div>
-            <div className="flex min-h-[320px] items-center justify-center sm:min-h-[420px]">
+            <div className="flex aspect-square min-h-[280px] items-center justify-center sm:min-h-[420px]">
               <img
                 src={product.img}
                 alt={product.titulo}
@@ -201,10 +205,10 @@ const ProductPage: React.FC = () => {
                 </b>{" "}
                 com taxa estimada de {product.taxa_parcela}%
               </span>
-              <div className="mt-6 space-y-3">
+              <div className="mt-6 hidden space-y-3 lg:block">
                 {!isAddedToCart ? (
                   <button
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-5 py-4 text-sm font-semibold text-white transition hover:bg-slate-800"
+                    className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-5 py-4 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98]"
                     onClick={handleAddToCart}
                   >
                     <ShoppingBag className="h-4 w-4" />
@@ -213,13 +217,13 @@ const ProductPage: React.FC = () => {
                 ) : (
                   <>
                     <button
-                      className="w-full rounded-full bg-slate-200 px-5 py-4 text-sm font-semibold text-slate-900 transition hover:bg-slate-300"
+                      className="min-h-12 w-full rounded-full bg-slate-200 px-5 py-4 text-sm font-semibold text-slate-900 transition hover:bg-slate-300 active:scale-[0.98]"
                       onClick={handleRemoveFromCart}
                     >
                       Remover do carrinho
                     </button>
                     <button
-                      className="w-full rounded-full bg-blue-600 px-5 py-4 text-sm font-semibold text-white transition hover:bg-blue-700"
+                      className="min-h-12 w-full rounded-full bg-blue-600 px-5 py-4 text-sm font-semibold text-white transition hover:bg-blue-700 active:scale-[0.98]"
                       onClick={() => navigate("/carrinho")}
                     >
                       Ir para o carrinho
@@ -228,7 +232,7 @@ const ProductPage: React.FC = () => {
                 )}
                 {user?.role === "admin" && (
                   <button
-                    className="w-full rounded-full border border-slate-200 bg-white px-5 py-4 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-950"
+                    className="min-h-12 w-full rounded-full border border-slate-200 bg-white px-5 py-4 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-950 active:scale-[0.98]"
                     onClick={() => {
                       setProdutos(true);
                       navigate("/dashboard");
@@ -290,6 +294,28 @@ const ProductPage: React.FC = () => {
           titulo="Produtos Relacionados"
         />
       </section>
+
+      <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom,0px)+5.5rem)] z-30 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-[0_-12px_24px_rgba(15,23,42,0.08)] backdrop-blur lg:hidden">
+        <div className="mx-auto flex max-w-xl items-center gap-3">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+              {product.categoria}
+            </p>
+            <p className="text-lg font-extrabold text-slate-950">
+              R$ {product.preco}
+            </p>
+          </div>
+          <button
+            className="ml-auto flex min-h-12 min-w-[180px] items-center justify-center gap-2 rounded-full bg-slate-900 px-5 text-sm font-semibold text-white transition active:scale-[0.98]"
+            onClick={() =>
+              isAddedToCart ? navigate("/carrinho") : handleAddToCart()
+            }
+          >
+            <ShoppingBag className="h-4 w-4" />
+            {mobileActionLabel}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
