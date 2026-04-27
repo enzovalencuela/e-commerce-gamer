@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
@@ -46,17 +45,6 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({
 
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-  const categoria = [
-    "Setups",
-    "Notebooks",
-    "Periféricos",
-    "Consoles",
-    "Acessórios",
-    "Monitores",
-    "Realidade VR",
-    "Áudio",
-  ];
-
   useEffect(() => {
     const cache = loadProductCache();
     if (cache?.products?.length) {
@@ -66,69 +54,10 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({
   }, []);
 
   useEffect(() => {
-    const handleCategoryClick = async () => {
-      if (searchQuery === undefined) return;
-
-      setLoading(true);
-      try {
-        const cache = loadProductCache();
-        const cachedProducts = cache?.products || [];
-
-        if (typeof searchQuery === "string") {
-          if (categoria.includes(searchQuery)) {
-            setProducts(
-              cachedProducts.filter((product) => product.categoria === searchQuery)
-            );
-          } else {
-            const normalizedQuery = searchQuery.toLowerCase();
-            setProducts(
-              cachedProducts.filter((product) =>
-                `${product.titulo} ${product.descricao} ${product.categoria}`
-                  .toLowerCase()
-                  .includes(normalizedQuery)
-              )
-            );
-          }
-        } else if (
-          typeof searchQuery === "number" &&
-          searchQuery !== undefined
-        ) {
-          const cachedMatch = cachedProducts.find(
-            (product) => product.id === searchQuery
-          );
-
-          if (cachedMatch) {
-            setProducts([cachedMatch]);
-          } else {
-            const response = await fetch(
-              `${VITE_BACKEND_URL}/api/products/${searchQuery}`,
-              {
-                method: "GET",
-              }
-            );
-
-            if (!response.ok) {
-              throw new Error("Falha na busca de produtos.");
-            }
-            const data = await response.json();
-            setProducts(data ? [data] : []);
-          }
-        }
-      } catch (error) {
-        console.error("Erro ao buscar produtos:", error);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    handleCategoryClick();
-  }, [searchQuery]);
-
-  useEffect(() => {
     const fetchProducts = async () => {
       try {
         const cached = loadProductCache();
+
         if (!searchProducts && cached?.products?.length) {
           setProducts(cached.products);
           setLoading(false);
@@ -148,7 +77,7 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({
     };
 
     fetchProducts();
-  }, [searchProducts]);
+  }, [searchProducts, VITE_BACKEND_URL]);
 
   useEffect(() => {
     if (products.length > 0) {
