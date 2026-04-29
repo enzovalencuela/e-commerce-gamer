@@ -58,7 +58,7 @@ interface AdditionalInfo {
   items: Items[];
 }
 
-interface PixInfo {
+interface PointOfInteraction {
   transaction_data: {
     qr_code?: string;
     qr_code_base64?: string;
@@ -71,12 +71,13 @@ interface PaymentStatus {
   status: string;
   status_detail?: string;
   total_amount?: number;
+  transaction_amount?: number;
   payment_type?: string;
   payment_method?: string;
   date_approved?: string;
   additional_info?: AdditionalInfo;
   installments?: number;
-  point_of_interaction?: PixInfo;
+  point_of_interaction?: PointOfInteraction;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -132,8 +133,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          // Não envie mais o token manualmente!
-          // Agora só faz um fetch normal usando o cookie gerado pelo backend_user
           const response = await fetch(`${VITE_BACKEND_URL}/api/user-data`, {
             method: "POST",
             credentials: "include",
@@ -195,8 +194,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // Após login Google/back, apenas sincronize Firestore local e prepare estado react;
-  // Não precisamos armazenar tokens/segredos!
   const login = async (backendData: User) => {
     const firebaseUser = auth.currentUser;
     if (!firebaseUser) return;
@@ -331,7 +328,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
           const updatedStatus = {
             ...p,
-            total_amount: p.transaction_amount,
+            total_amount: p.transaction_amount || p.total_amount,
           };
 
           setPaymentStatus(updatedStatus);
