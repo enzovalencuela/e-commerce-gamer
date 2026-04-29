@@ -59,9 +59,11 @@ interface AdditionalInfo {
 }
 
 interface PixInfo {
-  qr_code?: string;
-  qr_code_base64?: string;
-  ticket_url?: string;
+  transaction_data: {
+    qr_code?: string;
+    qr_code_base64?: string;
+    ticket_url?: string;
+  };
 }
 
 interface PaymentStatus {
@@ -74,7 +76,7 @@ interface PaymentStatus {
   date_approved?: string;
   additional_info?: AdditionalInfo;
   installments?: number;
-  pix?: PixInfo;
+  point_of_interaction?: PixInfo;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -97,13 +99,13 @@ try {
   appId = import.meta.env.VITE_FIREBASE_APP_ID || "default-app-id";
   if (!firebaseConfig.apiKey || firebaseConfig.apiKey.length < 10) {
     throw new Error(
-      "VITE_FIREBASE_API_KEY não está configurada ou é inválida."
+      "VITE_FIREBASE_API_KEY não está configurada ou é inválida.",
     );
   }
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   setPersistence(auth, browserLocalPersistence).catch((error) =>
-    console.error("Erro ao definir persistência:", error)
+    console.error("Erro ao definir persistência:", error),
   );
 
   db = getFirestore(app);
@@ -116,7 +118,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus | null>(
-    null
+    null,
   );
   const [purchasedProducts, setPurchasedProducts] = useState<Product[]>([]);
   const [paymentId, setPaymentId] = useState<URLSearchParams | null>(null);
@@ -164,7 +166,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const syncUserToFirestore = async (
     firebaseUser: FirebaseAuthUser,
-    backendData: User
+    backendData: User,
   ) => {
     const userId = firebaseUser.uid;
     const userDocRef = doc(
@@ -174,7 +176,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       "users",
       userId,
       "user_data",
-      "profile"
+      "profile",
     );
 
     const dataToSave: User = {
@@ -194,8 +196,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   // Após login Google/back, apenas sincronize Firestore local e prepare estado react;
-// Não precisamos armazenar tokens/segredos!
-const login = async (backendData: User) => {
+  // Não precisamos armazenar tokens/segredos!
+  const login = async (backendData: User) => {
     const firebaseUser = auth.currentUser;
     if (!firebaseUser) return;
 
@@ -203,7 +205,6 @@ const login = async (backendData: User) => {
     const combinedUser: UserData = { ...firebaseUser, ...syncedData };
     setUser(combinedUser);
   };
-
 
   const logout = async () => {
     if (auth) {
@@ -233,8 +234,8 @@ const login = async (backendData: User) => {
         const response = await fetch(
           `${VITE_BACKEND_URL}/api/cart/${user.id}`,
           {
-          credentials: "include",
-          }
+            credentials: "include",
+          },
         );
         if (!response.ok) {
           throw new Error("Erro ao buscar o carrinho");
@@ -242,7 +243,7 @@ const login = async (backendData: User) => {
         const productIds: number[] = await response.json();
         const fetchedItems = await fetchProductsByIdsCached(
           VITE_BACKEND_URL,
-          productIds
+          productIds,
         );
         setCart(fetchedItems);
       } catch (error) {
@@ -257,7 +258,7 @@ const login = async (backendData: User) => {
   const addToCart = async (item: Product) => {
     if (!user || !user.id) {
       console.error(
-        "Usuário não logado ou sem ID. Não é possível adicionar ao carrinho."
+        "Usuário não logado ou sem ID. Não é possível adicionar ao carrinho.",
       );
       return "error";
     }
@@ -292,7 +293,7 @@ const login = async (backendData: User) => {
       });
       setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
       setSelectedItems((prevSelected) =>
-        prevSelected.filter((id) => id !== itemId)
+        prevSelected.filter((id) => id !== itemId),
       );
     } catch (error) {
       console.error("Erro ao remover produto do carrinho:", error);
@@ -321,7 +322,7 @@ const login = async (backendData: User) => {
           {
             method: "GET",
             credentials: "include",
-          }
+          },
         );
 
         const data = await response.json();
@@ -406,7 +407,7 @@ const login = async (backendData: User) => {
       purchasedProducts,
       loading,
       isAuthReady,
-    ]
+    ],
   );
 
   return (
