@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import "./Status.css";
 import BackButton from "../../components/BackButton/BackButton";
@@ -17,6 +17,10 @@ const StatusPagamento: React.FC = () => {
   const { paymentStatus, purchasedProducts, loading } = useAuth();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    console.log("Status de Pagamento:", paymentStatus);
+  }, [paymentStatus]);
 
   if (loading || !paymentStatus) return <Loading />;
 
@@ -119,7 +123,7 @@ const StatusPagamento: React.FC = () => {
               <span>Data</span>
               <span>
                 {new Date(
-                  paymentStatus.date_approved || Date.now()
+                  paymentStatus.date_approved || Date.now(),
                 ).toLocaleDateString()}
               </span>
             </div>
