@@ -48,12 +48,12 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({
 
       const firebaseIdToken = await userCredential.user.getIdToken();
 
-      const response = await fetch(`${VITE_BACKEND_URL}/user-data`, {
+      const response = await fetch(`${VITE_BACKEND_URL}/api/user-data`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ firebaseIdToken: firebaseIdToken }),
+        body: JSON.stringify({ firebaseToken: firebaseIdToken }),
         credentials: "include",
       });
 

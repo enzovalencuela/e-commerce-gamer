@@ -79,7 +79,6 @@ interface PaymentStatus {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-const VITE_BACKEND_URL2 = import.meta.env.VITE_BACKEND_URL2;
 
 let app: any;
 let auth: any;
@@ -133,7 +132,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
           // Não envie mais o token manualmente!
           // Agora só faz um fetch normal usando o cookie gerado pelo backend_user
-          const response = await fetch(`${VITE_BACKEND_URL2}/user-data`, {
+          const response = await fetch(`${VITE_BACKEND_URL}/api/user-data`, {
             method: "POST",
             credentials: "include",
           });
@@ -209,7 +208,7 @@ const login = async (backendData: User) => {
   const logout = async () => {
     if (auth) {
       try {
-        await fetch(`${VITE_BACKEND_URL2}/logout`, {
+        await fetch(`${VITE_BACKEND_URL}/api/logout`, {
           method: "POST",
           credentials: "include",
         });
@@ -231,9 +230,12 @@ const login = async (backendData: User) => {
 
       setLoading(true);
       try {
-        const response = await fetch(`${VITE_BACKEND_URL2}/cart/${user.id}`, {
+        const response = await fetch(
+          `${VITE_BACKEND_URL}/api/cart/${user.id}`,
+          {
           credentials: "include",
-        });
+          }
+        );
         if (!response.ok) {
           throw new Error("Erro ao buscar o carrinho");
         }
@@ -265,7 +267,7 @@ const login = async (backendData: User) => {
       return "error";
     }
     try {
-      await fetch(`${VITE_BACKEND_URL2}/cart/add`, {
+      await fetch(`${VITE_BACKEND_URL}/api/cart/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id, productId: item.id }),
@@ -282,7 +284,7 @@ const login = async (backendData: User) => {
   const removeFromCart = async (itemId: number) => {
     if (!user || !user.id) return;
     try {
-      await fetch(`${VITE_BACKEND_URL2}/cart/remove`, {
+      await fetch(`${VITE_BACKEND_URL}/api/cart/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id, productId: itemId }),
@@ -315,7 +317,7 @@ const login = async (backendData: User) => {
     const fetchPaymentStatus = async () => {
       try {
         const response = await fetch(
-          `${VITE_BACKEND_URL2}/payments/status?${paymentId}`,
+          `${VITE_BACKEND_URL}/api/payments/status?${paymentId}`,
           {
             method: "GET",
             credentials: "include",

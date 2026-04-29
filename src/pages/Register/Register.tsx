@@ -35,21 +35,21 @@ const Register: React.FC = () => {
 
       if (user) {
         const firebaseIdToken = await user.getIdToken();
-        const response = await fetch(`${VITE_BACKEND_URL}/register`, {
+        const response = await fetch(`${VITE_BACKEND_URL}/api/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${firebaseIdToken}`,
           },
           body: JSON.stringify({
+            firebaseToken: firebaseIdToken,
             name: name,
-            email: email,
           }),
+          credentials: "include",
         });
 
         if (response.ok) {
           const data = await response.json();
-          login(data);
+          login(data.user);
           navigate("/");
         }
       }
