@@ -332,12 +332,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           const updatedStatus = {
             ...p,
             total_amount: p.transaction_amount,
-            pix: {
-              qr_code: p.point_of_interaction?.transaction_data?.qr_code,
-              qr_code_base64:
-                p.point_of_interaction?.transaction_data?.qr_code_base64,
-              ticket_url: p.point_of_interaction?.transaction_data?.ticket_url,
-            },
           };
 
           setPaymentStatus(updatedStatus);
