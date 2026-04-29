@@ -51,7 +51,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
     }
 
     const selectedProducts = cart.filter((item) =>
-      selectedItems.includes(item.id)
+      selectedItems.includes(item.id),
     );
 
     if (selectedProducts.length === 0) {
@@ -92,7 +92,6 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({
           return response.json();
         })
         .then((data) => {
-          console.log("Pagamento processado:", data);
           setLoading(false);
           setPaymentProcessing(false);
           const id = data.payment.id;
