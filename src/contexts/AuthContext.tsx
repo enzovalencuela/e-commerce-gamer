@@ -66,6 +66,12 @@ interface PointOfInteraction {
   };
 }
 
+interface PixPayload {
+  qr_code?: string;
+  qr_code_base64?: string;
+  ticket_url?: string;
+}
+
 interface PaymentStatus {
   id: number;
   status: string;
@@ -78,6 +84,7 @@ interface PaymentStatus {
   additional_info?: AdditionalInfo;
   installments?: number;
   point_of_interaction?: PointOfInteraction;
+  pix?: PixPayload;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -325,10 +332,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const data = await response.json();
         if (response.ok && data.payment) {
           const p = data.payment;
+          const point_of_interaction =
+            p.point_of_interaction ||
+            (p.pix
+              ? {
+                  transaction_data: {
+                    qr_code: p.pix.qr_code,
+                    qr_code_base64: p.pix.qr_code_base64,
+                    ticket_url: p.pix.ticket_url,
+                  },
+                }
+              : undefined);
 
           const updatedStatus = {
             ...p,
             total_amount: p.transaction_amount || p.total_amount,
+            point_of_interaction,
           };
 
           setPaymentStatus(updatedStatus);
